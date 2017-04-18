@@ -1,0 +1,25 @@
+spring:
+  profiles:
+    active: home
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+  datasource:
+    url: jdbc:mysql://localhost:3306/note_map?useUnicode=true&amp;characterEncoding=utf8
+    username: root
+    password:
+    driver-class-name: com.mysql.jdbc.Driver
+
+
+
