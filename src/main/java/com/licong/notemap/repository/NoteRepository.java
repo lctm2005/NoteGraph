@@ -1,10 +1,8 @@
-package com.licong.wiki.repository;
+package com.licong.notemap.repository;
 
-import com.licong.wiki.domain.Note;
+import com.licong.notemap.domain.Note;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * @author licong

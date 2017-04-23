@@ -1,4 +1,4 @@
-package com.licong.wiki;
+package com.licong.notemap;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package com.licong.wiki.web.controller;
+package com.licong.notemap.web.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

@@ -1,4 +1,4 @@
-package com.licong.wiki.domain;
+package com.licong.notemap.domain;
 
 import lombok.Data;
 import org.hibernate.annotations.Type;
@@ -34,5 +34,5 @@ public class Link {
     private UUID target;
 
     @Column
-    private Date createTime;
+    private Date createTime = new Date();
 }

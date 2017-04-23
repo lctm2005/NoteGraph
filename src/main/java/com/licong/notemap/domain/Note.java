@@ -1,11 +1,10 @@
-package com.licong.wiki.domain;
+package com.licong.notemap.domain;
 
 import lombok.Data;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,5 +27,5 @@ public class Note {
     private String name;
 
     @Column
-    private Date createTime;
+    private Date createTime = new Date();
 }

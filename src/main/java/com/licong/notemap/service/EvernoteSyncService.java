@@ -1,4 +1,4 @@
-package com.licong.wiki.service;
+package com.licong.notemap.service;
 
 import java.util.UUID;
 
@@ -16,7 +16,12 @@ public interface EvernoteSyncService {
     /**
      * 同步笔记本
      * @param userId  用戶ID
-     * @param noteId  笔记本ID
+     * @param noteBookId  笔记本ID
      */
-    void syncNoteBook(Long userId, UUID noteId);
+    void syncNoteBook(Long userId, UUID noteBookId);
+
+    /**
+     * 同步
+     */
+    void sync();
 }

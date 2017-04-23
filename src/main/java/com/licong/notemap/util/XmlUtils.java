@@ -1,4 +1,4 @@
-package com.licong.wiki.util;
+package com.licong.notemap.util;
 
 import java.util.ArrayList;
 import java.util.List;

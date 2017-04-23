@@ -1,6 +1,6 @@
-package com.licong.wiki.web.vo;
+package com.licong.notemap.web.vo;
 
-import com.licong.wiki.domain.Note;
+import com.licong.notemap.domain.Note;
 import lombok.Data;
 
 /**
@@ -14,15 +14,7 @@ public class NodeVo {
     private String name;
     private Integer category;
     private String href;
-
-    public static NodeVo convert(com.evernote.edam.type.Note note) {
-        NodeVo node = new NodeVo();
-        node.setName(note.getTitle());
-        node.setCategory(0);
-        // https://[service]/shard/[shardId]/nl/[userId]/[noteGuid]
-        node.setHref("https://app.yinxiang.com/shard/s31/nl/5910137/" + note.getGuid());
-        return node;
-    }
+    private Integer value;
 
     public static NodeVo convert(Note note) {
         NodeVo nodeVo = new NodeVo();
@@ -30,6 +22,7 @@ public class NodeVo {
         nodeVo.setCategory(0);
         // https://[service]/shard/[shardId]/nl/[userId]/[noteGuid]
         nodeVo.setHref(HREF_PREFIX + note.getUuid());
+        nodeVo.setValue(note.getName().length() * 2);
         return nodeVo;
     }
 }
