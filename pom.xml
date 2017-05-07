@@ -90,6 +90,21 @@
     <build>
         <finalName>notemap</finalName>
     </build>
+
+    <profiles>
+        <profile>
+            <id>home</id>
+            <properties>
+                <env>home</env>
+            </properties>
+        </profile>
+        <profile>
+            <id>aliyun</id>
+            <properties>
+                <env>aliyun</env>
+            </properties>
+        </profile>
+    </profiles>
     <repositories>
         <repository>
             <id>spring-milestones</id>

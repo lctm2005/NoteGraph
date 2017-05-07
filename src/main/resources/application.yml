@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: @env@
   jpa:
     show-sql: true
     properties:
@@ -14,10 +16,9 @@ spring:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
   datasource:
-    url: jdbc:mysql://119.23.212.139:3306/note_map?useUnicode=true&characterEncoding=UTF-8
-    username: lctm2005
-    password: tiger
     driver-class-name: com.mysql.jdbc.Driver
+logging:
+  level.*: ERROR
 
 
 

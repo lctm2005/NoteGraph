@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:mysql://119.23.212.139:3306/note_map?useUnicode=true&characterEncoding=UTF-8
+    username: lctm2005
+    password: tiger
+
+
+

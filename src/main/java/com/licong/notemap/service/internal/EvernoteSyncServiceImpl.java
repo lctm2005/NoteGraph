@@ -26,6 +26,7 @@ public class EvernoteSyncServiceImpl implements EvernoteSyncService {
 
     private static int LATEST_UPDATE_COUNT = 0;
     private static final String INNER_LINK = "https://app.yinxiang.com";
+    private static final String INNER_LINK_2 = "evernote:///";
 
     @Autowired
     private EvernoteRepository evernoteRepository;
@@ -67,6 +68,13 @@ public class EvernoteSyncServiceImpl implements EvernoteSyncService {
                     link.setTarget(UUID.fromString(url.substring(url.lastIndexOf('/') + 1)));
                     links.add(link);
                 }
+                if (url.contains(INNER_LINK_2)) {
+                    Link link = new Link();
+                    link.setName(value);
+                    link.setSource(noteDomain.getUuid());
+                    link.setTarget(UUID.fromString(url.substring(url.length() - 37, url.length() - 1)));
+                    links.add(link);
+                }
             }
         }
         noteRepository.deleteAll();
@@ -82,7 +90,6 @@ public class EvernoteSyncServiceImpl implements EvernoteSyncService {
         int currentUpdateCount = currentState.getUpdateCount();
 
         if (currentUpdateCount > LATEST_UPDATE_COUNT) {
-
 
 
             // Keep track of the new high-water mark
