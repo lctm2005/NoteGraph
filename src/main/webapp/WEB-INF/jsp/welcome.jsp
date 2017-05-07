@@ -48,6 +48,8 @@
                     {
                         type: 'force',
                         name: "±Ê¼Ç",
+                        symbol: 'rectangle',
+                        symbolSize: [60, 14],
                         draggable: false,
                         ribbonType: false,
                         categories: [
@@ -66,10 +68,11 @@
                                 label: {
                                     show: true,
                                     textStyle: {
-                                        color: '#333'
+                                        color: '#fff'
                                     }
                                 },
                                 nodeStyle: {
+                                    color:'#1e90ff',
                                     brushType: 'both',
                                     borderColor: 'rgba(255,215,0,0.4)',
                                     borderWidth: 1
