@@ -7,6 +7,7 @@ import com.licong.notemap.service.LinkService;
 import com.licong.notemap.service.NoteService;
 import com.licong.notemap.web.vo.LinkVo;
 import com.licong.notemap.web.vo.NodeVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
 
+@Slf4j
 @Controller
 public class NodeController {
 
@@ -41,7 +43,11 @@ public class NodeController {
         List<LinkVo> linkVos = new ArrayList<>();
         if(!CollectionUtils.isEmpty(notes)) {
             for(Link link : links) {
-                linkVos.add(LinkVo.convert(link, noteMap));
+                try {
+                    linkVos.add(LinkVo.convert(link, noteMap));
+                }catch (Exception e) {
+                    log.error("", e);
+                }
             }
         }
 

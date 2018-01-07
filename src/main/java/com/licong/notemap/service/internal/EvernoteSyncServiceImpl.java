@@ -25,6 +25,7 @@ import java.util.UUID;
 public class EvernoteSyncServiceImpl implements EvernoteSyncService {
 
     private static int LATEST_UPDATE_COUNT = 0;
+    private static int LIMIT = 50;
     private static final String INNER_LINK = "https://app.yinxiang.com";
     private static final String INNER_LINK_2 = "evernote:///";
 
@@ -43,15 +44,31 @@ public class EvernoteSyncServiceImpl implements EvernoteSyncService {
         Note note = evernoteRepository.get(noteId);
     }
 
+
+    private List<Note> findNotes(NoteFilter noteFilter) {
+        //接口限制最多返回50个
+        List<Note> notes = new ArrayList<>(50);
+        int offset = 0;
+        int total;
+        do {
+            NoteList noteList = evernoteRepository.findNotes(noteFilter, offset, LIMIT);
+            total = noteList.getTotalNotes();
+            notes.addAll(noteList.getNotes());
+            offset+=LIMIT;
+        } while (total - offset > 0);
+        return notes;
+    }
+
+
     @Override
     public void syncNoteBook(Long userId, UUID noteBookId) {
         NoteFilter noteFilter = new NoteFilter();
         noteFilter.setNotebookGuid(noteBookId.toString());
-        NoteList noteList = evernoteRepository.findNotes(noteFilter, 0, Integer.MAX_VALUE);
+        List<Note> noteList = findNotes(noteFilter);
         List<com.licong.notemap.domain.Note> notes = new ArrayList<>();
         List<Link> links = new ArrayList<>();
 
-        for (Note note : noteList.getNotes()) {
+        for (Note note : noteList) {
             com.licong.notemap.domain.Note noteDomain = new com.licong.notemap.domain.Note();
             noteDomain.setUuid(UUID.fromString(note.getGuid()));
             noteDomain.setName(note.getTitle());
