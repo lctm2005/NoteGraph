@@ -20,8 +20,8 @@ public class EvernoteSyncScheduler {
     @Autowired
     private EvernoteSyncService evernoteSyncService;
 
-    // 1 minute
-    @Scheduled(fixedRate = 1000 * 60)
+    // 1 h
+    @Scheduled(fixedRate = 1000 * 60 * 60)
     public void sync(){
         evernoteSyncService.syncNoteBook(0L, UUID.fromString("dea6691f-cd37-40f9-abbd-b3785da21636"));
     }
