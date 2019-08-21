@@ -15,8 +15,6 @@
 <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
 </body>
 <script type="text/javascript">
-
-
     require.config({
         paths: {
             echarts: 'http://echarts.baidu.com/build/dist'
@@ -72,7 +70,7 @@
                                     }
                                 },
                                 nodeStyle: {
-                                    color:'#1e90ff',
+                                    color: '#1e90ff',
                                     brushType: 'both',
                                     borderColor: 'rgba(255,215,0,0.4)',
                                     borderWidth: 1
@@ -114,7 +112,6 @@
             var ecConfig = require('echarts/config');
             myChart.on(ecConfig.EVENT.CLICK, focus)
             myChart.setOption(option);
-
         }
     );
 </script>

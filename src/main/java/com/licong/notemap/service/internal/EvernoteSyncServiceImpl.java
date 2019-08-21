@@ -3,24 +3,25 @@ package com.licong.notemap.service.internal;
 import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.notestore.SyncState;
-import com.evernote.edam.type.Note;
+import com.licong.notemap.domain.Note;
 import com.licong.notemap.domain.Link;
 import com.licong.notemap.repository.EvernoteRepository;
-import com.licong.notemap.repository.LinkRepository;
 import com.licong.notemap.repository.NoteRepository;
+import com.licong.notemap.repository.LinkRepository;
 import com.licong.notemap.service.EvernoteSyncService;
-import com.licong.notemap.util.Href;
+import com.licong.notemap.util.CollectionUtils;
 import com.licong.notemap.util.XmlUtils;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by lctm2005 on 2017/4/18.
  */
+@Slf4j
 @Service
 public class EvernoteSyncServiceImpl implements EvernoteSyncService {
 
@@ -41,20 +42,20 @@ public class EvernoteSyncServiceImpl implements EvernoteSyncService {
     @Override
     public void syncNote(Long userId, UUID noteId) {
         // TODO userId -> auth
-        Note note = evernoteRepository.get(noteId);
+        com.evernote.edam.type.Note note = evernoteRepository.get(noteId);
     }
 
 
-    private List<Note> findNotes(NoteFilter noteFilter) {
+    private List<com.evernote.edam.type.Note> findNotes(NoteFilter noteFilter) {
         //接口限制最多返回50个
-        List<Note> notes = new ArrayList<>(50);
+        List<com.evernote.edam.type.Note> notes = new ArrayList<>(50);
         int offset = 0;
         int total;
         do {
             NoteList noteList = evernoteRepository.findNotes(noteFilter, offset, LIMIT);
             total = noteList.getTotalNotes();
             notes.addAll(noteList.getNotes());
-            offset+=LIMIT;
+            offset += LIMIT;
         } while (total - offset > 0);
         return notes;
     }
@@ -64,40 +65,62 @@ public class EvernoteSyncServiceImpl implements EvernoteSyncService {
     public void syncNoteBook(Long userId, UUID noteBookId) {
         NoteFilter noteFilter = new NoteFilter();
         noteFilter.setNotebookGuid(noteBookId.toString());
-        List<Note> noteList = findNotes(noteFilter);
-        List<com.licong.notemap.domain.Note> notes = new ArrayList<>();
-        List<Link> links = new ArrayList<>();
+        List<com.evernote.edam.type.Note> noteList = findNotes(noteFilter);
+        List<Note> notes = new ArrayList<>();
+        List<TempLink> tempLinks = new ArrayList<>();
 
-        for (Note note : noteList) {
-            com.licong.notemap.domain.Note noteDomain = new com.licong.notemap.domain.Note();
-            noteDomain.setUuid(UUID.fromString(note.getGuid()));
-            noteDomain.setName(note.getTitle());
-            notes.add(noteDomain);
-            String content = evernoteRepository.getNoteContent(UUID.fromString(note.getGuid()));
-            List<Href> hrefs = XmlUtils.extractHrefs(content);
-            for (Href href : hrefs) {
-                String url = href.getUrl();
-                String value = href.getName();
-                if (url.contains(INNER_LINK)) {
-                    Link link = new Link();
-                    link.setName(value);
-                    link.setSource(noteDomain.getUuid());
-                    link.setTarget(UUID.fromString(url.substring(url.lastIndexOf('/') + 1)));
-                    links.add(link);
+        for (com.evernote.edam.type.Note note : noteList) {
+            try {
+                // add knowledge to notes
+                Note knowledge = new Note();
+                knowledge.setUuid(UUID.fromString(note.getGuid()));
+                knowledge.setTitle(note.getTitle());
+                notes.add(knowledge);
+
+                String content = evernoteRepository.getNoteContent(UUID.fromString(note.getGuid()));
+                List<XmlUtils.Href> hrefs = XmlUtils.extractHrefs(content);
+
+                // add link to tempLinks
+                for (XmlUtils.Href href : hrefs) {
+                    String hrefUrl = href.getUrl();
+                    String hrefName = href.getName();
+                    if (hrefUrl.contains(INNER_LINK)) {
+                        TempLink tempLink = new TempLink();
+                        tempLink.setTitle(hrefName);
+                        tempLink.setStart(knowledge.getUuid());
+                        tempLink.setEnd(UUID.fromString(hrefUrl.substring(hrefUrl.lastIndexOf('/') + 1)));
+                        tempLinks.add(tempLink);
+                    }
+                    if (hrefUrl.contains(INNER_LINK_2)) {
+                        TempLink tempLink = new TempLink();
+                        tempLink.setTitle(hrefName);
+                        tempLink.setStart(knowledge.getUuid());
+                        tempLink.setEnd(UUID.fromString(hrefUrl.substring(hrefUrl.length() - 37, hrefUrl.length() - 1)));
+                        tempLinks.add(tempLink);
+                    }
                 }
-                if (url.contains(INNER_LINK_2)) {
-                    Link link = new Link();
-                    link.setName(value);
-                    link.setSource(noteDomain.getUuid());
-                    link.setTarget(UUID.fromString(url.substring(url.length() - 37, url.length() - 1)));
-                    links.add(link);
-                }
+            } catch (Exception e) {
+                log.error("parse note failed:", e);
             }
         }
+
+        // add link to list
+        Map<UUID, Note> knowledgeMap = CollectionUtils.getPropertyMap(notes, "uuid");
+        List<Link> links = new ArrayList<>();
+        for (TempLink tempLink : tempLinks) {
+            Link link = new Link();
+            link.setTitle(tempLink.getTitle());
+            link.setStart(knowledgeMap.get(tempLink.getStart()));
+            link.setEnd(knowledgeMap.get(tempLink.getEnd()));
+            if (link.getEnd() != null) {
+                links.add(link);
+            }
+        }
+
         noteRepository.deleteAll();
         linkRepository.deleteAll();
-        noteRepository.save(notes);
-        linkRepository.save(links);
+        noteRepository.saveAll(notes);
+        linkRepository.saveAll(links);
     }
 
     @Override
@@ -107,10 +130,15 @@ public class EvernoteSyncServiceImpl implements EvernoteSyncService {
         int currentUpdateCount = currentState.getUpdateCount();
 
         if (currentUpdateCount > LATEST_UPDATE_COUNT) {
-
-
             // Keep track of the new high-water mark
             LATEST_UPDATE_COUNT = currentUpdateCount;
         }
+    }
+
+    @Data
+    class TempLink {
+        private UUID start;
+        private UUID end;
+        private String title;
     }
 }

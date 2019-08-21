@@ -1,11 +1,6 @@
 spring:
   profiles:
     active: @env@
-  jpa:
-    show-sql: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
   http:
     encoding:
       charset: UTF-8
@@ -15,8 +10,6 @@ spring:
     view:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
-  datasource:
-    driver-class-name: com.mysql.jdbc.Driver
 logging:
   level.*: ERROR
 

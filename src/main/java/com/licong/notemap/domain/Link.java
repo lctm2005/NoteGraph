@@ -1,38 +1,24 @@
 package com.licong.notemap.domain;
 
 import lombok.Data;
-import org.hibernate.annotations.Type;
+import org.neo4j.ogm.annotation.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Date;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * @author licong
- * @date 15-8-17
- */
 @Data
-@Entity
+@RelationshipEntity
 public class Link {
-
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column
-    private String name;
+    @Property
+    private String title;
 
-    @Column
-    @Type(type = "uuid-char")
-    private UUID source;
+    @StartNode
+    private Note start;
 
-    @Column
-    @Type(type = "uuid-char")
-    private UUID target;
-
-    @Column
-    private Date createTime = new Date();
+    @EndNode
+    private Note end;
 }

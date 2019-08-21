@@ -1,7 +1,7 @@
 package com.licong.notemap.web.vo;
 
-import com.licong.notemap.domain.Link;
 import com.licong.notemap.domain.Note;
+import com.licong.notemap.domain.Link;
 import lombok.Data;
 
 import java.util.Map;
@@ -19,9 +19,9 @@ public class LinkVo {
 
     public static LinkVo convert(Link link, Map<UUID, Note> noteMap) {
         LinkVo linkVo = new LinkVo();
-        linkVo.setName(link.getName());
-        linkVo.setSource(noteMap.get(link.getSource()).getName());
-        linkVo.setTarget(noteMap.get(link.getTarget()).getName());
+        linkVo.setName(link.getTitle());
+        linkVo.setSource(noteMap.get(link.getStart()).getTitle());
+        linkVo.setTarget(noteMap.get(link.getEnd()).getTitle());
         return linkVo;
     }
 }

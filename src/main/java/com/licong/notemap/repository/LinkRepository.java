@@ -1,13 +1,15 @@
 package com.licong.notemap.repository;
 
 import com.licong.notemap.domain.Link;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 /**
- * @author licong
- * @date 15-8-17
+ * @author Michael Hunger
+ * @author Mark Angrish
+ * @author Michael J. Simons
  */
-@Repository
-public interface LinkRepository extends PagingAndSortingRepository<Link, Long> {
+@RepositoryRestResource(collectionResourceRel = "link", path = "link")
+public interface LinkRepository extends Neo4jRepository<Link, Long> {
+
 }

@@ -1,31 +1,26 @@
 package com.licong.notemap.domain;
 
 import lombok.Data;
-import org.hibernate.annotations.Type;
+import org.neo4j.ogm.annotation.GeneratedValue;
+import org.neo4j.ogm.annotation.Id;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.typeconversion.Convert;
+import org.neo4j.ogm.typeconversion.UuidStringConverter;
 
-import javax.persistence.*;
-import java.util.Date;
 import java.util.UUID;
 
-/**
- * @author licong
- * @date 15-8-17
- */
 @Data
-@Entity
+@NodeEntity
 public class Note {
-
     @Id
     @GeneratedValue
     private Long id;
 
-    @Type(type = "uuid-char")
-    @Column
+    @Property
+    @Convert(UuidStringConverter.class)
     private UUID uuid;
 
-    @Column
-    private String name;
-
-    @Column
-    private Date createTime = new Date();
+    @Property
+    private String title;
 }

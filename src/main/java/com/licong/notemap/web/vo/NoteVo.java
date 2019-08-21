@@ -11,7 +11,7 @@ import java.util.List;
  * Created by lctm2005 on 2017/4/9.
  */
 @Data
-public class NodeVo {
+public class NoteVo {
 
     private static final String HREF_PREFIX = "https://app.yinxiang.com/shard/s31/nl/5910137/";
     private String name;
@@ -20,17 +20,17 @@ public class NodeVo {
     private Integer value;
     private List<Integer> symbolSize;
 
-    public static NodeVo convert(Note note) {
-        NodeVo nodeVo = new NodeVo();
-        nodeVo.setName(note.getName());
-        nodeVo.setCategory(0);
+    public static NoteVo convert(Note note) {
+        NoteVo noteVo = new NoteVo();
+        noteVo.setName(note.getTitle());
+        noteVo.setCategory(0);
         // https://[service]/shard/[shardId]/nl/[userId]/[noteGuid]
         List<Integer> symbolSize = new ArrayList<>();
-        symbolSize.add(note.getName().length() * 8);
+        symbolSize.add(note.getTitle().length() * 8);
         symbolSize.add(10);
-        nodeVo.setSymbolSize(symbolSize);
-        nodeVo.setHref(HREF_PREFIX + note.getUuid());
-        nodeVo.setValue(note.getName().length() * 2);
-        return nodeVo;
+        noteVo.setSymbolSize(symbolSize);
+        noteVo.setHref(HREF_PREFIX + note.getUuid());
+        noteVo.setValue(note.getTitle().length() * 2);
+        return noteVo;
     }
 }

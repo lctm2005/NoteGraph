@@ -1,8 +1,6 @@
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/note_map?useUnicode=true&characterEncoding=UTF-8
-    username: root
-    password:
-
-
-
+  data:
+    neo4j:
+      uri: bolt://172.24.140.30:7687
+      username: neo4j
+      password: neo4j1

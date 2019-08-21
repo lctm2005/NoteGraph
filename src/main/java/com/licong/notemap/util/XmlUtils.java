@@ -1,5 +1,7 @@
 package com.licong.notemap.util;
 
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,5 +49,14 @@ public class XmlUtils {
         List<Href> hrefs = new ArrayList<>();
         parse(content, hrefs);
         return hrefs;
+    }
+
+    /**
+     * Created by lctm2005 on 2017/4/16.
+     */
+    @Data
+    public static class Href {
+        private String name;
+        private String url;
     }
 }
