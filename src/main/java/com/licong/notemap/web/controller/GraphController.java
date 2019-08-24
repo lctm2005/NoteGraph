@@ -5,7 +5,8 @@ import com.licong.notemap.domain.Note;
 import com.licong.notemap.domain.Link;
 import com.licong.notemap.service.NoteService;
 import com.licong.notemap.service.LinkService;
-import com.licong.notemap.web.vo.NoteVo;
+import com.licong.notemap.web.vo.GraphVo;
+import com.licong.notemap.web.vo.NodeVo;
 import com.licong.notemap.web.vo.LinkVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import java.util.*;
 
 @Slf4j
 @Controller
-public class MapController {
+public class GraphController {
 
     @Autowired
     private NoteService noteService;
@@ -29,24 +30,25 @@ public class MapController {
     public ModelAndView welcome() throws Exception {
 
         Iterable<Note> notes = noteService.findAll();
-        List<NoteVo> noteVos = new ArrayList<>();
-        Map<UUID, Note> uuidNoteHashMap = new HashMap<>();
+        List<NodeVo> nodeVos = new ArrayList<>();
         for (Note note : notes) {
-            noteVos.add(NoteVo.convert(note));
-            uuidNoteHashMap.put(note.getUuid(), note);
+            nodeVos.add(NodeVo.convert(note));
         }
 
         Iterable<Link> links = linkService.findAll();
         List<LinkVo> linkVos = new ArrayList<>();
         for (Link link : links) {
-            linkVos.add(LinkVo.convert(link, uuidNoteHashMap));
+            linkVos.add(LinkVo.convert(link));
         }
+
+        GraphVo graphVo = new GraphVo();
+        graphVo.setNodes(nodeVos);
+        graphVo.setLinks(linkVos);
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("welcome");
         ObjectMapper objectMapper = new ObjectMapper();
-        modelAndView.addObject("notes", objectMapper.writer().writeValueAsString(noteVos));
-        modelAndView.addObject("links", objectMapper.writer().writeValueAsString(linkVos));
+        modelAndView.addObject("graph", objectMapper.writer().writeValueAsString(graphVo));
         return modelAndView;
     }
 }

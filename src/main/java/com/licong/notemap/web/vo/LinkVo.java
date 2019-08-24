@@ -17,11 +17,11 @@ public class LinkVo {
     private String source;
     private String target;
 
-    public static LinkVo convert(Link link, Map<UUID, Note> noteMap) {
+    public static LinkVo convert(Link link) {
         LinkVo linkVo = new LinkVo();
         linkVo.setName(link.getTitle());
-        linkVo.setSource(noteMap.get(link.getStart()).getTitle());
-        linkVo.setTarget(noteMap.get(link.getEnd()).getTitle());
+        linkVo.setSource(link.getStart().getTitle());
+        linkVo.setTarget(link.getEnd().getTitle());
         return linkVo;
     }
 }

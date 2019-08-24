@@ -116,10 +116,6 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <finalName>notemap</finalName>
-    </build>
-
     <profiles>
         <profile>
             <id>home</id>
@@ -131,6 +127,12 @@
             <id>aliyun</id>
             <properties>
                 <env>aliyun</env>
+            </properties>
+        </profile>
+        <profile>
+            <id>company</id>
+            <properties>
+                <env>company</env>
             </properties>
         </profile>
     </profiles>
@@ -162,4 +164,5 @@
             </snapshots>
         </repository>
     </repositories>
+
 </project>

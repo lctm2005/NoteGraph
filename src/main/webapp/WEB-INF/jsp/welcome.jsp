@@ -11,108 +11,82 @@
 </head>
 <body>
 <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-<div id="main" style="height:800px"></div>
-<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+<div id="main" style="height:1100px"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.min.js"></script>
 </body>
 <script type="text/javascript">
-    require.config({
-        paths: {
-            echarts: 'http://echarts.baidu.com/build/dist'
-        }
+    var myChart = echarts.init(document.getElementById('main'));
+    graph =  ${graph};
+    graph.nodes.forEach(function (node) {
+        node.symbolSize = [55, 55];
     });
-    require(
-        [
-            'echarts',
-            'echarts/chart/line',   // 按需加载所需图表，如需动态类型切换功能，别忘了同时加载相应图表
-            'echarts/chart/bar',
-            'echarts/chart/force'
-        ],
-        function (ec) {
-            var myChart = ec.init(document.getElementById('main'));
-            var option = {
-                title: {
-                    text: '知识地图',
-                    subtext: '数据来Evernote',
-                    x: 'right',
-                    y: 'bottom'
+    var option = {
+        title: {
+            text: '知识地图',
+            subtext: '数据来Evernote',
+            left: 'right',
+            top: 'bottom'
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: function (params, ticket, callback) {
+                return params.data.name;
+            }
+        },
+        animationDuration: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series: [
+            {
+                name: 'Les Miserables',
+                type: 'graph',
+                layout: 'force',
+                data: graph.nodes,
+                links: graph.links,
+                roam: true,
+                draggable: true,
+                force: {
+                    initLayout: 'circular',
+                    repulsion: 500,
+                    gravity: 0.1,
+                    edgeLength: 120
                 },
-                tooltip: {
-                    trigger: 'item',
-                    formatter: function (params, ticket, callback) {
+                focusNodeAdjacency: true,
+                edgeSymbol: ['none', 'arrow'],
+                itemStyle: {
+                    color: '#f09662',
+                    borderColor: '#ea6712',
+                    borderWidth: 2
+                },
+                label: {
+                    show: true,
+                    position: 'inside',
+                    fontSize: 12,
+                    fontStyle: 'normal',
+                    color: '#ffffff',
+
+                },
+                edgeLabel: {
+                    show: true,
+                    position: 'middle',
+                    color: '#000',
+                    align: 'center',
+                    formatter: function (params) {
                         return params.data.name;
                     }
                 },
-                series: [
-                    {
-                        type: 'force',
-                        name: "笔记",
-                        symbol: 'rectangle',
-                        symbolSize: [60, 14],
-                        draggable: false,
-                        ribbonType: false,
-                        categories: [
-//                            {
-//                                name: '人物'
-//                            },
-//                            {
-//                                name: '家人'
-//                            },
-//                            {
-//                                name: '朋友'
-//                            }
-                        ],
-                        itemStyle: {
-                            normal: {
-                                label: {
-                                    show: true,
-                                    textStyle: {
-                                        color: '#fff'
-                                    }
-                                },
-                                nodeStyle: {
-                                    color: '#1e90ff',
-                                    brushType: 'both',
-                                    borderColor: 'rgba(255,215,0,0.4)',
-                                    borderWidth: 1
-                                },
-                                linkStyle: {
-                                    type: 'curve'
-                                }
-                            },
-                            emphasis: {
-                                label: {
-                                    show: false
-                                    // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
-                                },
-                                nodeStyle: {
-                                    //r: 30
-                                },
-                                linkStyle: {}
-                            }
-                        },
-                        useWorker: false,
-                        minRadius: 15,
-                        maxRadius: 25,
-                        gravity: 1.1,
-                        scaling: 1.1,
-                        roam: 'move',
-                        nodes: ${nodes},
-                        links: ${links},
+                lineStyle: {
+                    color: '#a6abb6',
+                    width: 1.5,
+                    curveness: 0
+                },
+                emphasis: {
+                    lineStyle: {
+                        width: 10
                     }
-                ]
-            }
-
-            function focus(param) {
-                var data = param.data;
-                if (data.source == undefined || data.target == undefined) {
-                    window.open(data.href)
                 }
             }
-
-            var ecConfig = require('echarts/config');
-            myChart.on(ecConfig.EVENT.CLICK, focus)
-            myChart.setOption(option);
-        }
-    );
+        ]
+    }
+    myChart.setOption(option);
 </script>
 </html>

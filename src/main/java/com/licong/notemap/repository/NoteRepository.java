@@ -11,7 +11,7 @@ import java.util.List;
  * @author Mark Angrish
  * @author Michael J. Simons
  */
-@RepositoryRestResource(collectionResourceRel = "knowledge", path = "knowledge")
+@RepositoryRestResource(collectionResourceRel = "note", path = "note")
 public interface NoteRepository extends Neo4jRepository<Note, Long> {
 
 }
