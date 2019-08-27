@@ -88,5 +88,10 @@
         ]
     }
     myChart.setOption(option);
+    myChart.on('click', function (params) {
+        if (params.dataType == 'node') {
+            window.open(params.data.href);
+        }
+    });
 </script>
 </html>

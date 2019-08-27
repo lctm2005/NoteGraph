@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <title>NoteForceView</title>
-    <link rel="stylesheet" href="editor.md/css/editormd.css"/>
+    <link rel="stylesheet" href="../editor.md/css/editormd.css"/>
     <!-- ECharts单文件引入 -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -25,15 +25,15 @@
 <div id="editor" class="container-fluid"></div>
 <button id="get-md-btn" type="button" class="btn btn-secondary  btn-lg btn-block">Save Note</button>
 <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-<script src="editor.md/editormd.js"></script>
+<script src="../editor.md/editormd.js"></script>
 <script type="text/javascript">
     $(function () {
         editor = editormd("editor", {
             width: "100%",
             height: 1000,
-            markdown: ${content},
+            markdown: "${content}",
             editorTheme: "pastel-on-dark",
-            path: "editor.md/lib/"
+            path: "../editor.md/lib/"
         });
     });
     $("#get-md-btn").bind('click', function () {

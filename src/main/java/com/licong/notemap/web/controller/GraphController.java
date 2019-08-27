@@ -3,6 +3,9 @@ package com.licong.notemap.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.licong.notemap.domain.Note;
 import com.licong.notemap.domain.Link;
+import com.licong.notemap.domain.NoteContent;
+import com.licong.notemap.repository.mongo.NoteContentRepository;
+import com.licong.notemap.service.NoteContentService;
 import com.licong.notemap.service.NoteService;
 import com.licong.notemap.service.LinkService;
 import com.licong.notemap.web.vo.GraphVo;
@@ -26,6 +29,9 @@ public class GraphController {
 
     @Autowired
     private LinkService linkService;
+
+    @Autowired
+    private NoteContentService noteContentService;
 
     @RequestMapping("/graph")
     public ModelAndView graph() throws Exception {
@@ -54,9 +60,14 @@ public class GraphController {
 
     @RequestMapping("/note/{note_id}")
     public ModelAndView note(@PathVariable("note_id") UUID noteId) throws Exception {
+        Optional<NoteContent> noteContentOptional = noteContentService.findById(noteId);
+        String content = "";
+        if (noteContentOptional.isPresent()) {
+            content = noteContentOptional.get().getMarkdown();
+        }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("note");
-        modelAndView.addObject("content", "");
+        modelAndView.addObject("content", content);
         return modelAndView;
     }
 

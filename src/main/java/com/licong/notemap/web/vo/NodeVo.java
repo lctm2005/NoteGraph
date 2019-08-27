@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class NodeVo {
 
-    private static final String HREF_PREFIX = "https://app.yinxiang.com/shard/s31/nl/5910137/";
+    private static final String HREF_PREFIX = "/note/";
     private String name;
     private String href;
     private Integer value;
