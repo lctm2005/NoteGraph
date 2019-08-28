@@ -90,7 +90,7 @@
     myChart.setOption(option);
     myChart.on('click', function (params) {
         if (params.dataType == 'node') {
-            window.open(params.data.href);
+            window.location.href = params.data.href;
         }
     });
 </script>

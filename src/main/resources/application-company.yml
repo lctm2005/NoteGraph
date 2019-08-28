@@ -5,7 +5,7 @@ spring:
       username: neo4j
       password: neo4j1
     mongodb:
-      uri: mongodb://47.95.115.246/note?autoConnectRetry=true
+      uri: mongodb://dev_mdb_standardexam:bG2AyltDEa6Z@m1.all.dev.mongod.sdp:34001,m3.all.dev.mongod.sdp:34001,m2.all.dev.mongod.sdp:34001/dev_mdb_standardexam?autoConnectRetry=true
 
 
 

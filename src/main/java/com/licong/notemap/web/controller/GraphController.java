@@ -67,6 +67,7 @@ public class GraphController {
         }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("note");
+        modelAndView.addObject("noteId", noteId);
         modelAndView.addObject("content", content);
         return modelAndView;
     }
