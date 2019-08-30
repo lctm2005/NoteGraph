@@ -1,19 +1,21 @@
 package com.licong.notemap.service.internal;
 
+import com.licong.notemap.repository.neo4j.Link;
+import com.licong.notemap.repository.neo4j.LinkRepository;
 import com.licong.notemap.service.domain.Note;
 import com.licong.notemap.repository.mongo.NoteContent;
 import com.licong.notemap.repository.neo4j.Node;
 import com.licong.notemap.repository.mongo.NoteContentRepository;
 import com.licong.notemap.repository.neo4j.NodeRepository;
 import com.licong.notemap.service.NoteService;
+import com.licong.notemap.util.CollectionUtils;
+import com.licong.notemap.util.NoteInnerLinkUtils;
+import com.licong.notemap.util.XmlUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -24,6 +26,9 @@ public class NoteServiceImpl implements NoteService {
 
     @Autowired
     private NoteContentRepository noteContentRepository;
+
+    @Autowired
+    private LinkRepository linkRepository;
 
     @Override
     public List<Note> findAll() {
@@ -78,6 +83,24 @@ public class NoteServiceImpl implements NoteService {
         }
         noteContent.setMarkdown(note.getContent());
         noteContentRepository.save(noteContent);
+
+        List<NoteInnerLinkUtils.NoteInnerLink> noteInnerLinks = NoteInnerLinkUtils.parse(note.getContent());
+        if (CollectionUtils.isNotEmpty(noteInnerLinks)) {
+            List<UUID> noteIds = CollectionUtils.getPropertyList(noteInnerLinks, "noteId");
+            List<Node> nodes = nodeRepository.findByUuidIn(noteIds);
+            Map<UUID, Node> nodeMap = CollectionUtils.getPropertyMap(nodes, "uuid");
+
+            List<Link> links = new ArrayList<>();
+            for (NoteInnerLinkUtils.NoteInnerLink noteInnerLink : noteInnerLinks) {
+                Link link = new Link();
+                link.setStart(node);
+                link.setEnd(nodeMap.get(noteInnerLink.getNoteId()));
+                link.setTitle(noteInnerLink.getTitle());
+                links.add(link);
+            }
+            linkRepository.saveAll(links);
+        }
+
         return note;
     }
 }
