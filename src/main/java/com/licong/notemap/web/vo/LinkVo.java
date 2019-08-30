@@ -1,11 +1,7 @@
 package com.licong.notemap.web.vo;
 
-import com.licong.notemap.domain.Note;
-import com.licong.notemap.domain.Link;
+import com.licong.notemap.repository.neo4j.Link;
 import lombok.Data;
-
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * {source : '丽萨-乔布斯', target : '乔布斯', weight : 1, name: '女儿'}

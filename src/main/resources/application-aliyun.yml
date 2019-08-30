@@ -1,7 +1,7 @@
 spring:
   data:
     neo4j:
-      uri: bolt://172.24.140.30:7687
+      uri: bolt://47.95.115.246:7687
       username: neo4j
       password: neo4j1
     mongodb:

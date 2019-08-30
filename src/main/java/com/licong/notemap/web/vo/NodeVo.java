@@ -1,6 +1,6 @@
 package com.licong.notemap.web.vo;
 
-import com.licong.notemap.domain.Note;
+import com.licong.notemap.service.domain.Note;
 import lombok.Data;
 
 /**
@@ -18,7 +18,7 @@ public class NodeVo {
     public static NodeVo convert(Note note) {
         NodeVo nodeVo = new NodeVo();
         nodeVo.setName(note.getTitle());
-        nodeVo.setHref(HREF_PREFIX + note.getUuid());
+        nodeVo.setHref(HREF_PREFIX + note.getId());
         nodeVo.setValue(note.getTitle().length() * 2);
         return nodeVo;
     }

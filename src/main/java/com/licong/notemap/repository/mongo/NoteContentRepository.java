@@ -1,6 +1,5 @@
 package com.licong.notemap.repository.mongo;
 
-import com.licong.notemap.domain.NoteContent;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 

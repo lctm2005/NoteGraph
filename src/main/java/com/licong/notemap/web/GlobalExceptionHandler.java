@@ -12,16 +12,14 @@ import java.io.PrintWriter;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    public static final String DEFAULT_ERROR_VIEW = "error";
 
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
-    public void defaultErrorHandler(HttpServletRequest request, HttpServletResponse response, Exception e) throws Exception {
+    public void defaultErrorHandler(HttpServletResponse response, Exception e) throws Exception {
         PrintWriter writer = null;
         try {
             writer = response.getWriter();
-            writer.append(e.getMessage());
-            e.printStackTrace();
+            e.printStackTrace(writer);
         } catch (IOException var10) {
             throw new RuntimeException(var10);
         } finally {

@@ -1,29 +1,49 @@
 <!DOCTYPE html>
-<%@ page language="java" isThreadSafe="true" pageEncoding="gbk" %>
+<%@ page language="java" isThreadSafe="true" pageEncoding="utf-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>NoteForceView</title>
-    <!-- EChartsµ•Œƒº˛“˝»Î -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>NoteGraph</title>
+
+    <link rel="stylesheet" href="http://47.95.115.246/font-awesome-4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- EChartsÂçïÊñá‰ª∂ÂºïÂÖ• -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
-<!-- Œ™ECharts◊º±∏“ª∏ˆæﬂ±∏¥Û–°£®øÌ∏ﬂ£©µƒDom -->
-<div id="main" style="height:1100px"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.min.js"></script>
-</body>
+
+<div class="container-fluid">
+    <!-- ËèúÂçïÊ†è -->
+    <div class="row">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Êñ∞Âª∫Á¨îËÆ∞" id="new_button">
+                <i class="fa fa-plus" aria-hidden="true"></i> Êñ∞Âª∫Á¨îËÆ∞
+            </button>
+        </div>
+    </div>
+    <!-- ‰∏∫EChartsÂáÜÂ§á‰∏Ä‰∏™ÂÖ∑Â§áÂ§ßÂ∞èÔºàÂÆΩÈ´òÔºâÁöÑDom -->
+    <div id="graph"></div>
+</div>
+
 <script type="text/javascript">
-    var myChart = echarts.init(document.getElementById('main'));
+    $('#graph').height($(window).height() - 50);
+
+    var myChart = echarts.init(document.getElementById('graph'));
     graph =  ${graph};
     graph.nodes.forEach(function (node) {
         node.symbolSize = [55, 55];
     });
     var option = {
         title: {
-            text: '÷™ ∂µÿÕº',
-            subtext: ' ˝æ›¿¥Evernote',
+            text: 'Áü•ËØÜÂú∞Âõæ',
+            subtext: 'Êï∞ÊçÆÊù•Evernote',
             left: 'right',
             top: 'bottom'
         },
@@ -37,13 +57,13 @@
         animationEasingUpdate: 'quinticInOut',
         series: [
             {
-                name: 'Les Miserables',
+                name: 'Node Map',
                 type: 'graph',
                 layout: 'force',
                 data: graph.nodes,
                 links: graph.links,
                 roam: true,
-                draggable: true,
+                draggable: false,
                 force: {
                     initLayout: 'circular',
                     repulsion: 500,
@@ -59,9 +79,10 @@
                 },
                 label: {
                     show: true,
-                    position: 'inside',
+                    position: 'insideLeft',
                     fontSize: 12,
                     fontStyle: 'normal',
+                    frontFamily: 'Microsoft YaHei',
                     color: '#ffffff',
 
                 },
@@ -87,11 +108,21 @@
             }
         ]
     }
-    myChart.setOption(option);
+    myChart.setOption(option, true);
     myChart.on('click', function (params) {
         if (params.dataType == 'node') {
-            window.location.href = params.data.href;
+            window.open(params.data.href);
         }
     });
+
+    $("#new_button").bind('click', function () {
+        window.open("/note");
+    });
+
+    $(window).resize(function () {          //ÂΩìÊµèËßàÂô®Â§ßÂ∞èÂèòÂåñÊó∂
+        $('#graph').height($(window).height() - 50);
+        myChart.resize();
+    });
 </script>
+</body>
 </html>
