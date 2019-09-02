@@ -6,6 +6,9 @@ import org.neo4j.ogm.annotation.*;
 @Data
 @RelationshipEntity
 public class Link {
+
+    public static final String TYPE = "LINK";
+
     @Id
     @GeneratedValue
     private Long id;
@@ -18,4 +21,6 @@ public class Link {
 
     @EndNode
     private Node end;
+
+
 }

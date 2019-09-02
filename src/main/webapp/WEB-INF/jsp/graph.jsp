@@ -63,10 +63,10 @@
                 data: graph.nodes,
                 links: graph.links,
                 roam: true,
-                draggable: false,
+                draggable: true,
                 force: {
                     initLayout: 'circular',
-                    repulsion: 500,
+                    repulsion: 1500,
                     gravity: 0.1,
                     edgeLength: 120
                 },

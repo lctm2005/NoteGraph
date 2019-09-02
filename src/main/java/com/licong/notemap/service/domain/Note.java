@@ -16,13 +16,13 @@ public class Note {
 
 
     public Note(Node node) {
-        this.id = node.getUuid();
+        this.id = UUID.fromString(node.getUniqueId());
         this.title = node.getTitle();
         this.content = "";
     }
 
     public Note(Node node, NoteContent noteContent) {
-        this.id = node.getUuid();
+        this.id = UUID.fromString(node.getUniqueId());
         this.title = node.getTitle();
         this.content = null == noteContent ? "" : noteContent.getMarkdown();
     }

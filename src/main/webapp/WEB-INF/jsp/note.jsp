@@ -63,7 +63,7 @@
                     editor = editormd("editor", {
                         markdown: response.data.content,
                         editorTheme: "pastel-on-dark",
-                        path: "../editor.md/lib/"
+                        path: "http://47.95.115.246/editor.md/lib/"
                     });
                 })
                 .catch(error => {
@@ -75,7 +75,7 @@
             editor = editormd("editor", {
                 markdown: "",
                 editorTheme: "pastel-on-dark",
-                path: "../editor.md/lib/"
+                path: "http://47.95.115.246/editor.md/lib/"
             });
         }
     });
@@ -89,8 +89,8 @@
             axios.post('/api/note', {
                 title: $('#title').val(),
                 content: editor.getMarkdown()
-            }).then(response => (noteId = response.data.id)
-                .catch(response => (console(response))));
+            }).then(response => (noteId = response.data.id))
+                .catch(response => (console(response)));
         } else {
             axios.put('/api/note/' + noteId, {
                 title: $('#title').val(),

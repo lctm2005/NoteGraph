@@ -1,21 +1,18 @@
 package com.licong.notemap.service.internal;
 
-import com.licong.notemap.repository.neo4j.Link;
-import com.licong.notemap.repository.neo4j.LinkRepository;
-import com.licong.notemap.service.domain.Note;
 import com.licong.notemap.repository.mongo.NoteContent;
-import com.licong.notemap.repository.neo4j.Node;
 import com.licong.notemap.repository.mongo.NoteContentRepository;
-import com.licong.notemap.repository.neo4j.NodeRepository;
+import com.licong.notemap.repository.neo4j.*;
 import com.licong.notemap.service.NoteService;
+import com.licong.notemap.service.domain.Note;
 import com.licong.notemap.util.CollectionUtils;
 import com.licong.notemap.util.NoteInnerLinkUtils;
-import com.licong.notemap.util.XmlUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -42,7 +39,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public Note findById(UUID noteId) {
-        Optional<Node> nodeOptional = nodeRepository.findByUuid(noteId);
+        Optional<Node> nodeOptional = nodeRepository.findByUniqueId(noteId);
         if (!nodeOptional.isPresent()) {
             return null;
         }
@@ -61,14 +58,14 @@ public class NoteServiceImpl implements NoteService {
             note.generateId();
             nodeOptional = Optional.ofNullable(null);
         } else {
-            nodeOptional = nodeRepository.findByUuid(note.getId());
+            nodeOptional = nodeRepository.findByUniqueId(note.getId());
         }
         Node node;
         if (nodeOptional.isPresent()) {
             node = nodeOptional.get();
         } else {
             node = new Node();
-            node.setUuid(note.getId());
+            node.setUniqueId(note.getId().toString());
         }
         node.setTitle(note.getTitle());
         nodeRepository.save(node);
@@ -86,9 +83,10 @@ public class NoteServiceImpl implements NoteService {
 
         List<NoteInnerLinkUtils.NoteInnerLink> noteInnerLinks = NoteInnerLinkUtils.parse(note.getContent());
         if (CollectionUtils.isNotEmpty(noteInnerLinks)) {
-            List<UUID> noteIds = CollectionUtils.getPropertyList(noteInnerLinks, "noteId");
-            List<Node> nodes = nodeRepository.findByUuidIn(noteIds);
-            Map<UUID, Node> nodeMap = CollectionUtils.getPropertyMap(nodes, "uuid");
+            List<String> noteIds = noteInnerLinks.stream().map(noteInnerLink -> noteInnerLink.getNoteId().toString()).collect(Collectors.toList());
+            List<Node> nodes = nodeRepository.findByUniqueIdIn(noteIds);
+
+            Map<UUID, Node> nodeMap = nodes.stream().collect(Collectors.toMap(n -> UUID.fromString(n.getUniqueId()), (n) -> n));
 
             List<Link> links = new ArrayList<>();
             for (NoteInnerLinkUtils.NoteInnerLink noteInnerLink : noteInnerLinks) {
@@ -98,9 +96,9 @@ public class NoteServiceImpl implements NoteService {
                 link.setTitle(noteInnerLink.getTitle());
                 links.add(link);
             }
-            linkRepository.saveAll(links);
+            // 判断新增还是更新
+            linkRepository.mergeAll(links);
         }
-
         return note;
     }
 }
