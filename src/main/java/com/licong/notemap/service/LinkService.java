@@ -1,10 +1,10 @@
 package com.licong.notemap.service;
 
-import com.licong.notemap.repository.neo4j.Link;
+import com.licong.notemap.service.domain.NoteLink;
 
 import java.util.List;
 
 public interface LinkService {
 
-    List<Link> findAll();
+    List<NoteLink> findAll();
 }

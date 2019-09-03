@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Data
 @NoArgsConstructor
-public class ResponseErrorMessage {
+public class ErrorMessage {
 
     private String code;
     private String message;

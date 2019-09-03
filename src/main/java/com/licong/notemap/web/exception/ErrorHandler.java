@@ -16,7 +16,7 @@ import java.io.StringWriter;
 
 @Slf4j
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class ErrorHandler {
 
     private static final String MESSAGE = "INTERNAL_SERVER_ERROR";
     private static final String CODE = "500";
@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public void defaultErrorHandler(HttpServletRequest request, HttpServletResponse response, Throwable throwable) throws Exception {
-        ResponseEntity<ResponseErrorMessage> entity = process(throwable, request);
+        ResponseEntity<ErrorMessage> entity = process(throwable, request);
         try {
             log.error(entity.getBody().toString(), throwable);
 
@@ -41,17 +41,17 @@ public class GlobalExceptionHandler {
         }
     }
 
-    public ResponseEntity<ResponseErrorMessage> process(Throwable throwable, HttpServletRequest request) {
+    public ResponseEntity<ErrorMessage> process(Throwable throwable, HttpServletRequest request) {
         Assert.notNull(throwable, "throwable");
         Assert.notNull(request, "request");
 
-        ResponseErrorMessage errorMessage = getBody(throwable, request);
+        ErrorMessage errorMessage = getBody(throwable, request);
         HttpStatus httpStatus = getHttpStatus(throwable, request);
         return new ResponseEntity<>(errorMessage, httpStatus);
     }
 
-    protected ResponseErrorMessage getBody(Throwable throwable, HttpServletRequest request) {
-        ResponseErrorMessage errorMessage = new ResponseErrorMessage();
+    protected ErrorMessage getBody(Throwable throwable, HttpServletRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage();
         errorMessage.setMessage(MESSAGE);
         errorMessage.setDetail(appendStackTrace(null, throwable));
         errorMessage.setCode(getCode(throwable, request));

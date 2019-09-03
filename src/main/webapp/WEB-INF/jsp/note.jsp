@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="http://47.95.115.246/editor.md/css/editormd.css"/>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
+
 
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
@@ -20,6 +22,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
     <script src="http://47.95.115.246/editor.md/editormd.js"></script>
 </head>
@@ -40,16 +43,29 @@
     <!-- 保存按钮 -->
     <button id="get-md-btn" type="button" class="btn btn-secondary  btn-lg btn-block">Save Note
     </button>
-    <!-- 保存提示 -->
-    <div id="success-alert" class="alert alert-success fade">
-        Save Successfully
-    </div>
-    <div id="error-alert" class="alert alert-danger fade">
-        Network Error
-    </div>
 </div>
 
+
 <script type="text/javascript">
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "1000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
     var noteId = "${note_id}";
     var editor;
 
@@ -91,29 +107,21 @@
                 content: editor.getMarkdown()
             }).then(response => {
                 noteId = response.data.id;
-                $('#get-md-btn').fadeToggle(function () {
-                    $("#success-alert").toggleClass("fade show");
-                });
-                setTimeout(function () {
-                    $("#success-alert").toggleClass("fade show");
-                    $('#get-md-btn').fadeToggle();
-                }, 1000);
-            })
-                .catch(response => (console(response)));
+                toastr.success('保存成功');
+            }).catch(response => {
+                console.log(response);
+                toastr.error('保存失败');
+            });
         } else {
             axios.put('/api/note/' + noteId, {
                 title: $('#title').val(),
                 content: editor.getMarkdown()
             }).then(response => {
+                toastr.success('保存成功');
+            }).catch(response => {
                 console.log(response);
-                $('#get-md-btn').fadeToggle(function () {
-                    $("#success-alert").toggleClass("fade show");
-                });
-                setTimeout(function () {
-                    $("#success-alert").toggleClass("fade show");
-                    $('#get-md-btn').fadeToggle();
-                }, 1000);
-            }).catch(response => (console(response)));
+                toastr.error('保存失败');
+            });
         }
     });
 
