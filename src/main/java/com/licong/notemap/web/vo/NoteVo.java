@@ -9,6 +9,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class NoteVo {
+
     private UUID id;
     private String title;
     private String content;

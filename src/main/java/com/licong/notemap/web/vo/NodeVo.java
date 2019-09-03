@@ -17,7 +17,11 @@ public class NodeVo {
 
     public static NodeVo convert(Note note) {
         NodeVo nodeVo = new NodeVo();
-        nodeVo.setName(note.getTitle());
+        StringBuilder stringBuilder = new StringBuilder(note.getTitle());
+        if (stringBuilder.length() > 6) {
+            stringBuilder.insert(6, "\n");
+        }
+        nodeVo.setName(stringBuilder.toString());
         nodeVo.setHref(HREF_PREFIX + note.getId());
         nodeVo.setValue(note.getTitle().length() * 2);
         return nodeVo;

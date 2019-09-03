@@ -89,13 +89,31 @@
             axios.post('/api/note', {
                 title: $('#title').val(),
                 content: editor.getMarkdown()
-            }).then(response => (noteId = response.data.id))
+            }).then(response => {
+                noteId = response.data.id;
+                $('#get-md-btn').fadeToggle(function () {
+                    $("#success-alert").toggleClass("fade show");
+                });
+                setTimeout(function () {
+                    $("#success-alert").toggleClass("fade show");
+                    $('#get-md-btn').fadeToggle();
+                }, 1000);
+            })
                 .catch(response => (console(response)));
         } else {
             axios.put('/api/note/' + noteId, {
                 title: $('#title').val(),
                 content: editor.getMarkdown()
-            }).then(response => (console.log(response))).catch(response => (console(response)));
+            }).then(response => {
+                console.log(response);
+                $('#get-md-btn').fadeToggle(function () {
+                    $("#success-alert").toggleClass("fade show");
+                });
+                setTimeout(function () {
+                    $("#success-alert").toggleClass("fade show");
+                    $('#get-md-btn').fadeToggle();
+                }, 1000);
+            }).catch(response => (console(response)));
         }
     });
 

@@ -79,12 +79,12 @@
                 },
                 label: {
                     show: true,
-                    position: 'insideLeft',
+                    position: 'inside',
                     fontSize: 12,
                     fontStyle: 'normal',
                     frontFamily: 'Microsoft YaHei',
                     color: '#ffffff',
-
+                    align: 'center'
                 },
                 edgeLabel: {
                     show: true,
