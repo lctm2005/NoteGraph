@@ -139,7 +139,7 @@
     });
 
     $('#delete-note-button').click(function (event) {
-        toastr["info"]("<div class=\"btn-group\" role=\"toolbar\"><button id=\"confirm-delete-button\", type=\"button\" class=\"btn btn-danger\" onclick=\"deleteNote()\">Yes</button><button type=\"button\" class=\"btn btn-primary\">No</button></div>", "确认是否删除");
+        toastr["info"]("<div class=\"btn-group\" ><button id=\"confirm-delete-button\", type=\"button\" class=\"btn btn-primary\" onclick=\"deleteNote()\">Yes</button><button type=\"button\" class=\"btn btn-light\">No</button></div>", "确认是否删除");
     });
 
 
