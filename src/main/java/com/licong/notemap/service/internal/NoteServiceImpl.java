@@ -38,16 +38,16 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Note findById(UUID noteId) {
+    public Optional<Note> findById(UUID noteId) {
         Optional<Node> nodeOptional = nodeRepository.findByUniqueId(noteId);
         if (!nodeOptional.isPresent()) {
-            return null;
+            return Optional.ofNullable(null);
         }
         Optional<NoteContent> noteContentOptional = noteContentRepository.findById(noteId);
         if (noteContentOptional.isPresent()) {
-            return new Note(nodeOptional.get(), noteContentOptional.get());
+            return Optional.of(new Note(nodeOptional.get(), noteContentOptional.get()));
         } else {
-            return new Note(nodeOptional.get());
+            return Optional.of(new Note(nodeOptional.get()));
         }
     }
 
@@ -100,5 +100,20 @@ public class NoteServiceImpl implements NoteService {
             linkRepository.mergeAll(links);
         }
         return note;
+    }
+
+    @Override
+    public Optional<Note> delete(UUID noteId) {
+        Optional<NoteContent> noteContentOptional = noteContentRepository.findById(noteId);
+        if (noteContentOptional.isPresent()) {
+            noteContentRepository.delete(noteContentOptional.get());
+        }
+        Optional<Node> nodeOptional = nodeRepository.findByUniqueId(noteId);
+        if (nodeOptional.isPresent()) {
+            nodeRepository.delete(nodeOptional.get());
+            return Optional.ofNullable(null);
+        } else {
+            return Optional.of(new Note(nodeOptional.get()));
+        }
     }
 }
