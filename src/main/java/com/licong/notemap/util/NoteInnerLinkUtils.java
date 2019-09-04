@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,6 +20,9 @@ public abstract class NoteInnerLinkUtils {
 
 
     public static List<NoteInnerLink> parse(String content) {
+        if (StringUtils.isEmpty(content)) {
+            return Collections.emptyList();
+        }
         List<NoteInnerLink> result = new ArrayList<>();
         String[] links = content.split(START);
         if (ArrayUtils.isNotEmpty(links)) {

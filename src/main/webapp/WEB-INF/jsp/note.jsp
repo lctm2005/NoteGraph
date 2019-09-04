@@ -106,7 +106,7 @@
     function deleteNote() {
         axios.delete('/api/note/' + noteId)
             .then(response => {
-//                window.close();
+                window.close();
             }).catch(response => {
             console.log(response);
             toastr.error('删除失败');

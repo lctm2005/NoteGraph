@@ -53,6 +53,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public Note save(Note note) {
+        //更新标题
         Optional<Node> nodeOptional;
         if (null == note.getId()) {
             note.generateId();
@@ -78,42 +79,58 @@ public class NoteServiceImpl implements NoteService {
             noteContent = new NoteContent();
             noteContent.setUuid(note.getId());
         }
+
+        // 删除旧关系
+        List<Link> oldlinks = extractLinks(node, noteContent);
+        linkRepository.deleteAll(oldlinks);
+
+        // 更新内容
         noteContent.setMarkdown(note.getContent());
         noteContentRepository.save(noteContent);
 
-        List<NoteInnerLinkUtils.NoteInnerLink> noteInnerLinks = NoteInnerLinkUtils.parse(note.getContent());
-        if (CollectionUtils.isNotEmpty(noteInnerLinks)) {
-            List<String> noteIds = noteInnerLinks.stream().map(noteInnerLink -> noteInnerLink.getNoteId().toString()).collect(Collectors.toList());
-            List<Node> nodes = nodeRepository.findByUniqueIdIn(noteIds);
-
-            Map<UUID, Node> nodeMap = nodes.stream().collect(Collectors.toMap(n -> UUID.fromString(n.getUniqueId()), (n) -> n));
-
-            List<Link> links = new ArrayList<>();
-            for (NoteInnerLinkUtils.NoteInnerLink noteInnerLink : noteInnerLinks) {
-                Link link = new Link();
-                link.setStart(node);
-                link.setEnd(nodeMap.get(noteInnerLink.getNoteId()));
-                link.setTitle(noteInnerLink.getTitle());
-                links.add(link);
-            }
-            // 判断新增还是更新
-            linkRepository.mergeAll(links);
-        }
+        // 保存新关系
+        List<Link> links = extractLinks(node, noteContent);
+        linkRepository.mergeAll(links);
         return note;
+    }
+
+
+    private List<Link> extractLinks(Node node, NoteContent noteContent) {
+        List<NoteInnerLinkUtils.NoteInnerLink> noteInnerLinks = NoteInnerLinkUtils.parse(noteContent.getMarkdown());
+        if (CollectionUtils.isEmpty(noteInnerLinks)) {
+            return Collections.emptyList();
+        }
+        List<String> noteIds = noteInnerLinks.stream().map(noteInnerLink -> noteInnerLink.getNoteId().toString()).collect(Collectors.toList());
+        List<Node> nodes = nodeRepository.findByUniqueIdIn(noteIds);
+
+        Map<UUID, Node> nodeMap = nodes.stream().collect(Collectors.toMap(n -> UUID.fromString(n.getUniqueId()), (n) -> n));
+
+        List<Link> links = new ArrayList<>();
+        for (NoteInnerLinkUtils.NoteInnerLink noteInnerLink : noteInnerLinks) {
+            Link link = new Link();
+            link.setStart(node);
+            link.setEnd(nodeMap.get(noteInnerLink.getNoteId()));
+            link.setTitle(noteInnerLink.getTitle());
+            links.add(link);
+        }
+        return links;
     }
 
     @Override
     public Optional<Note> delete(UUID noteId) {
+        Optional<Node> nodeOptional = nodeRepository.findByUniqueId(noteId);
+        if (!nodeOptional.isPresent()) {
+            return Optional.ofNullable(null);
+        }
         Optional<NoteContent> noteContentOptional = noteContentRepository.findById(noteId);
         if (noteContentOptional.isPresent()) {
-            noteContentRepository.delete(noteContentOptional.get());
+            NoteContent noteContent = noteContentOptional.get();
+            List<Link> links = extractLinks(nodeOptional.get(), noteContent);
+            // 删关系
+            linkRepository.deleteAll(links);
+            noteContentRepository.delete(noteContent);
         }
-        Optional<Node> nodeOptional = nodeRepository.findByUniqueId(noteId);
-        if (nodeOptional.isPresent()) {
-            nodeRepository.delete(nodeOptional.get());
-            return Optional.ofNullable(null);
-        } else {
-            return Optional.of(new Note(nodeOptional.get()));
-        }
+        nodeRepository.delete(nodeOptional.get());
+        return Optional.of(new Note(nodeOptional.get()));
     }
 }
