@@ -44,7 +44,9 @@
     <!-- 笔记内容 -->
     <div id="editor" class="container-fluid"></div>
     <!-- 保存按钮 -->
-    <button id="save-note-button" type="button" class="btn btn-secondary  btn-lg btn-block"><i class="fa fa-floppy-o" aria-hidden="true"></i> 保存笔记
+    <button id="save-note-button" type="button" class="btn btn-secondary  btn-lg btn-block"><i class="fa fa-floppy-o"
+                                                                                               aria-hidden="true"></i>
+        保存笔记
     </button>
 </div>
 
@@ -113,14 +115,17 @@
         });
     }
 
-    $('#save-note-button').click(function (event) {
+    function saveNote() {
+        if (typeof(editor) == "undefined") {
+            return;
+        }
         if ("" == noteId) {
             axios.post('/api/note', {
                 title: $('#title').val(),
                 content: editor.getMarkdown()
             }).then(response => {
-                noteId = response.data.id;
-                toastr.success('保存成功');
+                //重定向
+                window.open("'/api/note/' + noteId");
             }).catch(response => {
                 console.log(response);
                 toastr.error('保存失败');
@@ -136,20 +141,25 @@
                 toastr.error('保存失败');
             });
         }
+    }
+
+    $('#save-note-button').click(function (event) {
+        saveNote();
     });
 
     $('#delete-note-button').click(function (event) {
         toastr["info"]("<div class=\"btn-group\" ><button id=\"confirm-delete-button\", type=\"button\" class=\"btn btn-primary\" onclick=\"deleteNote()\">Yes</button><button type=\"button\" class=\"btn btn-light\">No</button></div>", "确认是否删除");
     });
 
+    setInterval(saveNote(), 30 * 1000);
 
-    $(window).resize(function () {          //当浏览器大小变化时
+    //当浏览器大小变化时
+    $(window).resize(function () {
         heightAdaptive();
         if (typeof(editor) != "undefined") {
             editor.resize();
         }
     });
-
 </script>
 
 </body>

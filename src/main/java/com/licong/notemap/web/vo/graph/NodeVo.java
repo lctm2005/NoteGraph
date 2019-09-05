@@ -1,4 +1,4 @@
-package com.licong.notemap.web.vo;
+package com.licong.notemap.web.vo.graph;
 
 import com.licong.notemap.service.domain.Note;
 import lombok.Data;
@@ -19,7 +19,7 @@ public class NodeVo {
         NodeVo nodeVo = new NodeVo();
         StringBuilder stringBuilder = new StringBuilder(note.getTitle());
         if (stringBuilder.length() > 6) {
-            stringBuilder.insert(6, "\n");
+            stringBuilder.insert(5, "\n");
         }
         nodeVo.setName(stringBuilder.toString());
         nodeVo.setHref(HREF_PREFIX + note.getId());

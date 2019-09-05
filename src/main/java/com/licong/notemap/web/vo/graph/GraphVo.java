@@ -1,4 +1,4 @@
-package com.licong.notemap.web.vo;
+package com.licong.notemap.web.vo.graph;
 
 import lombok.Data;
 

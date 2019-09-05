@@ -55,6 +55,7 @@
         },
         animationDuration: 1500,
         animationEasingUpdate: 'quinticInOut',
+        backgroundColor: '#a6abb6',
         series: [
             {
                 name: 'Node Map',
@@ -96,7 +97,7 @@
                     }
                 },
                 lineStyle: {
-                    color: '#a6abb6',
+                    color: '#000000',
                     width: 1.5,
                     curveness: 0
                 },

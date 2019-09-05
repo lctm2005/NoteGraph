@@ -2,8 +2,8 @@ package com.licong.notemap.web.controller;
 
 import com.licong.notemap.service.NoteService;
 import com.licong.notemap.service.domain.Note;
-import com.licong.notemap.web.vo.NoteParam;
-import com.licong.notemap.web.vo.NoteVo;
+import com.licong.notemap.web.vo.note.NoteParam;
+import com.licong.notemap.web.vo.note.NoteVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;

@@ -1,6 +1,5 @@
-package com.licong.notemap.web.vo;
+package com.licong.notemap.web.vo.graph;
 
-import com.licong.notemap.repository.neo4j.Link;
 import com.licong.notemap.service.domain.NoteLink;
 import lombok.Data;
 
