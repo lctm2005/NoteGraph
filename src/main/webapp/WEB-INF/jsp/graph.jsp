@@ -55,7 +55,7 @@
         },
         animationDuration: 1500,
         animationEasingUpdate: 'quinticInOut',
-        backgroundColor: '#a6abb6',
+        backgroundColor: '#ffffff',
         series: [
             {
                 name: 'Node Map',
@@ -84,20 +84,20 @@
                     fontSize: 12,
                     fontStyle: 'normal',
                     frontFamily: 'Microsoft YaHei',
-                    color: '#ffffff',
+                    color: '#000000',
                     align: 'center'
                 },
                 edgeLabel: {
                     show: true,
                     position: 'middle',
-                    color: '#000',
+                    color: '#000000',
                     align: 'center',
                     formatter: function (params) {
                         return params.data.name;
                     }
                 },
                 lineStyle: {
-                    color: '#000000',
+                    color: '#a6abb6',
                     width: 1.5,
                     curveness: 0
                 },

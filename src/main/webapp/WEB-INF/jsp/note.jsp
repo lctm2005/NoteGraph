@@ -86,6 +86,8 @@
                         editorTheme: "pastel-on-dark",
                         path: "http://47.95.115.246/editor.md/lib/"
                     });
+                    // 30s 自动保存笔记
+                    setInterval(saveNote(), 30 * 1000);
                 })
                 .catch(error => {
                     console.log(error)
@@ -116,16 +118,13 @@
     }
 
     function saveNote() {
-        if (typeof(editor) == "undefined") {
-            return;
-        }
         if ("" == noteId) {
             axios.post('/api/note', {
                 title: $('#title').val(),
                 content: editor.getMarkdown()
             }).then(response => {
                 //重定向
-                window.open("'/api/note/' + noteId");
+                window.navigate('/note/' + response.data.id);
             }).catch(response => {
                 console.log(response);
                 toastr.error('保存失败');
@@ -151,13 +150,17 @@
         toastr["info"]("<div class=\"btn-group\" ><button id=\"confirm-delete-button\", type=\"button\" class=\"btn btn-primary\" onclick=\"deleteNote()\">Yes</button><button type=\"button\" class=\"btn btn-light\">No</button></div>", "确认是否删除");
     });
 
-    setInterval(saveNote(), 30 * 1000);
-
     //当浏览器大小变化时
     $(window).resize(function () {
         heightAdaptive();
         if (typeof(editor) != "undefined") {
             editor.resize();
+        }
+    });
+
+    $('#main').keydown(function (e) {
+        if (e.ctrlKey && e.keyCode == 13) {
+            saveNote();
         }
     });
 </script>

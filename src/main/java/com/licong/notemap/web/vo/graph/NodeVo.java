@@ -18,7 +18,7 @@ public class NodeVo {
     public static NodeVo convert(Note note) {
         NodeVo nodeVo = new NodeVo();
         StringBuilder stringBuilder = new StringBuilder(note.getTitle());
-        if (stringBuilder.length() > 6) {
+        if (stringBuilder.length() > 5) {
             stringBuilder.insert(5, "\n");
         }
         nodeVo.setName(stringBuilder.toString());
