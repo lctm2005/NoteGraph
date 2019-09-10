@@ -9,44 +9,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>NoteGraph</title>
 
+    <!-- Font awesome -->
     <link rel="stylesheet" href="http://47.95.115.246/font-awesome-4.7.0/css/font-awesome.min.css"/>
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Toastr -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
 
-    <!-- ECharts单文件引入 -->
+    <!-- ECharts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Axios -->
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 </head>
 <body>
 
 <div class="container-fluid">
-    <!-- 菜单栏 -->
-    <div class="row">
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="新建笔记" id="new_button">
-                <i class="fa fa-plus" aria-hidden="true"></i> 新建笔记
-            </button>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">知识地图</a>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="bottom"
+                            title="新建笔记"
+                            id="new_button">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i> 新建笔记
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip"
+                            data-placement="bottom" title="编辑笔记"
+                            id="edit_button">
+                        <i class="fa fa-pencil" aria-hidden="true"></i> 编辑笔记
+                    </button>
+                    <button type="button" class="btn btn-outline-danger" data-toggle="tooltip" data-placement="bottom"
+                            title="删除笔记"
+                            id="delete_button">
+                        <i class="fa fa-trash" aria-hidden="true"></i> 删除笔记
+                    </button>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+            </form>
         </div>
-    </div>
+    </nav>
+    <div class="row"></div>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-    <div id="graph"></div>
+    <div id="graph" ></div>
+
 </div>
 
 <script type="text/javascript">
-    $('#graph').height($(window).height() - 50);
 
+    /**
+     * 初始化提示框
+     */
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "3000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+
+    /**
+     * 自适应宽高
+     */
+    function adjustGraphWithHeight() {
+        $('#graph').height($(window).height() - 60);
+        $('#graph').width($(window).width() - 30);
+    }
+
+
+    /**
+     * 初始化地图高度
+     */
+    adjustGraphWithHeight();
+
+    /**
+     * 创建地图
+     */
     var myChart = echarts.init(document.getElementById('graph'));
     graph =  ${graph};
     graph.nodes.forEach(function (node) {
         node.symbolSize = [55, 55];
     });
     var option = {
-        title: {
-            text: '知识地图',
-            subtext: '数据来Evernote',
-            left: 'right',
-            top: 'bottom'
-        },
         tooltip: {
             trigger: 'item',
             formatter: function (params, ticket, callback) {
@@ -55,7 +117,7 @@
         },
         animationDuration: 1500,
         animationEasingUpdate: 'quinticInOut',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#353a40',
         series: [
             {
                 name: 'Node Map',
@@ -63,8 +125,9 @@
                 layout: 'force',
                 data: graph.nodes,
                 links: graph.links,
-                roam: true,
+                roam: false,
                 draggable: true,
+                backgroundColor: '#f5ff10',
                 force: {
                     initLayout: 'circular',
                     repulsion: 1500,
@@ -84,13 +147,13 @@
                     fontSize: 12,
                     fontStyle: 'normal',
                     frontFamily: 'Microsoft YaHei',
-                    color: '#000000',
+                    color: '#ffffff',
                     align: 'center'
                 },
                 edgeLabel: {
                     show: true,
                     position: 'middle',
-                    color: '#000000',
+                    color: '#ffffff',
                     align: 'center',
                     formatter: function (params) {
                         return params.data.name;
@@ -110,20 +173,127 @@
         ]
     }
     myChart.setOption(option, true);
+
+    /**
+     * 地图自适应浏览器高度
+     */
+    $(window).resize(function () {
+        adjustGraphWithHeight();
+        myChart.resize();
+    });
+
+    /**
+     * 选中节点
+     */
     myChart.on('click', function (params) {
         if (params.dataType == 'node') {
-            window.open(params.data.href);
+            selectEle(params);
         }
     });
 
+
+    /**
+     * 选中高亮，再次选中取消高亮
+     */
+    var emptyNode = {
+        noteId: null,
+        name: null,
+        href: null,
+        value: null
+    }
+    var selectNode = emptyNode;
+
+    function selectEle(params) {
+        let options = myChart.getOption()
+        let nodesOption = options.series[0].data
+        let name = params.data.name
+        for (let m in nodesOption) {
+            nodesOption[m].itemStyle = {}
+            if (nodesOption[m].name === name) {
+                console.log(nodesOption[m])
+                if (name === selectNode.name) {
+                    // 再次选中，取消选择了
+                    normalize(nodesOption[m]);
+                    selectNode = emptyNode;
+                } else {
+                    highlight(nodesOption[m]);
+                    selectNode = params.data;
+                }
+            } else {
+                normalize(nodesOption[m]);
+            }
+        }
+        myChart.setOption(options);
+    }
+
+    function normalize(nodeOption) {
+        nodeOption.label = {color: '#ffffff'}
+        nodeOption.itemStyle.color = '#f09662'
+        nodeOption.itemStyle.borderColor = '#ea6712'
+        nodeOption.itemStyle.shadowBlur = 0
+    }
+
+    function highlight(nodeOption) {
+        nodeOption.label = {color: '#ffffff'}
+        nodeOption.itemStyle.color = '#02b610'
+        nodeOption.itemStyle.borderColor = '#1c9156'
+        nodeOption.itemStyle.shadowColor = '#2cff77'
+        nodeOption.itemStyle.shadowBlur = 10
+    }
+
+    /**
+     * 新建笔记
+     */
     $("#new_button").bind('click', function () {
-        window.open("/note");
+        axios.post('/api/note', {
+            title: '无标题笔记',
+            content: ''
+        }).then(response => {
+            // 打开笔记编辑也
+            window.open('/note/' + response.data.id);
+            location.reload();
+        }).catch(response => {
+            console.log(response);
+            toastr.error('创建失败');
+        });
     });
 
-    $(window).resize(function () {          //当浏览器大小变化时
-        $('#graph').height($(window).height() - 50);
-        myChart.resize();
+    /**
+     * 编辑笔记
+     */
+    $("#edit_button").bind('click', function () {
+        if (emptyNode == selectNode) {
+            toastr.warning('请选择节点');
+            return;
+        }
+        window.open(selectNode.href);
     });
+
+    /**
+     * 删除笔记
+     */
+    $("#delete_button").bind('click', function () {
+        if (emptyNode == selectNode) {
+            toastr.warning('请选择节点');
+            return;
+        }
+        toastr["info"]("<div class=\"btn-group\" ><button id=\"confirm-delete-button\", type=\"button\" class=\"btn btn-primary\" onclick=\"deleteNote()\">Yes</button><button type=\"button\" class=\"btn btn-light\">No</button></div>", "确认是否删除");
+    });
+
+    /**
+     * 执行删除笔记
+     */
+    function deleteNote() {
+        axios.delete('/api/note/' + selectNode.noteId)
+            .then(response => {
+                location.reload();
+            }).catch(response => {
+            console.log(response);
+            toastr.error('删除失败');
+        });
+    }
+
+
 </script>
 </body>
 </html>

@@ -9,20 +9,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Note</title>
 
+    <!-- Font awesome -->
     <link rel="stylesheet" href="http://47.95.115.246/font-awesome-4.7.0/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="http://47.95.115.246/editor.md/css/editormd.css"/>
-
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Editormd -->
+    <link rel="stylesheet" href="http://47.95.115.246/editor.md/css/editormd.css"/>
+    <!-- Toastr -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
 
-
+    <!-- Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Axios -->
     <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <!-- Toastr -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-
+    <!-- Editormd -->
     <script src="http://47.95.115.246/editor.md/editormd.js"></script>
 </head>
 
@@ -44,26 +49,28 @@
     <!-- 笔记内容 -->
     <div id="editor" class="container-fluid"></div>
     <!-- 保存按钮 -->
-    <button id="save-note-button" type="button" class="btn btn-secondary  btn-lg btn-block"><i class="fa fa-floppy-o"
-                                                                                               aria-hidden="true"></i>
-        保存笔记
+    <button id="save-note-button" type="button" class="btn btn-secondary  btn-lg btn-block">
+        <i class="fa fa-floppy-o" aria-hidden="true"></i> 保存笔记
     </button>
 </div>
 
 
 <script type="text/javascript">
 
+    /**
+     * 初始化提示框
+     */
     toastr.options = {
         "closeButton": true,
         "debug": false,
         "newestOnTop": false,
         "progressBar": false,
-        "positionClass": "toast-top-center",
+        "positionClass": "toast-top-full-width",
         "preventDuplicates": false,
         "onclick": null,
         "showDuration": "300",
         "hideDuration": "1000",
-        "timeOut": "3000",
+        "timeOut": "10000",
         "extendedTimeOut": "1000",
         "showEasing": "swing",
         "hideEasing": "linear",
@@ -147,7 +154,7 @@
     });
 
     $('#delete-note-button').click(function (event) {
-        toastr["info"]("<div class=\"btn-group\" ><button id=\"confirm-delete-button\", type=\"button\" class=\"btn btn-primary\" onclick=\"deleteNote()\">Yes</button><button type=\"button\" class=\"btn btn-light\">No</button></div>", "确认是否删除");
+        toastr["error"]("<div class=\"btn-group\" ><button id=\"confirm-delete-button\", type=\"button\" class=\"btn btn-danger\" onclick=\"deleteNote()\">Yes</button><button type=\"button\" class=\"btn btn-success\">No</button></div>", "确认是否删除");
     });
 
     //当浏览器大小变化时
