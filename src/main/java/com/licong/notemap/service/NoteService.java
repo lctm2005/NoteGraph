@@ -15,4 +15,5 @@ public interface NoteService {
     Note save(Note note);
 
     Optional<Note> delete(UUID noteId);
+
 }

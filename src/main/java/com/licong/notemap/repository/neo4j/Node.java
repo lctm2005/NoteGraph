@@ -5,6 +5,8 @@ import org.neo4j.ogm.annotation.*;
 import org.neo4j.ogm.annotation.typeconversion.Convert;
 import org.neo4j.ogm.typeconversion.UuidStringConverter;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -23,4 +25,7 @@ public class Node {
 
     @Property
     private String title;
+
+    @Relationship(type = Link.TYPE, direction = Relationship.UNDIRECTED)
+    private Set<Node> nodes;
 }

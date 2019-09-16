@@ -12,11 +12,22 @@ import java.util.Date;
  */
 @Data
 @NoArgsConstructor
-public class ErrorMessage {
+public class RestErrorMessage {
 
+    /**
+     * 编码
+     */
     private String code;
+    /**
+     * 信息
+     */
     private String message;
-    private String detail;
+
+    /**
+     * 异常栈
+     */
+    private StackTraceElement[] cause;
+
     private Date serverTime = new Date();
 
     @Override
@@ -28,8 +39,6 @@ public class ErrorMessage {
                 .append(getMessage())
                 .append(", server_time:")
                 .append(serverTime)
-                .append(", detail:")
-                .append(getDetail())
                 .append(">");
         return builder.toString();
     }

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
-public class GraphController {
+public class PageController {
 
     @Autowired
     private NoteService noteService;

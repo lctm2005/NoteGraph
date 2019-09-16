@@ -56,9 +56,8 @@
             </form>
         </div>
     </nav>
-    <div class="row"></div>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-    <div id="graph" ></div>
+    <div id="graph"></div>
 
 </div>
 

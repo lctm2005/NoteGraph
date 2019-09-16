@@ -95,6 +95,13 @@ public class NoteServiceImpl implements NoteService {
     }
 
 
+    /**
+     * 提取连接
+     *
+     * @param node
+     * @param noteContent
+     * @return
+     */
     private List<Link> extractLinks(Node node, NoteContent noteContent) {
         List<NoteInnerLinkUtils.NoteInnerLink> noteInnerLinks = NoteInnerLinkUtils.parse(noteContent.getMarkdown());
         if (CollectionUtils.isEmpty(noteInnerLinks)) {

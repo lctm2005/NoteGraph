@@ -7,6 +7,7 @@ import com.licong.notemap.web.vo.note.NoteVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -19,7 +20,6 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
 
-    @ResponseBody
     @RequestMapping(value = "/api/note/{note_id}", method = RequestMethod.GET)
     public NoteVo get(@PathVariable("note_id") UUID noteId) {
         Optional<Note> noteOptional = noteService.findById(noteId);
@@ -30,7 +30,7 @@ public class NoteController {
     }
 
     @RequestMapping(value = "/api/note", method = RequestMethod.POST)
-    public NoteVo create(@RequestBody NoteParam noteParam) {
+    public NoteVo create(@RequestBody @Validated NoteParam noteParam) {
         return new NoteVo(noteService.save(noteParam.toNote()));
     }
 
