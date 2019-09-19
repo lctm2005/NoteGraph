@@ -10,8 +10,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
+/**
+ * @author Administrator
+ */
 @Component
 public class RestErrorMessageWriter {
+
     private static final String CONTENT_TYPE = "application/json;charset=UTF-8";
 
     /**

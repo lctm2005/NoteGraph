@@ -4,7 +4,6 @@ package com.licong.notemap.web.exception;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +27,7 @@ public class DefaultRestErrorHandler extends RestErrorHandlerTemplate {
     private RestErrorMessageWriter restErrorMessageWriter;
 
     @ExceptionHandler(value = {Exception.class})
-    public void validExceptionHandler(HttpServletRequest request, HttpServletResponse response, Throwable throwable) throws Exception {
+    public void exceptionHandler(HttpServletRequest request, HttpServletResponse response, Throwable throwable) throws Exception {
         restErrorMessageWriter.write(process(throwable, request), response, throwable);
     }
 

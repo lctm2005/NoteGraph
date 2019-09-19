@@ -2,12 +2,19 @@ package com.licong.notemap.service.internal;
 
 import com.licong.notemap.repository.mongo.NoteContent;
 import com.licong.notemap.repository.mongo.NoteContentRepository;
-import com.licong.notemap.repository.neo4j.*;
+import com.licong.notemap.repository.neo4j.Link;
+import com.licong.notemap.repository.neo4j.LinkRepository;
+import com.licong.notemap.repository.neo4j.Node;
+import com.licong.notemap.repository.neo4j.NodeRepository;
 import com.licong.notemap.service.NoteService;
 import com.licong.notemap.service.domain.Note;
 import com.licong.notemap.util.CollectionUtils;
 import com.licong.notemap.util.NoteInnerLinkUtils;
+import com.licong.notemap.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +29,11 @@ public class NoteServiceImpl implements NoteService {
     private NodeRepository nodeRepository;
 
     @Autowired
-    private NoteContentRepository noteContentRepository;
+    private LinkRepository linkRepository;
 
     @Autowired
-    private LinkRepository linkRepository;
+    private NoteContentRepository noteContentRepository;
+
 
     @Override
     public List<Note> findAll() {
@@ -36,6 +44,7 @@ public class NoteServiceImpl implements NoteService {
         }
         return notes;
     }
+
 
     @Override
     public Optional<Note> findById(UUID noteId) {
@@ -139,5 +148,19 @@ public class NoteServiceImpl implements NoteService {
         }
         nodeRepository.delete(nodeOptional.get());
         return Optional.of(new Note(nodeOptional.get()));
+    }
+
+    @Override
+    public Page<Note> findByTitleContains(String title, Pageable pageable) {
+        Page<Node> page;
+        if (StringUtils.isEmpty(title)) {
+            page = nodeRepository.findAll(pageable);
+        } else {
+            page = nodeRepository.findByTitleContains(title, pageable);
+        }
+        if (page.isEmpty()) {
+            return Page.empty();
+        }
+        return page.map(e -> new Note(e));
     }
 }

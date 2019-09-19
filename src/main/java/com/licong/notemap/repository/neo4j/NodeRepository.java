@@ -10,9 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * @author Michael Hunger
- * @author Mark Angrish
- * @author Michael J. Simons
+ * @author Administrator
  */
 @RepositoryRestResource(collectionResourceRel = "note", path = "note")
 public interface NodeRepository extends Neo4jRepository<Node, Long> {

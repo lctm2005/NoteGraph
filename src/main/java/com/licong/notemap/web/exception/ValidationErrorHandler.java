@@ -3,12 +3,14 @@ package com.licong.notemap.web.exception;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -37,7 +39,8 @@ public class ValidationErrorHandler extends RestErrorHandlerTemplate {
     @Autowired
     private RestErrorMessageWriter restErrorMessageWriter;
 
-    @ExceptionHandler(value = {IllegalArgumentException.class, ConstraintViolationException.class, MethodArgumentNotValidException.class, BindException.class})
+    @ExceptionHandler(value = {HttpMessageNotWritableException.class, HttpMessageNotReadableException.class, HttpMessageConversionException.class,
+            IllegalArgumentException.class, ConstraintViolationException.class, MethodArgumentNotValidException.class, BindException.class})
     public void validExceptionHandler(HttpServletRequest request, HttpServletResponse response, Throwable throwable) throws Exception {
         restErrorMessageWriter.write(process(throwable, request), response, throwable);
     }

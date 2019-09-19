@@ -18,7 +18,10 @@
 
     <!-- ECharts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.min.js"></script>
+    <!-- JQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Jqpaginator -->
+    <script src="http://jqpaginator.keenwon.com/jqPaginator.min.js"></script>
     <!-- Axios -->
     <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
     <!-- Toastr -->
@@ -27,23 +30,23 @@
 <body>
 
 <div class="container-fluid">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg ">
         <a class="navbar-brand" href="#">知识地图</a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="bottom"
+                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom"
                             title="新建笔记"
                             id="new_button">
                         <i class="fa fa-plus-circle" aria-hidden="true"></i> 新建笔记
                     </button>
-                    <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip"
+                    <button type="button" class="btn btn-secondary" data-toggle="tooltip"
                             data-placement="bottom" title="编辑笔记"
                             id="edit_button">
                         <i class="fa fa-pencil" aria-hidden="true"></i> 编辑笔记
                     </button>
-                    <button type="button" class="btn btn-outline-danger" data-toggle="tooltip" data-placement="bottom"
+                    <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom"
                             title="删除笔记"
                             id="delete_button">
                         <i class="fa fa-trash" aria-hidden="true"></i> 删除笔记
@@ -51,14 +54,18 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+                <input class="form-control mr-sm-2" type="search" id="search_input" placeholder="Search"
+                       aria-label="Search">
+                <button class="btn btn-success my-2 my-sm-0" id="search_button" type="button">搜索</button>
             </form>
         </div>
     </nav>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
     <div id="graph"></div>
-
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end" id="pagination">
+        </ul>
+    </nav>
 </div>
 
 <script type="text/javascript">
@@ -84,15 +91,13 @@
         "hideMethod": "fadeOut"
     }
 
-
     /**
      * 自适应宽高
      */
     function adjustGraphWithHeight() {
-        $('#graph').height($(window).height() - 60);
+        $('#graph').height($(window).height() - 150);
         $('#graph').width($(window).width() - 30);
     }
-
 
     /**
      * 初始化地图高度
@@ -103,75 +108,157 @@
      * 创建地图
      */
     var myChart = echarts.init(document.getElementById('graph'));
-    graph =  ${graph};
-    graph.nodes.forEach(function (node) {
-        node.symbolSize = [55, 55];
-    });
-    var option = {
-        tooltip: {
-            trigger: 'item',
-            formatter: function (params, ticket, callback) {
-                return params.data.name;
-            }
-        },
-        animationDuration: 1500,
-        animationEasingUpdate: 'quinticInOut',
-        backgroundColor: '#353a40',
-        series: [
-            {
-                name: 'Node Map',
-                type: 'graph',
-                layout: 'force',
-                data: graph.nodes,
-                links: graph.links,
-                roam: false,
-                draggable: true,
-                backgroundColor: '#f5ff10',
-                force: {
-                    initLayout: 'circular',
-                    repulsion: 1500,
-                    gravity: 0.1,
-                    edgeLength: 120
-                },
-                focusNodeAdjacency: true,
-                edgeSymbol: ['none', 'arrow'],
-                itemStyle: {
-                    color: '#f09662',
-                    borderColor: '#ea6712',
-                    borderWidth: 2
-                },
-                label: {
-                    show: true,
-                    position: 'inside',
-                    fontSize: 12,
-                    fontStyle: 'normal',
-                    frontFamily: 'Microsoft YaHei',
-                    color: '#ffffff',
-                    align: 'center'
-                },
-                edgeLabel: {
-                    show: true,
-                    position: 'middle',
-                    color: '#ffffff',
-                    align: 'center',
-                    formatter: function (params) {
-                        return params.data.name;
-                    }
-                },
-                lineStyle: {
-                    color: '#a6abb6',
-                    width: 1.5,
-                    curveness: 0
-                },
-                emphasis: {
-                    lineStyle: {
-                        width: 10
-                    }
+
+    /**
+     * 分页查询
+     */
+    function pagination(pageSize, currentPage, totalPages, totalCounts) {
+        var init = true;
+        $('#pagination').jqPaginator({
+            totalPages: totalPages,
+            totalCounts: totalCounts,
+            visiblePages: 10,
+            currentPage: currentPage,
+            pageSize: pageSize,
+            prev: '<li class="page-item"><a class="page-link" href="javascript:void(0);">Previous</a></li>',
+            next: '<li class="page-item"><a class="page-link" href="javascript:void(0);">Next</a></li>',
+            page: '<li class="page-item"><a class="page-link" href="javascript:void(0);">{{page}}</a></li>',
+            onPageChange: function (num, type) {
+                if (init) {
+                    init = false;
+                } else {
+                    loadData($('#search_input').val(), num - 1);
                 }
             }
-        ]
+        });
     }
-    myChart.setOption(option, true);
+
+    /**
+     * 加载数据
+     */
+    function loadData(title, num) {
+        num = num == null ? 0 : num;
+        axios.get('/api/note/search/findByTitleContains?title=' + title + '&page=' + num)
+            .then(response => {
+                var page = response.data.page;
+                if (page.totalElements == 0) {
+                    loadGraph(null, null);
+                    pagination(page.size, page.number + 1, page.totalPages, page.totalElements);
+                    return;
+                }
+                var noteResources = response.data._embedded.noteResources;
+                var noteIds = noteResources.map(function (note) {
+                    return note.noteId;
+                });
+                // {"noteId":"a51ca953-e22d-4a95-8e84-1686cf570347","name":"Neo4J","href":"/note/a51ca953-e22d-4a95-8e84-1686cf570347","value":10}
+                var nodes = noteResources.map(function (note) {
+                    var node = note;
+                    node.name = note.title;
+                    node.symbolSize = [55, 55];
+                    node.value = 10;
+                    return node;
+                });
+                axios.post('/api/link/search/findByStartInOrEndIn', noteIds)
+                    .then(response => {
+                        // {source : '丽萨-乔布斯', target : '乔布斯', weight : 1, name: '女儿'}
+                        var links = response.data.map(function (data) {
+                            var link = data;
+                            link.source = data.start.title;
+                            link.target = data.end.title;
+                            link.name = data.title;
+                            return link;
+                        });
+                        loadGraph(nodes, links);
+                        pagination(page.size, page.number + 1, page.totalPages, page.totalElements);
+                    }).catch(response => {
+                    console.log(response);
+                    toastr.error(response.data.message);
+                });
+            }).catch(response => {
+            console.log(response);
+            toastr.error(response.data.message);
+        });
+    }
+
+    /**
+     * 加载地图
+     */
+    function loadGraph(nodes, links) {
+        myChart.clear();
+        if (null == nodes || null == links) {
+            return;
+        }
+        var option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: function (params, ticket, callback) {
+                    return params.data.name;
+                }
+            },
+            animationDuration: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            backgroundColor: '#353a40',
+            series: [
+                {
+                    name: 'Node Map',
+                    type: 'graph',
+                    layout: 'force',
+                    data: nodes,
+                    links: links,
+                    roam: false,
+                    draggable: true,
+                    backgroundColor: '#f5ff10',
+                    force: {
+                        initLayout: 'circular',
+                        repulsion: 1500,
+                        gravity: 0.1,
+                        edgeLength: 120
+                    },
+                    focusNodeAdjacency: true,
+                    edgeSymbol: ['none', 'arrow'],
+                    itemStyle: {
+                        color: '#f09662',
+                        borderColor: '#ea6712',
+                        borderWidth: 2
+                    },
+                    label: {
+                        show: true,
+                        position: 'inside',
+                        fontSize: 12,
+                        fontStyle: 'normal',
+                        frontFamily: 'Microsoft YaHei',
+                        color: '#ffffff',
+                        align: 'center'
+                    },
+                    edgeLabel: {
+                        show: true,
+                        position: 'middle',
+                        color: '#ffffff',
+                        align: 'center',
+                        formatter: function (params) {
+                            return params.data.name;
+                        }
+                    },
+                    lineStyle: {
+                        color: '#a6abb6',
+                        width: 1.5,
+                        curveness: 0
+                    },
+                    emphasis: {
+                        lineStyle: {
+                            width: 10
+                        }
+                    }
+                }
+            ]
+        }
+        myChart.setOption(option, true);
+    }
+
+    /**
+     * 初始化地图
+     */
+    loadData("", null);
 
     /**
      * 地图自适应浏览器高度
@@ -189,7 +276,6 @@
             selectEle(params);
         }
     });
-
 
     /**
      * 选中高亮，再次选中取消高亮
@@ -265,7 +351,7 @@
             toastr.warning('请选择节点');
             return;
         }
-        window.open(selectNode.href);
+        window.open(selectNode._links.edit.href);
     });
 
     /**
@@ -292,7 +378,12 @@
         });
     }
 
-
+    /**
+     * 检索笔记
+     */
+    $("#search_button").bind('click', function () {
+        loadData($('#search_input').val(), null);
+    });
 </script>
 </body>
 </html>

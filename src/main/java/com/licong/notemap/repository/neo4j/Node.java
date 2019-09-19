@@ -25,7 +25,4 @@ public class Node {
 
     @Property
     private String title;
-
-    @Relationship(type = Link.TYPE, direction = Relationship.UNDIRECTED)
-    private Set<Node> nodes;
 }
