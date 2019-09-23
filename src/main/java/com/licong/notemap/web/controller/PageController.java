@@ -21,7 +21,7 @@ public class PageController {
         return modelAndView;
     }
 
-    @RequestMapping("/page/note/{note_id}")
+    @RequestMapping("/note/{note_id}")
     public ModelAndView edit(@PathVariable(value = "note_id") UUID noteId) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("note");
@@ -29,7 +29,7 @@ public class PageController {
         return modelAndView;
     }
 
-    @RequestMapping("/page/note")
+    @RequestMapping("/note")
     public ModelAndView newNote() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("note");

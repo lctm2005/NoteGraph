@@ -2,6 +2,7 @@ package com.licong.notemap.repository.neo4j;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
@@ -19,6 +20,8 @@ public interface NodeRepository extends Neo4jRepository<Node, Long> {
 
     List<Node> findByUniqueIdIn(List<String> uuids);
 
-    Page<Node> findByTitleContains(String title, Pageable pageable);
+    @Query(value = "MATCH (n:NOTE) WHERE n.title=~{title} RETURN n", countQuery = "MATCH (n:NOTE) WHERE n.title=~{title} RETURN count(n)")
+
+    Page<Node> findByTitleLike(String title, Pageable pageable);
 
 }

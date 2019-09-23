@@ -53,11 +53,11 @@
                     </button>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
+            <div class="form-inline my-2 my-lg-0" id="search_area">
                 <input class="form-control mr-sm-2" type="search" id="search_input" placeholder="Search"
                        aria-label="Search">
                 <button class="btn btn-success my-2 my-sm-0" id="search_button" type="button">搜索</button>
-            </form>
+            </div>
         </div>
     </nav>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
@@ -153,7 +153,7 @@
                 // {"noteId":"a51ca953-e22d-4a95-8e84-1686cf570347","name":"Neo4J","href":"/note/a51ca953-e22d-4a95-8e84-1686cf570347","value":10}
                 var nodes = noteResources.map(function (note) {
                     var node = note;
-                    node.name = note.title;
+                    node.name = note.noteId;
                     node.symbolSize = [55, 55];
                     node.value = 10;
                     return node;
@@ -163,8 +163,8 @@
                         // {source : '丽萨-乔布斯', target : '乔布斯', weight : 1, name: '女儿'}
                         var links = response.data.map(function (data) {
                             var link = data;
-                            link.source = data.start.title;
-                            link.target = data.end.title;
+                            link.source = data.start.noteId;
+                            link.target = data.end.noteId;
                             link.name = data.title;
                             return link;
                         });
@@ -197,7 +197,7 @@
             },
             animationDuration: 1500,
             animationEasingUpdate: 'quinticInOut',
-            backgroundColor: '#353a40',
+            backgroundColor: '#ffffff',
             series: [
                 {
                     name: 'Node Map',
@@ -227,16 +227,19 @@
                         fontSize: 12,
                         fontStyle: 'normal',
                         frontFamily: 'Microsoft YaHei',
-                        color: '#ffffff',
-                        align: 'center'
+                        color: '#000000',
+                        align: 'center',
+                        formatter: function (params) {
+                            return params.data.title;
+                        }
                     },
                     edgeLabel: {
                         show: true,
                         position: 'middle',
-                        color: '#ffffff',
+                        color: '#000000',
                         align: 'center',
                         formatter: function (params) {
-                            return params.data.name;
+                            return params.data.title;
                         }
                     },
                     lineStyle: {
@@ -312,14 +315,14 @@
     }
 
     function normalize(nodeOption) {
-        nodeOption.label = {color: '#ffffff'}
+        nodeOption.label = {color: '#000000'}
         nodeOption.itemStyle.color = '#f09662'
         nodeOption.itemStyle.borderColor = '#ea6712'
         nodeOption.itemStyle.shadowBlur = 0
     }
 
     function highlight(nodeOption) {
-        nodeOption.label = {color: '#ffffff'}
+        nodeOption.label = {color: '#000000'}
         nodeOption.itemStyle.color = '#02b610'
         nodeOption.itemStyle.borderColor = '#1c9156'
         nodeOption.itemStyle.shadowColor = '#2cff77'
@@ -335,7 +338,7 @@
             content: ''
         }).then(response => {
             // 打开笔记编辑也
-            window.open('/note/' + response.data.id);
+            window.open(response.data._links.edit.href);
             location.reload();
         }).catch(response => {
             console.log(response);
@@ -384,6 +387,16 @@
     $("#search_button").bind('click', function () {
         loadData($('#search_input').val(), null);
     });
+
+    /**
+     * 绑定
+     */
+    $('#search_area').keydown(function (e) {
+        if (e.keyCode === 13) {
+            loadData($('#search_input').val(), null);
+        }
+    });
+
 </script>
 </body>
 </html>

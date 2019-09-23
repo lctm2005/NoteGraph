@@ -13,7 +13,6 @@ import com.licong.notemap.util.NoteInnerLinkUtils;
 import com.licong.notemap.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -156,7 +155,7 @@ public class NoteServiceImpl implements NoteService {
         if (StringUtils.isEmpty(title)) {
             page = nodeRepository.findAll(pageable);
         } else {
-            page = nodeRepository.findByTitleContains(title, pageable);
+            page = nodeRepository.findByTitleLike("(?i).*" + title + ".*", pageable);
         }
         if (page.isEmpty()) {
             return Page.empty();
