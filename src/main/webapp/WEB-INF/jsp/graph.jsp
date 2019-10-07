@@ -463,7 +463,8 @@
                         var options = myChart.getOption();
                         options.series[0].data = graphNodes;
                         options.series[0].links = graphLinks;
-                        myChart.setOption(options)
+                        myChart.setOption(options);
+                        selectNode = emptyNode;
                     }).catch(response=>error(response));
         }).catch(response=>error(response));
     });
