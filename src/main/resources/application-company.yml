@@ -4,6 +4,8 @@ spring:
       uri: bolt://172.24.132.134:8687
       username: neo4j
       password: neo4j1
+    mongodb:
+      uri: mongodb://dev_mdb_standardexam:bG2AyltDEa6Z@m1.all.dev.mongod.sdp:34001,m3.all.dev.mongod.sdp:34001,m2.all.dev.mongod.sdp:34001/dev_mdb_standardexam?autoConnectRetry=true
 
 
 

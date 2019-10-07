@@ -57,17 +57,18 @@ public abstract class CollectionUtils extends org.apache.commons.collections.Col
      * 遍历集合中所有的对象，抽取对象中指定的属性值，拼装成list返回
      * 如：入参
      * collection传[
-     *  {
-     *     "id":1,
-     *     "name":"jack"
-     *  },
-     *  {
-     *     "id":2,
-     *     "name":"lucy"
-     *  }
+     * {
+     * "id":1,
+     * "name":"jack"
+     * },
+     * {
+     * "id":2,
+     * "name":"lucy"
+     * }
      * ]
      * propertyName传"name"
      * 回参：["jack","lucy"]
+     *
      * @param collection
      * @param propertyName
      * @return
@@ -75,19 +76,19 @@ public abstract class CollectionUtils extends org.apache.commons.collections.Col
      * @throws IllegalAccessException
      */
     public static List getPropertyList(Collection collection, String propertyName) {
-        try{
+        try {
             final List resultList = new ArrayList();
-            new CollectionListener(collection, propertyName){
+            new CollectionListener(collection, propertyName) {
                 @Override
                 protected void onGetPropertyValue(Object member, Object propertyValue) {
-                    if(propertyValue != null){
+                    if (propertyValue != null) {
                         resultList.add(propertyValue);
                     }
                 }
             }.iterate();
             return resultList;
-        }catch(Exception e){
-            log.error("",e);
+        } catch (Exception e) {
+            log.error("", e);
             throw new RuntimeException(e);
         }
     }
@@ -95,25 +96,26 @@ public abstract class CollectionUtils extends org.apache.commons.collections.Col
     /**
      * 将集合转成map，key为指定字段的值，value为该对象
      * collection传[
-     *  {
-     *     "id":1,
-     *     "name":"jack"
-     *  },
-     *  {
-     *     "id":2,
-     *     "name":"lucy"
-     *  }
+     * {
+     * "id":1,
+     * "name":"jack"
+     * },
+     * {
+     * "id":2,
+     * "name":"lucy"
+     * }
      * ]
      * propertyName传"name"
      * 回参：
      * ["jack":{
-     *     "id":1,
-     *     "name":"jack"
-     *  },
-     *  "lucy":{
-     *     "id":2,
-     *     "name":"lucy"
-     *  }]
+     * "id":1,
+     * "name":"jack"
+     * },
+     * "lucy":{
+     * "id":2,
+     * "name":"lucy"
+     * }]
+     *
      * @param collection
      * @param propertyName
      * @return
@@ -121,19 +123,19 @@ public abstract class CollectionUtils extends org.apache.commons.collections.Col
      * @throws IllegalAccessException
      */
     public static Map getPropertyMap(Collection collection, String propertyName) {
-        try{
-            final Map resultMap =  new HashMap();
-            new CollectionListener(collection, propertyName){
+        try {
+            final Map resultMap = new HashMap();
+            new CollectionListener(collection, propertyName) {
                 @Override
                 protected void onGetPropertyValue(Object member, Object propertyValue) {
-                    if(propertyValue != null){
+                    if (propertyValue != null) {
                         resultMap.put(propertyValue, member);
                     }
                 }
             }.iterate();
             return resultMap;
-        }catch(Exception e){
-            log.error("",e);
+        } catch (Exception e) {
+            log.error("", e);
             throw new RuntimeException(e);
         }
     }
@@ -143,47 +145,48 @@ public abstract class CollectionUtils extends org.apache.commons.collections.Col
      * 将集合按照某个字段做分组， key为指定字段的值，value为对象list
      * 如：入参
      * collection传[
-     *  {
-     *     "id":1,
-     *     "name":"jack"
-     *  },
-     *  {
-     *     "id":2,
-     *     "name":"lucy"
-     *  },
-     *  {
-     *     "id":3,
-     *     "name":"jack"
-     *  }
+     * {
+     * "id":1,
+     * "name":"jack"
+     * },
+     * {
+     * "id":2,
+     * "name":"lucy"
+     * },
+     * {
+     * "id":3,
+     * "name":"jack"
+     * }
      * ]
      * propertyName传"name"
      * 回参：
      * ["jack":[{
-     *     "id":1,
-     *     "name":"jack"
-     *  },{
-     *     "id":3,
-     *     "name":"jack"
-     *  }],
-     *  "lucy":[{
-     *     "id":2,
-     *     "name":"lucy"
-     *  }]]
+     * "id":1,
+     * "name":"jack"
+     * },{
+     * "id":3,
+     * "name":"jack"
+     * }],
+     * "lucy":[{
+     * "id":2,
+     * "name":"lucy"
+     * }]]
+     *
      * @param collection
      * @param propertyName
-     * @return  Map<Object,List>
+     * @return Map<Object,List>
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
      */
     public static Map groupBy(Collection collection, String propertyName) {
-        try{
-            final Map<Object, List> resultMap =  new HashMap();
-            new CollectionListener(collection, propertyName){
+        try {
+            final Map<Object, List> resultMap = new HashMap();
+            new CollectionListener(collection, propertyName) {
                 @Override
                 protected void onGetPropertyValue(Object member, Object propertyValue) {
-                    if(propertyValue != null){
+                    if (propertyValue != null) {
                         List list = resultMap.get(propertyValue);
-                        if(list == null){
+                        if (list == null) {
                             list = new ArrayList();
                             resultMap.put(propertyValue, list);
                         }
@@ -192,8 +195,8 @@ public abstract class CollectionUtils extends org.apache.commons.collections.Col
                 }
             }.iterate();
             return resultMap;
-        }catch(Exception e){
-            log.error("",e);
+        } catch (Exception e) {
+            log.error("", e);
             throw new RuntimeException(e);
         }
     }
@@ -201,33 +204,40 @@ public abstract class CollectionUtils extends org.apache.commons.collections.Col
     /**
      * 按照字段名为条件，遍历集合
      */
-    private static abstract class CollectionListener{
+    private static abstract class CollectionListener {
         private Collection collection;
         private String propertyName;
-        private Map<Class,Field> class2FieldMap = new HashMap<>();
-        public  CollectionListener(Collection collection, String propertyName){
+        private Map<Class, Field> class2FieldMap = new HashMap<>();
+
+        public CollectionListener(Collection collection, String propertyName) {
             this.collection = collection;
             this.propertyName = propertyName;
         }
 
+        /**
+         * 取值回调
+         *
+         * @param member
+         * @param propertyValue
+         */
         protected abstract void onGetPropertyValue(Object member, Object propertyValue);
 
         public void iterate() throws NoSuchFieldException, IllegalAccessException {
-            if(CollectionUtils.isEmpty(collection)){
+            if (CollectionUtils.isEmpty(collection)) {
                 return;
             }
-            for(Object member : collection){
-                if(member == null){
+            for (Object member : collection) {
+                if (member == null) {
                     continue;
                 }
                 Object propertyValue;
-                if(member instanceof Map){
-                    propertyValue = ((Map)member).get(propertyName);
-                }else{
+                if (member instanceof Map) {
+                    propertyValue = ((Map) member).get(propertyName);
+                } else {
                     Class memberClass = member.getClass();
                     Field field = class2FieldMap.get(memberClass);
-                    if(field == null){
-                        field = BeanUtils.getDeclaredField(member,propertyName);
+                    if (field == null) {
+                        field = BeanUtils.getDeclaredField(member, propertyName);
                         class2FieldMap.put(memberClass, field);
                     }
                     boolean accessible = field.isAccessible();

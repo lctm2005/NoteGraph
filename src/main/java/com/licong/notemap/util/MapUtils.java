@@ -1,7 +1,8 @@
 package com.licong.notemap.util;
 
-import java.util.Iterator;
-import java.util.Map;
+import org.springframework.cglib.beans.BeanMap;
+
+import java.util.*;
 
 /**
  * <p></p>
@@ -27,5 +28,16 @@ public abstract class MapUtils extends org.apache.commons.collections.MapUtils {
                 closure.execute(entry);
             }
         }
+    }
+
+    public static <T> List<Map> toMaps(Collection<T> entities) {
+        if (entities == null) {
+            return Collections.emptyList();
+        }
+        List<Map> maps = new ArrayList<>(entities.size());
+        for (T entity : entities) {
+            maps.add(BeanMap.create(entity));
+        }
+        return maps;
     }
 }

@@ -1,14 +1,14 @@
-package com.licong.notemap.domain;
+package com.licong.notemap.repository.neo4j;
 
 import lombok.Data;
 import org.neo4j.ogm.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @RelationshipEntity
 public class Link {
+
+    public static final String TYPE = "LINK";
+
     @Id
     @GeneratedValue
     private Long id;
@@ -17,8 +17,10 @@ public class Link {
     private String title;
 
     @StartNode
-    private Note start;
+    private Node start;
 
     @EndNode
-    private Note end;
+    private Node end;
+
+
 }
