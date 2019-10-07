@@ -9,6 +9,7 @@ import com.licong.notemap.repository.neo4j.NodeRepository;
 import com.licong.notemap.service.NoteService;
 import com.licong.notemap.service.domain.Note;
 import com.licong.notemap.util.CollectionUtils;
+import com.licong.notemap.util.MapUtils;
 import com.licong.notemap.util.NoteInnerLinkUtils;
 import com.licong.notemap.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +38,11 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public List<Note> findAll() {
         Iterable<Node> nodes = nodeRepository.findAll();
+        List<NoteContent> noteContents = noteContentRepository.findAll();
+        Map<UUID, NoteContent> noteContentMap = com.licong.notemap.util.CollectionUtils.getPropertyMap(noteContents, "uuid");
         List<Note> notes = new ArrayList<>();
         for (Node node : nodes) {
-            notes.add(new Note(node));
+            notes.add(new Note(node, noteContentMap.get(UUID.fromString(node.getUniqueId()))));
         }
         return notes;
     }
@@ -90,6 +93,7 @@ public class NoteServiceImpl implements NoteService {
 
         // 删除旧关系
         List<Link> oldlinks = extractLinks(node, noteContent);
+        oldlinks = linkRepository.findByStartAndEndAndTitle(oldlinks);
         linkRepository.deleteAll(oldlinks);
 
         // 更新内容
@@ -130,7 +134,6 @@ public class NoteServiceImpl implements NoteService {
         }
         return links;
     }
-
 
 
     @Override
@@ -177,4 +180,6 @@ public class NoteServiceImpl implements NoteService {
         }
         return notes;
     }
+
+
 }
