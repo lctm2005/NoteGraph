@@ -51,6 +51,11 @@
                             id="delete_button">
                         <i class="fa fa-trash" aria-hidden="true"></i> 删除笔记
                     </button>
+                    <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom"
+                            title="展开笔记"
+                            id="expand_button">
+                        <i class="fa fa-expand" aria-hidden="true"></i> 展开笔记
+                    </button>
                 </li>
             </ul>
             <div class="form-inline my-2 my-lg-0" id="search_area">
@@ -140,50 +145,48 @@
         num = num == null ? 0 : num;
         axios.get('/api/note/search/findByTitleContains?title=' + title + '&page=' + num)
             .then(response => {
-                var page = response.data.page;
-                if (page.totalElements == 0) {
-                    loadGraph(null, null);
+            var page = response.data.page;
+            if (page.totalElements == 0) {
+                loadGraph(null, null);
+                pagination(page.size, page.number + 1, page.totalPages, page.totalElements);
+                return;
+            }
+            var noteResources = response.data._embedded.noteResources;
+            var noteIds = noteResources.map(function (note) {
+                return note.noteId;
+            });
+            // {"noteId":"a51ca953-e22d-4a95-8e84-1686cf570347","name":"Neo4J","href":"/note/a51ca953-e22d-4a95-8e84-1686cf570347","value":10}
+            var nodes = noteResources.map(function (note) {
+                var node = note;
+                node.name = note.noteId;
+                node.symbolSize = [55, 55];
+                node.value = 10;
+                return node;
+            });
+            axios.post('/api/link/search/findByStartInOrEndIn', noteIds)
+                .then(response => {
+                    // {source : '丽萨-乔布斯', target : '乔布斯', weight : 1, name: '女儿'}
+                    var links = response.data.map(function (data) {
+                        var link = data;
+                        link.source = data.start.noteId;
+                        link.target = data.end.noteId;
+                        link.name = data.title;
+                        return link;
+                    });
+                    loadGraph(nodes, links);
                     pagination(page.size, page.number + 1, page.totalPages, page.totalElements);
-                    return;
-                }
-                var noteResources = response.data._embedded.noteResources;
-                var noteIds = noteResources.map(function (note) {
-                    return note.noteId;
-                });
-                // {"noteId":"a51ca953-e22d-4a95-8e84-1686cf570347","name":"Neo4J","href":"/note/a51ca953-e22d-4a95-8e84-1686cf570347","value":10}
-                var nodes = noteResources.map(function (note) {
-                    var node = note;
-                    node.name = note.noteId;
-                    node.symbolSize = [55, 55];
-                    node.value = 10;
-                    return node;
-                });
-                axios.post('/api/link/search/findByStartInOrEndIn', noteIds)
-                    .then(response => {
-                        // {source : '丽萨-乔布斯', target : '乔布斯', weight : 1, name: '女儿'}
-                        var links = response.data.map(function (data) {
-                            var link = data;
-                            link.source = data.start.noteId;
-                            link.target = data.end.noteId;
-                            link.name = data.title;
-                            return link;
-                        });
-                        loadGraph(nodes, links);
-                        pagination(page.size, page.number + 1, page.totalPages, page.totalElements);
-                    }).catch(response => {
-                    console.log(response);
-                    toastr.error(response.data.message);
-                });
-            }).catch(response => {
-            console.log(response);
-            toastr.error(response.data.message);
-        });
+                }).catch(response => error(response));
+        }).catch(response => error(response));
     }
 
+    var graphNodes;
+    var graphLinks;
     /**
      * 加载地图
      */
     function loadGraph(nodes, links) {
+        graphNodes = nodes;
+        graphLinks = links;
         myChart.clear();
         if (null == nodes || null == links) {
             return;
@@ -288,8 +291,10 @@
         name: null,
         href: null,
         value: null
-    }
+    };
+
     var selectNode = emptyNode;
+
 
     function selectEle(params) {
         let options = myChart.getOption()
@@ -329,6 +334,34 @@
         nodeOption.itemStyle.shadowBlur = 10
     }
 
+    function error(response) {
+        console.log(response);
+        toastr.error(response.data.message);
+    }
+
+    function toNodes(noteResources) {
+        // {"noteId":"a51ca953-e22d-4a95-8e84-1686cf570347","name":"Neo4J","href":"/note/a51ca953-e22d-4a95-8e84-1686cf570347","value":10}
+        return noteResources.map(function (note) {
+            var node = note;
+            node.name = note.noteId;
+            node.symbolSize = [55, 55];
+            node.value = 10;
+            return node;
+        });
+    }
+
+    function toLinks(noteLinkResources) {
+        // {source : '丽萨-乔布斯', target : '乔布斯', weight : 1, name: '女儿'}
+        return noteLinkResources.map(function (data) {
+            var link = data;
+            link.source = data.start.noteId;
+            link.target = data.end.noteId;
+            link.name = data.title;
+            link.id = data.linkId;
+            return link;
+        });
+    }
+
     /**
      * 新建笔记
      */
@@ -337,13 +370,14 @@
             title: '无标题笔记',
             content: ''
         }).then(response => {
-            // 打开笔记编辑也
             window.open(response.data._links.edit.href);
-            location.reload();
-        }).catch(response => {
+        location.reload();
+    }).
+        catch(response => {
             console.log(response);
-            toastr.error('创建失败');
-        });
+        toastr.error('创建失败');
+    })
+        ;
     });
 
     /**
@@ -372,13 +406,14 @@
      * 执行删除笔记
      */
     function deleteNote() {
-        axios.delete('/api/note/' + selectNode.noteId)
-            .then(response => {
-                location.reload();
-            }).catch(response => {
+        axios.delete('/api/note/' + selectNode.noteId).then(response => {
+            location.reload();
+    }).
+        catch(response => {
             console.log(response);
-            toastr.error('删除失败');
-        });
+        toastr.error('删除失败');
+    })
+        ;
     }
 
     /**
@@ -386,6 +421,51 @@
      */
     $("#search_button").bind('click', function () {
         loadData($('#search_input').val(), null);
+    });
+
+    /**
+     * 展开笔记
+     */
+    $("#expand_button").bind('click', function () {
+        axios.get('/api/note/' + selectNode.noteId + '/neighbours').then(response => {
+                var noteResources = response.data;
+                var noteIds = noteResources.map(function (note) {
+                    return note.noteId;
+                });
+                noteIds.push(selectNode.noteId);
+                var nodes = toNodes(noteResources);
+                axios.post('/api/link/search/findByStartInOrEndIn', noteIds)
+                    .then(response=>{
+                        nodes.forEach(function (node) {
+                            var exist = false;
+                            graphNodes.forEach(function (existNode) {
+                                if(node.name == existNode.name) {
+                                    exist = true;
+                                }
+                            });
+                            if(!exist) {
+                                graphNodes.push(node);
+                            }
+                        });
+                        var links = toLinks(response.data);
+                        links.forEach(function (link) {
+                            var exist = false;
+                            graphLinks.forEach(function (existLink) {
+                                if(link.id == existLink.id) {
+                                    exist = true;
+                                }
+                            });
+                            if(!exist) {
+                                graphLinks.push(link);
+                            }
+                        });
+
+                        var options = myChart.getOption();
+                        options.series[0].data = graphNodes;
+                        options.series[0].links = graphLinks;
+                        myChart.setOption(options)
+                    }).catch(response=>error(response));
+        }).catch(response=>error(response));
     });
 
     /**

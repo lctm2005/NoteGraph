@@ -21,7 +21,8 @@ public interface NodeRepository extends Neo4jRepository<Node, Long> {
     List<Node> findByUniqueIdIn(List<String> uuids);
 
     @Query(value = "MATCH (n:NOTE) WHERE n.title=~{title} RETURN n", countQuery = "MATCH (n:NOTE) WHERE n.title=~{title} RETURN count(n)")
-
     Page<Node> findByTitleLike(String title, Pageable pageable);
 
+    @Query("match (n:NOTE)-[:LINK]-(k:NOTE) where n.uniqueId={uuid} return k")
+    List<Node> neighbours(UUID uuid);
 }

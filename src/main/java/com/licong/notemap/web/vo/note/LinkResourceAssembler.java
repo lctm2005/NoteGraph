@@ -21,6 +21,7 @@ public class LinkResourceAssembler extends ResourceAssemblerSupport<NoteLink, Li
     @Override
     public LinkResource toResource(NoteLink entity) {
         LinkResource linkResource = new LinkResource();
+        linkResource.setLinkId(entity.getId());
         linkResource.setStart(noteResourceAssembler.toResource(entity.getStart()));
         linkResource.setTitle(entity.getTitle());
         linkResource.setEnd(noteResourceAssembler.toResource(entity.getEnd()));

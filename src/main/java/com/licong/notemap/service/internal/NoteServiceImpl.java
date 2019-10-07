@@ -131,6 +131,8 @@ public class NoteServiceImpl implements NoteService {
         return links;
     }
 
+
+
     @Override
     public Optional<Note> delete(UUID noteId) {
         Optional<Node> nodeOptional = nodeRepository.findByUniqueId(noteId);
@@ -161,5 +163,18 @@ public class NoteServiceImpl implements NoteService {
             return Page.empty();
         }
         return page.map(e -> new Note(e));
+    }
+
+    @Override
+    public List<Note> neighbours(UUID noteId) {
+        List<Node> nodes = nodeRepository.neighbours(noteId);
+        if (CollectionUtils.isEmpty(nodes)) {
+            return Collections.emptyList();
+        }
+        List<Note> notes = new ArrayList<>();
+        for (Node node : nodes) {
+            notes.add(new Note(node));
+        }
+        return notes;
     }
 }
