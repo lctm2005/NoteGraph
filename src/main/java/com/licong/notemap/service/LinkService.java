@@ -10,4 +10,6 @@ public interface LinkService {
     List<NoteLink> findAll();
 
     List<NoteLink> findByNotes(List<UUID> noteIds);
+
+    void rebuild();
 }

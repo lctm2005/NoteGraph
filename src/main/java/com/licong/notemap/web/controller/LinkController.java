@@ -32,4 +32,10 @@ public class LinkController {
         }
         return noteLinks.stream().map(e -> linkResourceAssembler.toResource(e)).collect(Collectors.toList());
     }
+
+    @RequestMapping(value = "/api/link/actions/rebuild", method = RequestMethod.POST)
+    public void rebuild() {
+        linkService.rebuild();
+    }
+
 }

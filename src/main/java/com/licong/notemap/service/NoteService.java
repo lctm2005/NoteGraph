@@ -20,4 +20,5 @@ public interface NoteService {
 
     Page<Note> findByTitleContains(String title, Pageable pageable);
 
+    List<Note> neighbours(UUID noteId);
 }

@@ -2,6 +2,7 @@ package com.licong.notemap.web.controller;
 
 import com.licong.notemap.service.NoteService;
 import com.licong.notemap.service.domain.Note;
+import com.licong.notemap.util.CollectionUtils;
 import com.licong.notemap.web.vo.note.NoteParam;
 import com.licong.notemap.web.vo.note.NoteResource;
 import com.licong.notemap.web.vo.note.NoteResourceAssembler;
@@ -15,8 +16,8 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -60,15 +61,25 @@ public class NoteController {
     }
 
     @RequestMapping(value = "/api/note/search/findByTitleContains", method = RequestMethod.GET)
-    public PagedResources<NoteResource> findByTitleContains(@RequestParam(value = "title",required = false) String title,
-                                            @PageableDefault Pageable pageable,
-                                            PagedResourcesAssembler assembler,
-                                            NoteResourceAssembler noteResourceAssembler) {
+    public PagedResources<NoteResource> findByTitleContains(@RequestParam(value = "title", required = false) String title,
+                                                            @PageableDefault Pageable pageable,
+                                                            PagedResourcesAssembler assembler,
+                                                            NoteResourceAssembler noteResourceAssembler) {
         Page<Note> page = noteService.findByTitleContains(title, pageable);
         if (page.isEmpty()) {
             return assembler.toResource(page);
         }
         Page<NoteResource> noteResourcePage = page.map(e -> noteResourceAssembler.toResource(e));
         return assembler.toResource(noteResourcePage);
+    }
+
+    @RequestMapping(value = "/api/note/{note_id}/neighbours", method = RequestMethod.GET)
+    public List<NoteResource> neighbours(@PathVariable("note_id") UUID noteId) {
+        List<Note> notes = noteService.neighbours(noteId);
+        if (CollectionUtils.isEmpty(notes)) {
+            return Collections.emptyList();
+        } else {
+           return notes.stream().map(e -> noteResourceAssembler.toResource(e)).collect(Collectors.toList());
+        }
     }
 }

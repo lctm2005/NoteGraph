@@ -19,4 +19,6 @@ public interface LinkRepository extends Neo4jRepository<Link, Long> {
 
     List<Link> findByStartInOrEndIn(List<String> nodeIds);
 
+    List<Link> findByStartAndEndAndTitle(List<Link> links);
+
 }

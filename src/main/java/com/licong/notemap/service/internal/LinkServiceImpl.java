@@ -1,5 +1,6 @@
 package com.licong.notemap.service.internal;
 
+import com.licong.notemap.repository.mongo.NoteContent;
 import com.licong.notemap.repository.neo4j.Link;
 import com.licong.notemap.repository.neo4j.LinkRepository;
 import com.licong.notemap.repository.neo4j.Node;
@@ -12,14 +13,14 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class LinkServiceImpl implements LinkService {
+
+    @Autowired
+    private NoteService noteService;
 
     @Autowired
     private LinkRepository linkRepository;
@@ -38,5 +39,11 @@ public class LinkServiceImpl implements LinkService {
             return Collections.emptyList();
         }
         return links.stream().map(e -> NoteLink.convert(e)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void rebuild() {
+        linkRepository.deleteAll();
+        noteService.findAll().stream().forEach(note -> noteService.save(note));
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.hateoas.ResourceSupport;
  */
 @Data
 public class LinkResource extends ResourceSupport {
+    private Long linkId;
     private String title;
     private NoteResource start;
     private NoteResource end;

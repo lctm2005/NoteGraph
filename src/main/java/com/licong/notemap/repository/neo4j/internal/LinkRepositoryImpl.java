@@ -47,9 +47,32 @@ public class LinkRepositoryImpl {
             return Collections.emptyList();
         }
         List<Link> links = new ArrayList<>();
-        for(Map<String, Object> ret : result) {
-            links.add((Link)ret.get("link"));
+        for (Map<String, Object> ret : result) {
+            links.add((Link) ret.get("link"));
         }
         return links;
+    }
+
+    public List<Link> findByStartAndEndAndTitle(List<Link> links) {
+        List<Map<String, Object>> maps = new ArrayList<>();
+        for (Link link : links) {
+            Map<String, Object> objectMap = new HashMap<>();
+            objectMap.put("title", link.getTitle());
+            objectMap.put("startId", link.getStart().getUniqueId());
+            objectMap.put("endId", link.getEnd().getUniqueId());
+            maps.add(objectMap);
+        }
+        String cypher = String.format("UNWIND {batch} as row " +
+                        "MATCH (s:%s{uniqueId:row.startId})-[l:%s{title:row.title}]->(e:%s{uniqueId:row.endId}) " +
+                        "RETURN l",
+                Node.LABLE,  Link.TYPE, Node.LABLE);
+        Iterable<Link> iterable = session.query(Link.class, cypher, Collections.singletonMap("batch", maps));
+        Iterator<Link> iterator = iterable.iterator();
+        List<Link> result = new ArrayList<>();
+        while (iterator.hasNext()) {
+            Link link = iterator.next();
+            result.add(link);
+        }
+        return result;
     }
 }

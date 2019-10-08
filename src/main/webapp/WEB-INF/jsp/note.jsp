@@ -78,6 +78,15 @@
         "hideMethod": "fadeOut"
     }
 
+    function error(response) {
+        console.log(response);
+        if (undefined === response.data || undefined === response.data.message) {
+            toastr.error("请求失败");
+        } else {
+            toastr.error(response.data.message);
+        }
+    }
+
     var noteId = "${note_id}";
     var editor;
 
@@ -118,10 +127,7 @@
         axios.delete('/api/note/' + noteId)
             .then(response => {
                 window.close();
-            }).catch(response => {
-            console.log(response);
-            toastr.error('删除失败');
-        });
+            }).catch(response => error(response));
     }
 
     function saveNote() {
@@ -142,10 +148,7 @@
                 content: editor.getMarkdown()
             }).then(response => {
                 toastr.success('保存成功');
-            }).catch(response => {
-                console.log(response);
-                toastr.error('保存失败');
-            });
+            }).catch(response => error(response));
         }
     }
 
