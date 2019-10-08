@@ -138,7 +138,7 @@
      */
     function loadData(title, num) {
         num = num == null ? 0 : num;
-        axios.get('/api/note/search/findByTitleContains?title=' + title + '&page=' + num)
+        axios.get('/api/note/search/findByTitleContains?title=' + title + '&page=' + num + "&size=30")
             .then(response => {
                 var page = response.data.page;
                 if (page.totalElements == 0) {
@@ -283,13 +283,13 @@
     /**
      * 选中高亮，再次选中取消高亮
      */
-    var emptyNode = {
+    var EMPTY_NODE = {
         noteId: null,
         name: null,
         href: null,
         value: null
     }
-    var selectNode = emptyNode;
+    var selectNode = EMPTY_NODE;
 
     function selectEle(params) {
         let options = myChart.getOption()
@@ -302,7 +302,7 @@
                 if (name === selectNode.name) {
                     // 再次选中，取消选择了
                     normalize(nodesOption[m]);
-                    selectNode = emptyNode;
+                    selectNode = EMPTY_NODE;
                 } else {
                     highlight(nodesOption[m]);
                     selectNode = params.data;
@@ -333,10 +333,14 @@
      * 新建笔记
      */
     $("#new_button").bind('click', function () {
-        axios.post('/api/note', {
+        var noteParam = {
             title: '无标题笔记',
             content: ''
-        }).then(response => {
+        }
+        if (EMPTY_NODE != selectNode) {
+            noteParam.content = "@[" + selectNode.title + "](/note/" + selectNode.noteId + ")";
+        }
+        axios.post('/api/note', noteParam).then(response => {
             // 打开笔记编辑也
             window.open(response.data._links.edit.href);
             location.reload();
@@ -350,7 +354,7 @@
      * 编辑笔记
      */
     $("#edit_button").bind('click', function () {
-        if (emptyNode == selectNode) {
+        if (EMPTY_NODE == selectNode) {
             toastr.warning('请选择节点');
             return;
         }
@@ -361,11 +365,11 @@
      * 删除笔记
      */
     $("#delete_button").bind('click', function () {
-        if (emptyNode == selectNode) {
+        if (EMPTY_NODE == selectNode) {
             toastr.warning('请选择节点');
             return;
         }
-        toastr["info"]("<div class=\"btn-group\" ><button id=\"confirm-delete-button\", type=\"button\" class=\"btn btn-primary\" onclick=\"deleteNote()\">Yes</button><button type=\"button\" class=\"btn btn-light\">No</button></div>", "确认是否删除");
+        toastr["error"]("<div class=\"btn-group\" ><button id=\"confirm-delete-button\", type=\"button\" class=\"btn btn-primary\" onclick=\"deleteNote()\">Yes</button><button type=\"button\" class=\"btn btn-light\">No</button></div>", "确认是否删除");
     });
 
     /**
