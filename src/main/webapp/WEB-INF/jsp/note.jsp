@@ -163,7 +163,7 @@
     //当浏览器大小变化时
     $(window).resize(function () {
         heightAdaptive();
-        if (typeof(editor) != "undefined") {
+        if (typeof (editor) != "undefined") {
             editor.resize();
         }
     });

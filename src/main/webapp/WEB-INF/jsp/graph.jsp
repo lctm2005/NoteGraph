@@ -175,8 +175,10 @@
                         });
                         loadGraph(nodes, links);
                         pagination(page.size, page.number + 1, page.totalPages, page.totalElements);
-                    }).catch(response => error(response));
-            }).catch(response => error(response));
+                    })
+                    .catch(response => error(response));
+            })
+            .catch(response => error(response));
     }
 
     var graphNodes;
