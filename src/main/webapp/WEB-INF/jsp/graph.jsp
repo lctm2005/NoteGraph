@@ -10,7 +10,7 @@
     <title>NoteGraph</title>
 
     <!-- Font awesome -->
-    <link rel="stylesheet" href="http://47.95.115.246/font-awesome-4.7.0/css/font-awesome.min.css"/>
+    <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <!-- Toastr -->
@@ -67,10 +67,10 @@
     </nav>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
     <div id="graph"></div>
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-end" id="pagination">
-        </ul>
-    </nav>
+<%--    <nav aria-label="Page navigation example">--%>
+<%--        <ul class="pagination justify-content-end" id="pagination">--%>
+<%--        </ul>--%>
+<%--    </nav>--%>
 </div>
 
 <script type="text/javascript">
@@ -143,7 +143,7 @@
      */
     function loadData(title, num) {
         num = num == null ? 0 : num;
-        axios.get('/api/note/search/findByTitleContains?title=' + title + '&page=' + num)
+        axios.get('/api/note/search/findByTitleContains?title=' + title + '&page=' + num + "&size=100")
             .then(response => {
                 var page = response.data.page;
                 if (page.totalElements == 0) {

@@ -10,11 +10,11 @@
     <title>Note</title>
 
     <!-- Font awesome -->
-    <link rel="stylesheet" href="http://47.95.115.246/font-awesome-4.7.0/css/font-awesome.min.css"/>
+    <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <!-- Editormd -->
-    <link rel="stylesheet" href="http://47.95.115.246/editor.md/css/editormd.css"/>
+    <link rel="stylesheet" href="http://editor.md.ipandao.com/css/editormd.css"/>
     <!-- Toastr -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
 
@@ -28,7 +28,7 @@
     <!-- Toastr -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <!-- Editormd -->
-    <script src="http://47.95.115.246/editor.md/editormd.js"></script>
+    <script src="http://editor.md.ipandao.com/editormd.min.js"></script>
 </head>
 
 
@@ -100,7 +100,7 @@
                     editor = editormd("editor", {
                         markdown: response.data.content,
                         editorTheme: "pastel-on-dark",
-                        path: "http://47.95.115.246/editor.md/lib/"
+                        path: "http://editor.md.ipandao.com/lib/"
                     });
                     // 30s 自动保存笔记
                     setInterval(saveNote(), 30 * 1000);
@@ -114,7 +114,7 @@
             editor = editormd("editor", {
                 markdown: "",
                 editorTheme: "pastel-on-dark",
-                path: "http://47.95.115.246/editor.md/lib/"
+                path: "http://editor.md.ipandao.com/lib/"
             });
         }
     });
