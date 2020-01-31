@@ -41,20 +41,25 @@
                             id="new_button">
                         <i class="fa fa-plus-circle" aria-hidden="true"></i> 新建笔记
                     </button>
-                    <button type="button" class="btn btn-secondary" data-toggle="tooltip"
+                    <button type="button" class="btn btn-primary" data-toggle="tooltip"
                             data-placement="bottom" title="编辑笔记"
                             id="edit_button">
-                        <i class="fa fa-pencil" aria-hidden="true"></i> 编辑笔记
+                        <i class="fa fa-pencil-alt" aria-hidden="true"></i> 编辑笔记
                     </button>
                     <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom"
                             title="删除笔记"
                             id="delete_button">
                         <i class="fa fa-trash" aria-hidden="true"></i> 删除笔记
                     </button>
-                    <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom"
+                    <button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="bottom"
                             title="展开笔记"
                             id="expand_button">
                         <i class="fa fa-expand" aria-hidden="true"></i> 展开笔记
+                    </button>
+                    <button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom"
+                            title="财报分析"
+                            id="financial_button">
+                        <i class="fa fa-dollar-sign" aria-hidden="true"></i>财报分析
                     </button>
                 </li>
             </ul>
@@ -397,6 +402,7 @@
         window.open(selectNode._links.edit.href);
     });
 
+
     /**
      * 删除笔记
      */
@@ -477,6 +483,13 @@
         if (e.keyCode === 13) {
             loadData($('#search_input').val(), null);
         }
+    });
+
+    /**
+     * 财报分析
+     */
+    $("#financial_button").bind('click', function () {
+        window.open("/financial");
     });
 
 </script>
