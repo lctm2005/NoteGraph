@@ -7,5 +7,5 @@ public interface FinancialRepository {
      * @param stockCode 股票代码
      * @return
      */
-    Financial get(Integer stockCode);
+    Financial get(String stockCode);
 }

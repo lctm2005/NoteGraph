@@ -37,4 +37,11 @@ public class PageController {
         return modelAndView;
     }
 
+    @RequestMapping("/financial")
+    public ModelAndView financial() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("financial");
+        return modelAndView;
+    }
+
 }
