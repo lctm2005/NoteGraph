@@ -14,7 +14,7 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <!-- Editormd -->
-    <link rel="stylesheet" href="http://editor.md.ipandao.com/css/editormd.css"/>
+    <link rel="stylesheet" href="http://notegraph.cn/editor.md/css/editormd.css"/>
     <!-- Toastr -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
 
@@ -28,7 +28,7 @@
     <!-- Toastr -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <!-- Editormd -->
-    <script src="http://editor.md.ipandao.com/editormd.min.js"></script>
+    <script src="http://notegraph.cn/editor.md/editormd.min.js"></script>
 </head>
 
 
