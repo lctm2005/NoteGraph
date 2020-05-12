@@ -18,6 +18,7 @@
     <properties>
         <java.version>1.8</java.version>
         <lombok.version>1.18.8</lombok.version>
+        <evernote.version>1.25.1</evernote.version>
         <commons-codec.version>1.6</commons-codec.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
@@ -92,6 +93,13 @@
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-ogm-bolt-driver</artifactId>
             <version>${neo4j-ogm.version}</version>
+        </dependency>
+
+        <!-- evernote -->
+        <dependency>
+            <groupId>com.evernote</groupId>
+            <artifactId>evernote-api</artifactId>
+            <version>${evernote.version}</version>
         </dependency>
 
         <!--Tool Dependency-->

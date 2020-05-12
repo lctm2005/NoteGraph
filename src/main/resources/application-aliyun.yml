@@ -5,7 +5,12 @@ spring:
       username: neo4j
       password: tiger
     mongodb:
-      uri: mongodb://47.95.115.246/note?autoConnectRetry=true
+      host: 47.95.115.246
+      port: 27017
+      authentication-database: admin
+      database: note
+      username: root
+      password: BaruHezf9[Labc
 
 
 
