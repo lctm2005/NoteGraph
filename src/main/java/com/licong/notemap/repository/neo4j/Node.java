@@ -25,4 +25,7 @@ public class Node {
 
     @Property
     private String title;
+
+    @Property
+    private String everNoteId;
 }

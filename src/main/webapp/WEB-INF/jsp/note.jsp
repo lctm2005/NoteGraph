@@ -100,7 +100,15 @@
                     editor = editormd("editor", {
                         markdown: response.data.content,
                         editorTheme: "pastel-on-dark",
-                        path: "http://editor.md.ipandao.com/lib/"
+                        path: "http://editor.md.ipandao.com/lib/",
+                        imageUpload: true,
+                        imageUploadURL: "${request.contextPath}/imageUpload",//后端图片上传的服务地址
+                        onload: function () {
+                            // 引入插件 执行监听方法
+                            editormd.loadPlugin("http://notegraph.cn/editor.md/plugins/image-handle-paste/image-handle-paste", function () {
+                                editor.imagePaste();
+                            });
+                        }
                     });
                     // 30s 自动保存笔记
                     setInterval(saveNote(), 30 * 1000);
@@ -114,7 +122,15 @@
             editor = editormd("editor", {
                 markdown: "",
                 editorTheme: "pastel-on-dark",
-                path: "http://editor.md.ipandao.com/lib/"
+                path: "http://editor.md.ipandao.com/lib/",
+                imageUpload: true,
+                imageUploadURL: "${request.contextPath}/imageUpload",//后端图片上传的服务地址
+                onload: function () {
+                    // 引入插件 执行监听方法
+                    editormd.loadPlugin("http://notegraph.cn/editor.md/plugins/image-handle-paste/image-handle-paste", function () {
+                        editor.imagePaste();
+                    });
+                }
             });
         }
     });
