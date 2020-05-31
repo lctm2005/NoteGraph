@@ -13,11 +13,11 @@ public class NoteResource extends ResourceSupport {
 
     private UUID noteId;
     private String title;
-    private String content;
+    private String markdown;
 
     public NoteResource(Note note) {
         this.noteId = note.getId();
         this.title = note.getTitle();
-        this.content = note.getContent();
+        this.markdown = note.getMarkdown();
     }
 }

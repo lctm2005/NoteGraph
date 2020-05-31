@@ -27,7 +27,7 @@ public class NoteResourceAssembler extends ResourceAssemblerSupport<Note, NoteRe
             NoteResource noteResource = new NoteResource();
             noteResource.setNoteId(entity.getId());
             noteResource.setTitle(entity.getTitle());
-            noteResource.setContent(entity.getContent());
+            noteResource.setMarkdown(entity.getMarkdown());
             Method editMethod = PageController.class.getMethod("edit", UUID.class);
             Method getMethod = NoteController.class.getMethod("get", UUID.class);
             noteResource.add(linkTo(editMethod, entity.getId()).withRel("edit"));

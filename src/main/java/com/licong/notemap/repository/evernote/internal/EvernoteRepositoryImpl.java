@@ -87,7 +87,7 @@ public class EvernoteRepositoryImpl implements EvernoteRepository {
             // Something was wrong with the note data
             // See EDAMErrorCode enumeration for error code explanation
             // http://dev.evernote.com/documentation/reference/Errors.html#Enum_EDAMErrorCode
-            log.error("EDAMUserException", edue);
+            log.error("EDAMUserException, errorCode:" + edue.getErrorCode() + ",message:" + edue.getParameter(), edue);
             return null;
         } catch (EDAMNotFoundException ednfe) {
             // Parent Notebook GUID doesn't correspond to an actual notebook

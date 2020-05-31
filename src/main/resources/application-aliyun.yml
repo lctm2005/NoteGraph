@@ -11,6 +11,9 @@ spring:
       database: note
       username: root
       password: BaruHezf9[Labc
+image:
+  storage: /usr/local/static/images/
+  system: linux
 
 
 

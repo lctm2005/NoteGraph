@@ -98,11 +98,12 @@
                 .then(response => {
                     $('#title').val(response.data.title);
                     editor = editormd("editor", {
-                        markdown: response.data.content,
+                        markdown: response.data.markdown,
                         editorTheme: "pastel-on-dark",
                         path: "http://editor.md.ipandao.com/lib/",
                         imageUpload: true,
-                        imageUploadURL: "${request.contextPath}/imageUpload",//后端图片上传的服务地址
+                        imageUploadURL: "/imageUpload",//后端图片上传的服务地址
+                        saveHTMLToTextarea : true,
                         onload: function () {
                             // 引入插件 执行监听方法
                             editormd.loadPlugin("http://notegraph.cn/editor.md/plugins/image-handle-paste/image-handle-paste", function () {
@@ -124,7 +125,8 @@
                 editorTheme: "pastel-on-dark",
                 path: "http://editor.md.ipandao.com/lib/",
                 imageUpload: true,
-                imageUploadURL: "${request.contextPath}/imageUpload",//后端图片上传的服务地址
+                imageUploadURL: "/imageUpload",//后端图片上传的服务地址
+                saveHTMLToTextarea : true,
                 onload: function () {
                     // 引入插件 执行监听方法
                     editormd.loadPlugin("http://notegraph.cn/editor.md/plugins/image-handle-paste/image-handle-paste", function () {
@@ -132,6 +134,8 @@
                     });
                 }
             });
+            // 30s 自动保存笔记
+            setInterval(saveNote(), 30 * 1000);
         }
     });
 
@@ -150,7 +154,8 @@
         if ("" == noteId) {
             axios.post('/api/note', {
                 title: $('#title').val(),
-                content: editor.getMarkdown()
+                markdown: editor.getMarkdown(),
+                html: editor.getHTML()
             }).then(response => {
                 //重定向
                 window.navigate('/note/' + response.data.id);
@@ -161,7 +166,8 @@
         } else {
             axios.put('/api/note/' + noteId, {
                 title: $('#title').val(),
-                content: editor.getMarkdown()
+                markdown: editor.getMarkdown(),
+                html: editor.getHTML()
             }).then(response => {
                 toastr.success('保存成功');
             }).catch(response => error(response));

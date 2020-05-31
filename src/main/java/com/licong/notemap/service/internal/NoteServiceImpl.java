@@ -12,20 +12,26 @@ import com.licong.notemap.service.domain.Note;
 import com.licong.notemap.util.CollectionUtils;
 import com.licong.notemap.util.NoteInnerLinkUtils;
 import com.licong.notemap.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class NoteServiceImpl implements NoteService {
-    private static final String EVER_NOTE_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM " +
-            "\"http://xml.evernote.com/pub/enml2.dtd\"><en-note>%s</en-note>";
+    private static final String EVER_NOTE_TEMPLATE = "<!DOCTYPE en-note \'http://xml.evernote.com/pub/enml2.dtd\'><html><head></head><body><en-note>";
+    private static final String EVER_NOTE_TEMPLATE_2 =
+            "<center style=\"display:none !important;visibility:collapse !important;height:0 !important;white-space:nowrap;width:100%;overflow:hidden\">";
+    private static final String EVER_NOTE_TEMPLATE_3 ="</center></en-note></body></html>";
 
     @Autowired
     private NodeRepository nodeRepository;
@@ -94,8 +100,12 @@ public class NoteServiceImpl implements NoteService {
             node.setEverNoteId(everNote.getGuid());
         } else {
             com.evernote.edam.type.Note everNote = evernoteRepository.get(UUID.fromString(node.getEverNoteId()));
+            if (null == everNote || !everNote.isActive()) {
+                everNote = new com.evernote.edam.type.Note();
+            }
             updateNote(note, everNote);
-            evernoteRepository.saveNote(everNote);
+            everNote = evernoteRepository.saveNote(everNote);
+            node.setEverNoteId(everNote.getGuid());
         }
         nodeRepository.save(node);
 
@@ -114,7 +124,7 @@ public class NoteServiceImpl implements NoteService {
         linkRepository.deleteAll(oldlinks);
 
         // 更新内容
-        noteContent.setMarkdown(note.getContent());
+        noteContent.setMarkdown(note.getMarkdown());
         noteContentRepository.save(noteContent);
 
         // 保存新关系
@@ -127,7 +137,13 @@ public class NoteServiceImpl implements NoteService {
 
     public void updateNote(Note note, com.evernote.edam.type.Note everNote) {
         everNote.setTitle(note.getTitle());
-        everNote.setContent(String.format(EVER_NOTE_TEMPLATE, note.getContent()));
+        try {
+            everNote.setContent(EVER_NOTE_TEMPLATE + note.getHtml() + EVER_NOTE_TEMPLATE_2
+                    + URLEncoder.encode(note.getMarkdown(), "UTF-8") + EVER_NOTE_TEMPLATE_3);
+        } catch (UnsupportedEncodingException e) {
+            log.error("", e);
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
 

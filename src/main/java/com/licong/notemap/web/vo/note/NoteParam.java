@@ -12,12 +12,15 @@ public class NoteParam {
     @NotEmpty
     private String title;
     @NotEmpty
-    private String content;
+    private String markdown;
+    @NotEmpty
+    private String html;
 
     public Note toNote() {
         Note note = new Note();
         note.setTitle(title);
-        note.setContent(content);
+        note.setMarkdown(markdown);
+        note.setHtml(html);
         return note;
     }
 }

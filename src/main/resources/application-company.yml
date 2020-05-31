@@ -6,6 +6,6 @@ spring:
       password: neo4j1
     mongodb:
       uri: mongodb://dev_mdb_standardexam:bG2AyltDEa6Z@m1.all.dev.mongod.sdp:34001,m3.all.dev.mongod.sdp:34001,m2.all.dev.mongod.sdp:34001/dev_mdb_standardexam?autoConnectRetry=true
-
-
-
+image:
+  storage: E:\deploy\static\images\
+  system: windows

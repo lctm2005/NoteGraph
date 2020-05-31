@@ -12,19 +12,22 @@ import java.util.UUID;
 public class Note {
     private UUID id;
     private String title;
-    private String content;
+    private String markdown;
+    private String html;
 
 
     public Note(Node node) {
         this.id = UUID.fromString(node.getUniqueId());
         this.title = node.getTitle();
-        this.content = "";
+        this.markdown = "";
+        this.html = "";
     }
 
     public Note(Node node, NoteContent noteContent) {
         this.id = UUID.fromString(node.getUniqueId());
         this.title = node.getTitle();
-        this.content = null == noteContent ? "" : noteContent.getMarkdown();
+        this.markdown = null == noteContent ? "" : noteContent.getMarkdown();
+        this.html = null == noteContent ? "" : noteContent.getHtml();
     }
 
     public void generateId() {

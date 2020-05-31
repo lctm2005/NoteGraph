@@ -15,4 +15,6 @@ public class NoteContent {
     private UUID uuid;
 
     private String markdown;
+
+    private String html;
 }
