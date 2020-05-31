@@ -26,8 +26,6 @@ public class PageController {
     public ModelAndView graph() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("graph");
-        Note note = evernoteRepository.get(UUID.fromString("05611950-12ef-4405-b78b-dd65a3fff169"));
-        System.out.println(JsonUtils.toJson(note));
         return modelAndView;
     }
 
