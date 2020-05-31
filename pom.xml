@@ -128,21 +128,15 @@
 
     <profiles>
         <profile>
-            <id>home</id>
-            <properties>
-                <env>home</env>
-            </properties>
-        </profile>
-        <profile>
             <id>aliyun</id>
             <properties>
                 <env>aliyun</env>
             </properties>
         </profile>
         <profile>
-            <id>company</id>
+            <id>dev</id>
             <properties>
-                <env>company</env>
+                <env>dev</env>
             </properties>
         </profile>
     </profiles>
