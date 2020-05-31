@@ -9,3 +9,4 @@ spring:
 image:
   storage: E:\deploy\static\images\
   system: windows
+hosts: http://debug.notegraph.cn

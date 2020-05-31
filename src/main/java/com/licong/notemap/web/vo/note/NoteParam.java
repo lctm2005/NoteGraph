@@ -13,14 +13,11 @@ public class NoteParam {
     private String title;
     @NotEmpty
     private String markdown;
-    @NotEmpty
-    private String html;
 
     public Note toNote() {
         Note note = new Note();
         note.setTitle(title);
         note.setMarkdown(markdown);
-        note.setHtml(html);
         return note;
     }
 }

@@ -7,6 +7,7 @@ import com.licong.notemap.repository.neo4j.Link;
 import com.licong.notemap.repository.neo4j.LinkRepository;
 import com.licong.notemap.repository.neo4j.Node;
 import com.licong.notemap.repository.neo4j.NodeRepository;
+import com.licong.notemap.service.EverNoteService;
 import com.licong.notemap.service.NoteService;
 import com.licong.notemap.service.domain.Note;
 import com.licong.notemap.util.CollectionUtils;
@@ -28,10 +29,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class NoteServiceImpl implements NoteService {
-    private static final String EVER_NOTE_TEMPLATE = "<!DOCTYPE en-note \'http://xml.evernote.com/pub/enml2.dtd\'><html><head></head><body><en-note>";
-    private static final String EVER_NOTE_TEMPLATE_2 =
-            "<center style=\"display:none !important;visibility:collapse !important;height:0 !important;white-space:nowrap;width:100%;overflow:hidden\">";
-    private static final String EVER_NOTE_TEMPLATE_3 ="</center></en-note></body></html>";
 
     @Autowired
     private NodeRepository nodeRepository;
@@ -43,7 +40,7 @@ public class NoteServiceImpl implements NoteService {
     private NoteContentRepository noteContentRepository;
 
     @Autowired
-    private EvernoteRepository evernoteRepository;
+    private EverNoteService everNoteService;
 
 
     @Override
@@ -92,21 +89,11 @@ public class NoteServiceImpl implements NoteService {
         }
         node.setTitle(note.getTitle());
 
-        // 判断是否存在EverNote，不存在创建，存在更新
-        if (StringUtils.isEmpty(node.getEverNoteId())) {
-            com.evernote.edam.type.Note everNote = new com.evernote.edam.type.Note();
-            updateNote(note, everNote);
-            everNote = evernoteRepository.saveNote(everNote);
-            node.setEverNoteId(everNote.getGuid());
-        } else {
-            com.evernote.edam.type.Note everNote = evernoteRepository.get(UUID.fromString(node.getEverNoteId()));
-            if (null == everNote || !everNote.isActive()) {
-                everNote = new com.evernote.edam.type.Note();
-            }
-            updateNote(note, everNote);
-            everNote = evernoteRepository.saveNote(everNote);
-            node.setEverNoteId(everNote.getGuid());
-        }
+        // 保存印象笔记
+        com.evernote.edam.type.Note everNote = everNoteService.save(node.getEverNoteId(), note);
+
+        // 更新Note节点中的印象笔记ID
+        node.setEverNoteId(everNote.getGuid());
         nodeRepository.save(node);
 
         Optional<NoteContent> noteContentOptional = noteContentRepository.findById(note.getId());
@@ -135,16 +122,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
 
-    public void updateNote(Note note, com.evernote.edam.type.Note everNote) {
-        everNote.setTitle(note.getTitle());
-        try {
-            everNote.setContent(EVER_NOTE_TEMPLATE + note.getHtml() + EVER_NOTE_TEMPLATE_2
-                    + URLEncoder.encode(note.getMarkdown(), "UTF-8") + EVER_NOTE_TEMPLATE_3);
-        } catch (UnsupportedEncodingException e) {
-            log.error("", e);
-            throw new RuntimeException(e.getMessage());
-        }
-    }
+
 
 
     /**

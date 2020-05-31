@@ -103,7 +103,6 @@
                         path: "http://editor.md.ipandao.com/lib/",
                         imageUpload: true,
                         imageUploadURL: "/imageUpload",//后端图片上传的服务地址
-                        saveHTMLToTextarea : true,
                         onload: function () {
                             // 引入插件 执行监听方法
                             editormd.loadPlugin("http://notegraph.cn/editor.md/plugins/image-handle-paste/image-handle-paste", function () {
@@ -126,7 +125,6 @@
                 path: "http://editor.md.ipandao.com/lib/",
                 imageUpload: true,
                 imageUploadURL: "/imageUpload",//后端图片上传的服务地址
-                saveHTMLToTextarea : true,
                 onload: function () {
                     // 引入插件 执行监听方法
                     editormd.loadPlugin("http://notegraph.cn/editor.md/plugins/image-handle-paste/image-handle-paste", function () {
@@ -155,7 +153,6 @@
             axios.post('/api/note', {
                 title: $('#title').val(),
                 markdown: editor.getMarkdown(),
-                html: editor.getHTML()
             }).then(response => {
                 //重定向
                 window.navigate('/note/' + response.data.id);
@@ -167,7 +164,6 @@
             axios.put('/api/note/' + noteId, {
                 title: $('#title').val(),
                 markdown: editor.getMarkdown(),
-                html: editor.getHTML()
             }).then(response => {
                 toastr.success('保存成功');
             }).catch(response => error(response));

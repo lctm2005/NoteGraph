@@ -4,6 +4,7 @@ import com.licong.notemap.util.StringUtils;
 import com.licong.notemap.util.filemanager.FileManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,10 +31,13 @@ public class ImageController {
     @Value("${image.system}")
     private String imageSystem;
 
+    @Value("${hosts}")
+    private String hosts;
+
 
     @RequestMapping("/imageUpload")
     @ResponseBody
-    public Map<String, Object> saveImage(@RequestParam("editormd-image-file") MultipartFile file) {
+    public Map<String, Object> saveImage(@RequestParam("editormd-image-file") MultipartFile file, HttpRequest request) {
         Map<String, Object> result = new HashMap<>();
         FileManager fileManager = new FileManager();
         String fileName = file.getOriginalFilename();
@@ -53,7 +57,7 @@ public class ImageController {
                 Process proc = runtime.exec(command);
             }
 
-            result.put("url", IMAGE_PARENT_URI + fileName);//图片回显地址，即文件存放地址，应为虚拟路径
+            result.put("url", hosts + IMAGE_PARENT_URI + fileName);//图片回显地址，即文件存放地址，应为虚拟路径
             result.put("success", 1);//图片上传成功的信息码
             result.put("message", "upload success!");//信息
         } catch (IOException e) {

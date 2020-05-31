@@ -40,19 +40,6 @@ public class PageController {
         return modelAndView;
     }
 
-    public static void main(String[] args) {
-        System.out.println(StringEscapeUtils.escapeJava("<!DOCTYPE en-note \'http://xml.evernote.com/pub/enml2.dtd\'>\n" +
-                "<html>\n" +
-                "<head></head>\n" +
-                "<body>\n" +
-                "<en-note>\n" +
-                "<p>sadf</p>\n" +
-                "<center style=\"display:none !important;visibility:collapse !important;height:0 !important;white-space:nowrap;width:100%;overflow:hidden\">sadf</center>\n" +
-                "</en-note>\n" +
-                "</body>\n" +
-                "</html>"));
-    }
-
     @RequestMapping("/note")
     public ModelAndView newNote() {
         ModelAndView modelAndView = new ModelAndView();
