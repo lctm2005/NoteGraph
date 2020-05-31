@@ -52,6 +52,9 @@ public class EverNoteServiceImpl implements EverNoteService {
      */
     private void updateEverNoteAttribute(Note everNote) {
         NoteAttributes noteAttributes = everNote.getAttributes();
+        if(null == noteAttributes){
+            noteAttributes = new NoteAttributes();
+        }
         noteAttributes.setContentClass("yinxiang.markdown");
         everNote.setAttributes(noteAttributes);
     }

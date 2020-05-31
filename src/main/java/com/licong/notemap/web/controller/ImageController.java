@@ -37,7 +37,7 @@ public class ImageController {
 
     @RequestMapping("/imageUpload")
     @ResponseBody
-    public Map<String, Object> saveImage(@RequestParam("editormd-image-file") MultipartFile file, HttpRequest request) {
+    public Map<String, Object> saveImage(@RequestParam("editormd-image-file") MultipartFile file) {
         Map<String, Object> result = new HashMap<>();
         FileManager fileManager = new FileManager();
         String fileName = file.getOriginalFilename();
