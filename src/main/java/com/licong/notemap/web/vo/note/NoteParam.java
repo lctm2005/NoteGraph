@@ -2,6 +2,7 @@ package com.licong.notemap.web.vo.note;
 
 import com.licong.notemap.service.domain.Note;
 import lombok.Data;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -16,8 +17,8 @@ public class NoteParam {
 
     public Note toNote() {
         Note note = new Note();
-        note.setTitle(title);
-        note.setMarkdown(markdown);
+        note.setTitle(StringEscapeUtils.escapeEcmaScript(title));
+        note.setMarkdown(StringEscapeUtils.escapeEcmaScript(markdown));
         return note;
     }
 }

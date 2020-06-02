@@ -28,7 +28,7 @@ public class EverNoteServiceImpl implements EverNoteService {
     @Autowired
     private EvernoteRepository evernoteRepository;
 
-    public com.evernote.edam.type.Note save(String everNoteId, com.licong.notemap.service.domain.Note note)  {
+    public com.evernote.edam.type.Note save(String everNoteId, com.licong.notemap.service.domain.Note note) {
         // 判断是否存在EverNote，不存在创建，存在更新
         Note everNote;
         if (StringUtils.isNotEmpty(everNoteId)) {
@@ -52,7 +52,7 @@ public class EverNoteServiceImpl implements EverNoteService {
      */
     private void updateEverNoteAttribute(Note everNote) {
         NoteAttributes noteAttributes = everNote.getAttributes();
-        if(null == noteAttributes){
+        if (null == noteAttributes) {
             noteAttributes = new NoteAttributes();
         }
         noteAttributes.setContentClass("yinxiang.markdown");
@@ -65,13 +65,13 @@ public class EverNoteServiceImpl implements EverNoteService {
      * @param note     笔记
      * @param everNote 印象笔记
      */
-    private void updateEverNoteContent(com.licong.notemap.service.domain.Note note, Note everNote)  {
+    private void updateEverNoteContent(com.licong.notemap.service.domain.Note note, Note everNote) {
         everNote.setTitle(note.getTitle());
         try {
             everNote.setContent(HEADER
                     + EN_NOTE_START
                     + CENTER_START
-                    + URLEncoder.encode(note.getMarkdown(), "UTF-8").replace( "+", "%20" ).replace("*", "%2A").replace( "%7E", "~" )
+                    + (StringUtils.isEmpty(note.getMarkdown()) ? "" : URLEncoder.encode(note.getMarkdown(), "UTF-8").replace("+", "%20").replace("*", "%2A").replace("%7E", "~"))
                     + CENTER_END
                     + EN_NOTE_END);
         } catch (UnsupportedEncodingException e) {
