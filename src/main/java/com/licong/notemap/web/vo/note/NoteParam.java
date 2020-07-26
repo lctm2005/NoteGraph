@@ -17,8 +17,8 @@ public class NoteParam {
 
     public Note toNote() {
         Note note = new Note();
-        note.setTitle(StringEscapeUtils.escapeEcmaScript(title));
-        note.setMarkdown(StringEscapeUtils.escapeEcmaScript(markdown));
+        note.setTitle(title);
+        note.setMarkdown(markdown);
         return note;
     }
 }

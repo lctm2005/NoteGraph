@@ -1,18 +1,23 @@
 package com.licong.notemap.repository.evernote.internal;
 
 import com.evernote.edam.error.EDAMNotFoundException;
+import com.evernote.edam.error.EDAMSystemException;
 import com.evernote.edam.error.EDAMUserException;
 import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.notestore.NoteStore;
 import com.evernote.edam.notestore.SyncState;
 import com.evernote.edam.type.Note;
+import com.evernote.edam.type.User;
+import com.evernote.edam.userstore.UserStore;
+import com.evernote.thrift.TException;
 import com.evernote.thrift.protocol.TBinaryProtocol;
 import com.evernote.thrift.transport.THttpClient;
 import com.evernote.thrift.transport.TTransportException;
 import com.licong.notemap.repository.evernote.EvernoteRepository;
 import com.licong.notemap.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -23,17 +28,22 @@ import java.util.UUID;
 @Slf4j
 @Repository
 public class EvernoteRepositoryImpl implements EvernoteRepository {
-    private static final String AUTH_TOKEN = "S=s31:U=5a2e79:E=1727e5ce4d9:C=1725a505e60:P=1cd:A=en-devtoken:V=2:H=53229a86ad7b51f47f4374068d969dc8";
+    private static final String AUTH_TOKEN = "S=s31:U=5a2e79:E=172dabeb71a:C=172b6b231d8:P=1cd:A=en-devtoken:V=2:H=8d10a1f653a40a619a74e89fb73b923c";
     private static final String NOTE_STORE_URL = "https://app.yinxiang.com/shard/s31/notestore";
     private static final String USER_AGENT = "JamesLee/EverNoteMap/1.0.0";
 
+    private static final String CONSUMER_KEY = "";
+
     private NoteStore.Client noteStore;
+
+    private UserStore.Client userStore;
 
     public EvernoteRepositoryImpl() throws TTransportException {
         THttpClient noteStoreTrans = new THttpClient(NOTE_STORE_URL);
         noteStoreTrans.setCustomHeader("User-Agent", USER_AGENT);
         TBinaryProtocol noteStoreProt = new TBinaryProtocol(noteStoreTrans);
         noteStore = new NoteStore.Client(noteStoreProt, noteStoreProt);
+        userStore = new UserStore.Client(noteStoreProt, noteStoreProt);
     }
 
     public Note get(UUID noteId) {
@@ -98,5 +108,19 @@ public class EvernoteRepositoryImpl implements EvernoteRepository {
             log.error("", e);
             return null;
         }
+    }
+
+    @Override
+    public User getUser(String accessToken) {
+        try {
+            return userStore.getUser(accessToken);
+        } catch (EDAMUserException e) {
+            log.error("EDAMUserException:" + e.getMessage(), e);
+        } catch (EDAMSystemException e) {
+            log.error("EDAMSystemException:" + e.getMessage(), e);
+        } catch (TException e) {
+            log.error("TException:" + e.getMessage(), e);
+        }
+        return null;
     }
 }

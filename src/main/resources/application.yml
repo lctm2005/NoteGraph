@@ -13,6 +13,8 @@ spring:
   data:
     rest:
       base-path: /api
+  session:
+    store-type: redis
 logging:
   level.*: ERROR
 

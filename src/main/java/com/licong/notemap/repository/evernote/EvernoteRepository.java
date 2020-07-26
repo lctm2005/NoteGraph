@@ -4,6 +4,7 @@ import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.notestore.SyncState;
 import com.evernote.edam.type.Note;
+import com.evernote.edam.type.User;
 
 import java.util.UUID;
 
@@ -21,4 +22,6 @@ public interface EvernoteRepository {
     String getNoteContent(UUID noteId);
 
     Note saveNote(Note note);
+
+    User getUser(String accessToken);
 }

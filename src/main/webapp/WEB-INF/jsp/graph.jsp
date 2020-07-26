@@ -30,52 +30,66 @@
 <body>
 
 <div class="container-fluid">
-    <nav class="navbar navbar-expand-lg ">
-        <a class="navbar-brand" href="#">知识地图</a>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom"
-                            title="新建笔记"
-                            id="new_button">
-                        <i class="fa fa-plus-circle" aria-hidden="true"></i> 新建笔记
+    <a class="navbar-brand" href="#">NoteGraph</a>
+    <div class="row">
+        <div class="col-2" id="menu">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action ">
+                    Default Notebook
+                    <button type="button" class="btn btn-danger btn-small" data-toggle="tooltip" data-placement="bottom"
+                            style="float: right"
+                            title="删除笔记本"
+                            id="delete_notebook_button">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
                     </button>
-                    <button type="button" class="btn btn-primary" data-toggle="tooltip"
-                            data-placement="bottom" title="编辑笔记"
-                            id="edit_button">
-                        <i class="fa fa-pencil-alt" aria-hidden="true"></i> 编辑笔记
-                    </button>
-                    <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom"
-                            title="删除笔记"
-                            id="delete_button">
-                        <i class="fa fa-trash" aria-hidden="true"></i> 删除笔记
-                    </button>
-                    <button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="bottom"
-                            title="展开笔记"
-                            id="expand_button">
-                        <i class="fa fa-expand" aria-hidden="true"></i> 展开笔记
-                    </button>
-                    <button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom"
-                            title="财报分析"
-                            id="financial_button">
-                        <i class="fa fa-dollar-sign" aria-hidden="true"></i>财报分析
-                    </button>
-                </li>
-            </ul>
-            <div class="form-inline my-2 my-lg-0" id="search_area">
-                <input class="form-control mr-sm-2" type="search" id="search_input" placeholder="Search"
-                       aria-label="Search">
-                <button class="btn btn-success my-2 my-sm-0" id="search_button" type="button">搜索</button>
+                </a>
             </div>
         </div>
-    </nav>
-    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-    <div id="graph"></div>
-<%--    <nav aria-label="Page navigation example">--%>
-<%--        <ul class="pagination justify-content-end" id="pagination">--%>
-<%--        </ul>--%>
-<%--    </nav>--%>
+        <div class="col-10">
+            <nav class="navbar navbar-expand-lg ">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom"
+                                    title="新建笔记"
+                                    id="new_button">
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn btn-primary" data-toggle="tooltip"
+                                    data-placement="bottom" title="编辑笔记"
+                                    id="edit_button">
+                                <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom"
+                                    title="删除笔记"
+                                    id="delete_button">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="bottom"
+                                    title="展开笔记"
+                                    id="expand_button">
+                                <i class="fa fa-expand" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom"
+                                    title="财报分析"
+                                    id="financial_button">
+                                <i class="fa fa-dollar-sign" aria-hidden="true"></i>
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="form-inline my-2 my-lg-0" id="search_area">
+                        <input class="form-control mr-sm-2" type="search" id="search_input" placeholder="Search"
+                               aria-label="Search">
+                        <button class="btn btn-success my-2 my-sm-0" id="search_button" type="button">搜索</button>
+                    </div>
+                </div>
+            </nav>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="graph"></div>
+        </div>
+    </div>
+
+
 </div>
 
 <script type="text/javascript">
@@ -113,6 +127,16 @@
      * 初始化地图高度
      */
     adjustGraphWithHeight();
+
+    /**
+     * 自适应笔记列表高度
+     */
+    function heightAdaptive() {
+        $('#menu').height($(window).height());
+    }
+
+    heightAdaptive();
+
 
     /**
      * 创建地图
@@ -216,7 +240,7 @@
                     layout: 'force',
                     data: nodes,
                     links: links,
-                    roam: false,
+                    roam: true,
                     draggable: true,
                     backgroundColor: '#f5ff10',
                     force: {
@@ -279,6 +303,7 @@
      */
     $(window).resize(function () {
         adjustGraphWithHeight();
+        heightAdaptive();
         myChart.resize();
     });
 

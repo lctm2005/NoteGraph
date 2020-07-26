@@ -36,14 +36,11 @@
 <div id="main">
     <!-- 笔记标题 -->
     <div class="input-group input-group-lg">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="inputGroup-sizing-lg">标题</span>
-        </div>
         <input type="text" class="form-control" aria-label="Title"
                aria-describedby="inputGroup-sizing-lg" id="title">
         <!-- 删除按钮 -->
-        <button id="delete-note-button" type="button" class="btn btn-danger btn-sm">
-            <i class="fa fa-trash" aria-hidden="true"></i> 删除笔记
+        <button id="delete-note-button" type="button" class="btn btn-danger">
+            <i class="fa fa-trash" aria-hidden="true"></i>
         </button>
     </div>
     <!-- 笔记内容 -->
