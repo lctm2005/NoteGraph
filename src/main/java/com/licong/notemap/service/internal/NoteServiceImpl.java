@@ -1,6 +1,5 @@
 package com.licong.notemap.service.internal;
 
-import com.licong.notemap.repository.evernote.EvernoteRepository;
 import com.licong.notemap.repository.mongo.NoteContent;
 import com.licong.notemap.repository.mongo.NoteContentRepository;
 import com.licong.notemap.repository.neo4j.Link;
@@ -13,15 +12,15 @@ import com.licong.notemap.service.domain.Note;
 import com.licong.notemap.util.CollectionUtils;
 import com.licong.notemap.util.NoteInnerLinkUtils;
 import com.licong.notemap.util.StringUtils;
+import com.licong.notemap.web.security.EvernoteAccessToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -90,7 +89,8 @@ public class NoteServiceImpl implements NoteService {
         node.setTitle(note.getTitle());
 
         // 保存印象笔记
-        com.evernote.edam.type.Note everNote = everNoteService.save(node.getEverNoteId(), note);
+        EvernoteAccessToken accessToken = (EvernoteAccessToken) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        com.evernote.edam.type.Note everNote = everNoteService.save(node.getEverNoteId(), note, accessToken);
 
         // 更新Note节点中的印象笔记ID
         node.setEverNoteId(everNote.getGuid());

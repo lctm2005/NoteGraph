@@ -5,6 +5,8 @@ import com.evernote.edam.type.NoteAttributes;
 import com.licong.notemap.repository.evernote.EvernoteRepository;
 import com.licong.notemap.service.EverNoteService;
 import com.licong.notemap.util.StringUtils;
+import com.licong.notemap.web.security.EvernoteAccessToken;
+import com.licong.notemap.web.security.EvernoteAuthentication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,11 +30,11 @@ public class EverNoteServiceImpl implements EverNoteService {
     @Autowired
     private EvernoteRepository evernoteRepository;
 
-    public com.evernote.edam.type.Note save(String everNoteId, com.licong.notemap.service.domain.Note note) {
+    public com.evernote.edam.type.Note save(String everNoteId, com.licong.notemap.service.domain.Note note, EvernoteAccessToken evernoteAccessToken) {
         // 判断是否存在EverNote，不存在创建，存在更新
         Note everNote;
         if (StringUtils.isNotEmpty(everNoteId)) {
-            everNote = evernoteRepository.get(UUID.fromString(everNoteId));
+            everNote = evernoteRepository.get(UUID.fromString(everNoteId), evernoteAccessToken.getNoteStoreUrl(), evernoteAccessToken.getToken());
             if (null == everNote || !everNote.isActive()) {
                 everNote = new Note();
             }
@@ -41,7 +43,7 @@ public class EverNoteServiceImpl implements EverNoteService {
         }
         updateEverNoteContent(note, everNote);
         updateEverNoteAttribute(everNote);
-        return evernoteRepository.saveNote(everNote);
+        return evernoteRepository.saveNote(everNote, evernoteAccessToken.getNoteStoreUrl(), evernoteAccessToken.getToken());
     }
 
 

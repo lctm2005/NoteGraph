@@ -3,6 +3,7 @@ package com.licong.notemap.web.controller;
 import com.licong.notemap.service.NoteService;
 import com.licong.notemap.service.domain.Note;
 import com.licong.notemap.util.CollectionUtils;
+import com.licong.notemap.web.security.EvernoteAccessToken;
 import com.licong.notemap.web.vo.note.NoteParam;
 import com.licong.notemap.web.vo.note.NoteResource;
 import com.licong.notemap.web.vo.note.NoteResourceAssembler;
@@ -14,6 +15,7 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -79,7 +81,7 @@ public class NoteController {
         if (CollectionUtils.isEmpty(notes)) {
             return Collections.emptyList();
         } else {
-           return notes.stream().map(e -> noteResourceAssembler.toResource(e)).collect(Collectors.toList());
+            return notes.stream().map(e -> noteResourceAssembler.toResource(e)).collect(Collectors.toList());
         }
     }
 }

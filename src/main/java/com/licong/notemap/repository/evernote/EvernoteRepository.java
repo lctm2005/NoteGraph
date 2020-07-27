@@ -13,15 +13,13 @@ import java.util.UUID;
  */
 public interface EvernoteRepository {
 
-    Note get(UUID noteId);
+    Note get(UUID noteId, String noteStoreUrl, String accessToken);
 
-    SyncState getSyncState();
+    SyncState getSyncState(String noteStoreUrl, String accessToken);
 
-    NoteList findNotes(NoteFilter noteFilter, Integer offset, Integer limit);
+    NoteList findNotes(NoteFilter noteFilter, Integer offset, Integer limit, String noteStoreUrl, String accessToken);
 
-    String getNoteContent(UUID noteId);
+    String getNoteContent(UUID noteId, String noteStoreUrl, String accessToken);
 
-    Note saveNote(Note note);
-
-    User getUser(String accessToken);
+    Note saveNote(Note note, String noteStoreUrl, String accessToken);
 }

@@ -18,6 +18,7 @@ public class EvernoteAuthenticationFailureHandler implements AuthenticationFailu
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+        // 如果认证失败就再发起一次认证
         evernoteAuthenticationEntryPoint.commence(request, response, exception);
     }
 }

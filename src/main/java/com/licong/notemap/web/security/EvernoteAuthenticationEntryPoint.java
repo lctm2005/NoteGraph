@@ -1,6 +1,5 @@
 package com.licong.notemap.web.security;
 
-import com.licong.notemap.service.LoginService;
 import com.licong.notemap.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.scribe.model.Token;
@@ -23,7 +22,7 @@ import java.io.IOException;
 public class EvernoteAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Autowired
-    private LoginService loginService;
+    private EvernoteLoginService evernoteLoginService;
 
     /**
      * 开启一次认证流程
@@ -38,12 +37,14 @@ public class EvernoteAuthenticationEntryPoint implements AuthenticationEntryPoin
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         // 请求临时Token
         log.debug("请求临时Token");
-        Token requestToken = loginService.getRequestToken("http://localhost:8080/accessToken");
+        Token requestToken = evernoteLoginService.getRequestToken(
+                request.getRequestURL().substring(0, request.getRequestURL().length() - request.getRequestURI().length())
+                        + EvernoteAuthenticationConstant.ACCESS_TOKEN_URI);
         log.debug("临时Token:" + JsonUtils.toJson(requestToken));
         request.getSession().setAttribute("requestToken", requestToken);
 
         // 请求用户认证
         log.debug("请求用户认证");
-        response.sendRedirect(loginService.getUserOAuth(requestToken));
+        response.sendRedirect(evernoteLoginService.getUserOAuth(requestToken));
     }
 }

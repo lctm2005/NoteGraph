@@ -1,29 +1,28 @@
 package com.licong.notemap.web.security;
 
+import com.licong.notemap.repository.evernote.EvernoteRepository;
 import com.licong.notemap.util.JsonUtils;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Slf4j
+@AllArgsConstructor
 public class EvernoteAuthenticationProvider implements AuthenticationProvider {
-
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        // TODO 获取用户信息
-        UserDetails userDetails = new User(authentication.getPrincipal().toString(),
-                "",
-                true, true, true, true,
+        EvernoteAuthentication evernoteAuthentication = (EvernoteAuthentication) authentication;
+        EvernoteAccessToken evernoteAccessToken = evernoteAuthentication.getCredentials();
+
+        EvernoteUserDetails userDetails = new EvernoteUserDetails(evernoteAccessToken,
                 AuthorityUtils.commaSeparatedStringToAuthorityList("USER"));
-        log.debug("获取用户信息:" + JsonUtils.toJson(userDetails));
-        // TODO 处理过期
-        EvernoteAuthentication authenticationResult = new EvernoteAuthentication(userDetails, userDetails.getAuthorities());
+
+        EvernoteAuthentication authenticationResult = new EvernoteAuthentication(userDetails, evernoteAccessToken);
         log.debug("认证通过:" + JsonUtils.toJson(authenticationResult));
         return authenticationResult;
     }

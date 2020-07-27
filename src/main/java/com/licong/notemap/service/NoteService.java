@@ -1,6 +1,7 @@
 package com.licong.notemap.service;
 
 import com.licong.notemap.service.domain.Note;
+import com.licong.notemap.web.security.EvernoteAccessToken;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,7 +16,7 @@ public interface NoteService {
 
     Optional<Note> findById(UUID noteId);
 
-    Note save(Note note) ;
+    Note save(Note note);
 
     Optional<Note> delete(UUID noteId);
 

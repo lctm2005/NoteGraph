@@ -1,11 +1,12 @@
 package com.licong.notemap.web.security;
 
-import com.licong.notemap.service.LoginService;
 import com.licong.notemap.util.JsonUtils;
 import com.licong.notemap.util.StringUtils;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.scribe.exceptions.OAuthException;
 import org.scribe.model.Token;
+import org.scribe.utils.OAuthEncoder;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -17,39 +18,46 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.licong.notemap.web.security.EvernoteAuthenticationConstant.*;
 
 @Slf4j
 @Setter
 public class EvernoteAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    private LoginService loginService;
+    private EvernoteLoginService evernoteLoginService;
 
     public EvernoteAuthenticationFilter() {
-        super(new AntPathRequestMatcher("/accessToken"));
+        super(new AntPathRequestMatcher(EvernoteAuthenticationConstant.ACCESS_TOKEN_URI));
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        if (null == request.getSession()) {
+        HttpSession session = request.getSession();
+        if (null == session) {
             log.debug(request.getRequestURL() + "session is null");
             return null;
         }
-        HttpSession session = request.getSession();
-        Token requestToken = (Token) request.getSession().getAttribute("requestToken");
+        Token requestToken = (Token) session.getAttribute("requestToken");
         if (null == requestToken) {
             throw new AuthenticationServiceException("requestToken is null");
         }
-        String oauthVerifier = request.getParameter("oauth_verifier");
+        String oauthVerifier = request.getParameter(EvernoteAuthenticationConstant.OAUTH_VERIFIER_PARAM);
         // 取回 Access Token
         if (StringUtils.isEmpty(oauthVerifier)) {
             throw new AuthenticationServiceException("oauthVerifier is empty");
         }
-        Token accessToken = loginService.getAccessToken(requestToken, oauthVerifier, request.getRequestURL().toString());
-//        session.setAttribute("accessToken", accessToken);
+        Token accessToken = evernoteLoginService.getAccessToken(requestToken, oauthVerifier, request.getRequestURL().toString());
+        EvernoteAccessToken evernoteAccessToken = new EvernoteAccessToken(accessToken);
 
-        Authentication authentication = new EvernoteAuthentication(accessToken);
+
+        EvernoteAuthentication authentication = new EvernoteAuthentication(evernoteAccessToken);
         log.debug(request.getRequestURL() + "提取认证信息成功, accessToken:" + JsonUtils.toJson(accessToken));
         return this.getAuthenticationManager().authenticate(authentication);
     }
+
+
 
 }

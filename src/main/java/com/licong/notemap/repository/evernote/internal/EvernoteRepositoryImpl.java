@@ -16,8 +16,8 @@ import com.evernote.thrift.transport.THttpClient;
 import com.evernote.thrift.transport.TTransportException;
 import com.licong.notemap.repository.evernote.EvernoteRepository;
 import com.licong.notemap.util.StringUtils;
+import com.licong.notemap.web.security.EvernoteAuthenticationConstant;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -28,27 +28,11 @@ import java.util.UUID;
 @Slf4j
 @Repository
 public class EvernoteRepositoryImpl implements EvernoteRepository {
-    private static final String AUTH_TOKEN = "S=s31:U=5a2e79:E=172dabeb71a:C=172b6b231d8:P=1cd:A=en-devtoken:V=2:H=8d10a1f653a40a619a74e89fb73b923c";
-    private static final String NOTE_STORE_URL = "https://app.yinxiang.com/shard/s31/notestore";
-    private static final String USER_AGENT = "JamesLee/EverNoteMap/1.0.0";
 
-    private static final String CONSUMER_KEY = "";
-
-    private NoteStore.Client noteStore;
-
-    private UserStore.Client userStore;
-
-    public EvernoteRepositoryImpl() throws TTransportException {
-        THttpClient noteStoreTrans = new THttpClient(NOTE_STORE_URL);
-        noteStoreTrans.setCustomHeader("User-Agent", USER_AGENT);
-        TBinaryProtocol noteStoreProt = new TBinaryProtocol(noteStoreTrans);
-        noteStore = new NoteStore.Client(noteStoreProt, noteStoreProt);
-        userStore = new UserStore.Client(noteStoreProt, noteStoreProt);
-    }
-
-    public Note get(UUID noteId) {
+    public Note get(UUID noteId, String noteStoreUrl, String accessToken) {
         try {
-            return noteStore.getNote(AUTH_TOKEN, noteId.toString(), true, true, true, true);
+            NoteStore.Client noteStore = buildNoteStore(noteStoreUrl);
+            return noteStore.getNote(accessToken, noteId.toString(), true, true, true, true);
         } catch (Exception e) {
             log.error("", e);
             return null;
@@ -56,9 +40,10 @@ public class EvernoteRepositoryImpl implements EvernoteRepository {
     }
 
     @Override
-    public SyncState getSyncState() {
+    public SyncState getSyncState(String noteStoreUrl, String accessToken) {
         try {
-            return noteStore.getSyncState(AUTH_TOKEN);
+            NoteStore.Client noteStore = buildNoteStore(noteStoreUrl);
+            return noteStore.getSyncState(accessToken);
         } catch (Exception e) {
             log.error("", e);
             return null;
@@ -66,9 +51,10 @@ public class EvernoteRepositoryImpl implements EvernoteRepository {
     }
 
     @Override
-    public NoteList findNotes(NoteFilter noteFilter, Integer offset, Integer limit) {
+    public NoteList findNotes(NoteFilter noteFilter, Integer offset, Integer limit, String noteStoreUrl, String accessToken) {
         try {
-            return noteStore.findNotes(AUTH_TOKEN, noteFilter, offset, limit);
+            NoteStore.Client noteStore = buildNoteStore(noteStoreUrl);
+            return noteStore.findNotes(accessToken, noteFilter, offset, limit);
         } catch (Exception e) {
             log.error("", e);
             return null;
@@ -76,9 +62,10 @@ public class EvernoteRepositoryImpl implements EvernoteRepository {
     }
 
     @Override
-    public String getNoteContent(UUID noteId) {
+    public String getNoteContent(UUID noteId, String noteStoreUrl, String accessToken) {
         try {
-            return noteStore.getNoteContent(AUTH_TOKEN, noteId.toString());
+            NoteStore.Client noteStore = buildNoteStore(noteStoreUrl);
+            return noteStore.getNoteContent(accessToken, noteId.toString());
         } catch (Exception e) {
             log.error("", e);
             return null;
@@ -86,12 +73,13 @@ public class EvernoteRepositoryImpl implements EvernoteRepository {
     }
 
     @Override
-    public Note saveNote(Note note) {
+    public Note saveNote(Note note, String noteStoreUrl, String accessToken) {
         try {
+            NoteStore.Client noteStore = buildNoteStore(noteStoreUrl);
             if (StringUtils.isEmpty(note.getGuid())) {
-                return noteStore.createNote(AUTH_TOKEN, note);
+                return noteStore.createNote(accessToken, note);
             } else {
-                return noteStore.updateNote(AUTH_TOKEN, note);
+                return noteStore.updateNote(accessToken, note);
             }
         } catch (EDAMUserException edue) {
             // Something was wrong with the note data
@@ -110,17 +98,15 @@ public class EvernoteRepositoryImpl implements EvernoteRepository {
         }
     }
 
-    @Override
-    public User getUser(String accessToken) {
-        try {
-            return userStore.getUser(accessToken);
-        } catch (EDAMUserException e) {
-            log.error("EDAMUserException:" + e.getMessage(), e);
-        } catch (EDAMSystemException e) {
-            log.error("EDAMSystemException:" + e.getMessage(), e);
-        } catch (TException e) {
-            log.error("TException:" + e.getMessage(), e);
-        }
-        return null;
+    private NoteStore.Client buildNoteStore(String noteStoreUrl) throws TTransportException {
+        TBinaryProtocol tBinaryProtocol = buildTBinaryProtocol(noteStoreUrl);
+        return new NoteStore.Client(tBinaryProtocol, tBinaryProtocol);
     }
+
+    private TBinaryProtocol buildTBinaryProtocol(String noteStoreUrl) throws TTransportException {
+        THttpClient noteStoreTrans = new THttpClient(noteStoreUrl);
+        noteStoreTrans.setCustomHeader("User-Agent", EvernoteAuthenticationConstant.USER_AGENT);
+        return new TBinaryProtocol(noteStoreTrans);
+    }
+
 }

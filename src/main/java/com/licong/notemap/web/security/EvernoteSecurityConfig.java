@@ -1,6 +1,6 @@
 package com.licong.notemap.web.security;
 
-import com.licong.notemap.service.LoginService;
+import com.licong.notemap.repository.evernote.EvernoteRepository;
 import com.licong.notemap.util.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,11 +10,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 
+import static com.licong.notemap.web.security.EvernoteAuthenticationConstant.LOGIN_SERVICE_NAME;
+
 @EnableWebSecurity
 public class EvernoteSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private EvernoteAccessDeniedHandler evernoteAccessDeniedHandler;
 
     @Autowired
     private EvernoteAuthenticationEntryPoint evernoteAuthenticationEntryPoint;
@@ -31,14 +30,13 @@ public class EvernoteSecurityConfig extends WebSecurityConfigurerAdapter {
         EvernoteAuthenticationFilter evernoteAuthenticationFilter = new EvernoteAuthenticationFilter();
         evernoteAuthenticationFilter.setAuthenticationManager(authenticationManager());
         evernoteAuthenticationFilter.setAuthenticationFailureHandler(evernoteAuthenticationFailureHandler);
-        evernoteAuthenticationFilter.setLoginService((LoginService)SpringContextUtil.getBean("loginServiceImpl"));
+        evernoteAuthenticationFilter.setEvernoteLoginService((EvernoteLoginService)SpringContextUtil.getBean(LOGIN_SERVICE_NAME));
         http.authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(evernoteAuthenticationFilter, ExceptionTranslationFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(evernoteAuthenticationEntryPoint)
-                .accessDeniedHandler(evernoteAccessDeniedHandler)
                 .and()
                 .csrf().disable();
     }

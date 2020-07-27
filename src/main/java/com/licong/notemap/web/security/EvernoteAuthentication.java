@@ -1,35 +1,33 @@
 package com.licong.notemap.web.security;
 
-import org.scribe.model.Token;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Collection;
 
 public class EvernoteAuthentication extends AbstractAuthenticationToken {
 
-    private final Object principal;
+    private EvernoteUserDetails principal;
+    private EvernoteAccessToken credentials;
 
-    public EvernoteAuthentication(Token accessToken) {
+    public EvernoteAuthentication(EvernoteAccessToken credentials) {
         super(null);
-        this.principal = accessToken;
+        this.credentials = credentials;
         this.setAuthenticated(false);
     }
 
-    public EvernoteAuthentication(Object principal,
-                                  Collection<? extends GrantedAuthority> authorities) {
-        super(authorities);
+    public EvernoteAuthentication(EvernoteUserDetails principal, EvernoteAccessToken credentials) {
+        super(null);
         this.principal = principal;
-        super.setAuthenticated(true);
+        this.credentials = credentials;
+        this.setAuthenticated(true);
     }
 
     @Override
-    public Object getCredentials() {
-        return null;
-    }
-
-    @Override
-    public Object getPrincipal() {
+    public EvernoteUserDetails getPrincipal() {
         return principal;
     }
+
+    @Override
+    public EvernoteAccessToken getCredentials() {
+        return credentials;
+    }
+
 }

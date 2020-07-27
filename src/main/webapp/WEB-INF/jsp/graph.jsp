@@ -32,19 +32,6 @@
 <div class="container-fluid">
     <a class="navbar-brand" href="#">NoteGraph</a>
     <div class="row">
-        <div class="col-2" id="menu">
-            <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-action ">
-                    Default Notebook
-                    <button type="button" class="btn btn-danger btn-small" data-toggle="tooltip" data-placement="bottom"
-                            style="float: right"
-                            title="删除笔记本"
-                            id="delete_notebook_button">
-                        <i class="fa fa-trash" aria-hidden="true"></i>
-                    </button>
-                </a>
-            </div>
-        </div>
         <div class="col-10">
             <nav class="navbar navbar-expand-lg ">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">

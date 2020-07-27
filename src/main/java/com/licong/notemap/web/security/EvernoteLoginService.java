@@ -1,8 +1,8 @@
-package com.licong.notemap.service;
+package com.licong.notemap.web.security;
 
 import org.scribe.model.Token;
 
-public interface LoginService {
+public interface EvernoteLoginService {
 
     Token getRequestToken(String callbackUrl);
 
