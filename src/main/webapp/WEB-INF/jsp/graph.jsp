@@ -21,7 +21,7 @@
     <!-- JQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <!-- Jqpaginator -->
-    <script src="http://jqpaginator.keenwon.com/jqPaginator.min.js"></script>
+    <script src="http://notegraph.cn/js/jq-paginator.min.js"></script>
     <!-- Axios -->
     <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
     <!-- Toastr -->
