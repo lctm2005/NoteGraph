@@ -88,6 +88,8 @@ public class NoteServiceImpl implements NoteService {
         }
         node.setTitle(note.getTitle());
 
+        // 获取笔记本
+
         // 保存印象笔记
         EvernoteAccessToken accessToken = (EvernoteAccessToken) SecurityContextHolder.getContext().getAuthentication().getCredentials();
         com.evernote.edam.type.Note everNote = everNoteService.save(node.getEverNoteId(), note, accessToken);

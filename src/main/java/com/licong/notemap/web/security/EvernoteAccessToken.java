@@ -1,6 +1,8 @@
 package com.licong.notemap.web.security;
 
+import com.evernote.edam.type.Notebook;
 import lombok.Getter;
+import lombok.Setter;
 import org.scribe.exceptions.OAuthException;
 import org.scribe.model.Token;
 import org.scribe.utils.OAuthEncoder;
@@ -12,13 +14,14 @@ import java.util.regex.Pattern;
 import static com.licong.notemap.web.security.EvernoteAuthenticationConstant.*;
 
 @Getter
+@Setter
 public class EvernoteAccessToken extends Token {
 
     private String shard;
     private Long userId;
     private Long expired;
     private String noteStoreUrl;
-
+    private Notebook notebook;
 
     public EvernoteAccessToken(Token token) {
         super(token.getToken(), token.getSecret(), token.getRawResponse());

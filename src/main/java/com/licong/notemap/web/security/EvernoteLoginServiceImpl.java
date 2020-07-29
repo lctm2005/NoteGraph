@@ -3,25 +3,22 @@ package com.licong.notemap.web.security;
 import com.evernote.auth.EvernoteService;
 import com.evernote.clients.YinXiangApi;
 import com.evernote.clients.YinXiangSandboxApi;
-import com.evernote.edam.error.EDAMSystemException;
-import com.evernote.edam.error.EDAMUserException;
-import com.evernote.edam.type.User;
-import com.evernote.edam.userstore.UserStore;
-import com.evernote.thrift.TException;
-import com.evernote.thrift.protocol.TBinaryProtocol;
-import com.evernote.thrift.transport.THttpClient;
-import com.evernote.thrift.transport.TTransportException;
+import com.evernote.edam.type.Notebook;
+import com.licong.notemap.repository.evernote.EvernoteRepository;
+import com.licong.notemap.util.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.EvernoteApi;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import static com.licong.notemap.web.security.EvernoteAuthenticationConstant.LOGIN_SERVICE_NAME;
-import static com.licong.notemap.web.security.EvernoteAuthenticationConstant.USER_AGENT;
+import java.util.List;
+
+import static com.licong.notemap.web.security.EvernoteAuthenticationConstant.*;
 
 @Slf4j
 @Service(LOGIN_SERVICE_NAME)
@@ -34,6 +31,21 @@ public class EvernoteLoginServiceImpl implements EvernoteLoginService {
     @Value("${spring.profiles.active}")
     private String env;
 
+    @Autowired
+    private EvernoteRepository evernoteRepository;
+
+
+    @Override
+    public Notebook getAuthorizedNotebook(String noteStoreUrl, String accessToken) {
+        List<Notebook> notebooks = evernoteRepository.findNotebooks(noteStoreUrl, accessToken);
+        if (CollectionUtils.isEmpty(notebooks)) {
+            Notebook notebook = evernoteRepository.createAppNotebook(noteStoreUrl, accessToken);
+            return evernoteRepository.getNotebook(noteStoreUrl, accessToken, notebook.getGuid());
+        } else {
+            return evernoteRepository.getNotebook(noteStoreUrl, accessToken, notebooks.get(0).getGuid());
+        }
+    }
+
 
     @Override
     public Token getRequestToken(String callbackUrl) {
@@ -44,7 +56,7 @@ public class EvernoteLoginServiceImpl implements EvernoteLoginService {
     @Override
     public String getUserOAuth(Token requestToken) {
         EvernoteService evernoteService = getEverNoteService();
-        return evernoteService.getAuthorizationUrl(requestToken.getToken());
+        return evernoteService.getAuthorizationUrl(requestToken.getToken()) + OAUTH_PARAM_NOTEBOOK;
     }
 
     @Override

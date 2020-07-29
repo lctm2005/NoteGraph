@@ -1,6 +1,5 @@
 package com.licong.notemap.web.security;
 
-import com.licong.notemap.repository.evernote.EvernoteRepository;
 import com.licong.notemap.util.JsonUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +18,7 @@ public class EvernoteAuthenticationProvider implements AuthenticationProvider {
         EvernoteAuthentication evernoteAuthentication = (EvernoteAuthentication) authentication;
         EvernoteAccessToken evernoteAccessToken = evernoteAuthentication.getCredentials();
 
+        // 构建用户信息
         EvernoteUserDetails userDetails = new EvernoteUserDetails(evernoteAccessToken,
                 AuthorityUtils.commaSeparatedStringToAuthorityList("USER"));
 

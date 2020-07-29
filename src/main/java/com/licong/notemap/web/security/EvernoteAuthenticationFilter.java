@@ -1,12 +1,11 @@
 package com.licong.notemap.web.security;
 
+import com.evernote.edam.type.Notebook;
 import com.licong.notemap.util.JsonUtils;
 import com.licong.notemap.util.StringUtils;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.scribe.exceptions.OAuthException;
 import org.scribe.model.Token;
-import org.scribe.utils.OAuthEncoder;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -18,10 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.licong.notemap.web.security.EvernoteAuthenticationConstant.*;
 
 @Slf4j
 @Setter
@@ -52,12 +47,14 @@ public class EvernoteAuthenticationFilter extends AbstractAuthenticationProcessi
         Token accessToken = evernoteLoginService.getAccessToken(requestToken, oauthVerifier, request.getRequestURL().toString());
         EvernoteAccessToken evernoteAccessToken = new EvernoteAccessToken(accessToken);
 
+        // 获得授权的笔记本
+        Notebook notebook = evernoteLoginService.getAuthorizedNotebook(evernoteAccessToken.getNoteStoreUrl(), evernoteAccessToken.getToken());
+        evernoteAccessToken.setNotebook(notebook);
 
         EvernoteAuthentication authentication = new EvernoteAuthentication(evernoteAccessToken);
         log.debug(request.getRequestURL() + "提取认证信息成功, accessToken:" + JsonUtils.toJson(accessToken));
         return this.getAuthenticationManager().authenticate(authentication);
     }
-
 
 
 }

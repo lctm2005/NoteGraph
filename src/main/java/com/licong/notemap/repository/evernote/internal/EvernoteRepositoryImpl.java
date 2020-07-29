@@ -8,6 +8,7 @@ import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.notestore.NoteStore;
 import com.evernote.edam.notestore.SyncState;
 import com.evernote.edam.type.Note;
+import com.evernote.edam.type.Notebook;
 import com.evernote.edam.type.User;
 import com.evernote.edam.userstore.UserStore;
 import com.evernote.thrift.TException;
@@ -18,9 +19,15 @@ import com.licong.notemap.repository.evernote.EvernoteRepository;
 import com.licong.notemap.util.StringUtils;
 import com.licong.notemap.web.security.EvernoteAuthenticationConstant;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+
+import static com.licong.notemap.web.security.EvernoteAuthenticationConstant.APP_NOTEBOOK_NAME;
 
 /**
  * Created by lctm2005 on 2017/4/20.
@@ -97,6 +104,47 @@ public class EvernoteRepositoryImpl implements EvernoteRepository {
             return null;
         }
     }
+
+    @Override
+    public List<Notebook> findNotebooks(String noteStoreUrl, String accessToken) {
+        try {
+            NoteStore.Client noteStore = buildNoteStore(noteStoreUrl);
+            return noteStore.listNotebooks(accessToken);
+        } catch (Exception e) {
+            log.error("", e);
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public Notebook createAppNotebook(String noteStoreUrl, String accessToken) {
+        try {
+            NoteStore.Client noteStore = buildNoteStore(noteStoreUrl);
+            Notebook notebook = new Notebook();
+            notebook.setName(APP_NOTEBOOK_NAME);
+            return noteStore.createNotebook(accessToken, notebook);
+        } catch (Exception e) {
+            log.error("", e);
+            return null;
+        }
+    }
+
+    @Override
+    public Notebook getNotebook(String noteStoreUrl, String accessToken, String guid) {
+        try {
+            NoteStore.Client noteStore = buildNoteStore(noteStoreUrl);
+            return noteStore.getNotebook(accessToken, guid);
+        } catch (EDAMNotFoundException e) {
+            // 回到授权过程，以便用户选择新的笔记本
+            // 再通过 listNotebooks 获取新笔记本的 GUID
+            log.error("", e);
+            throw new AuthenticationServiceException(e.getMessage());
+        } catch (Exception e) {
+            log.error("", e);
+            throw new AuthenticationServiceException(e.getMessage());
+        }
+    }
+
 
     private NoteStore.Client buildNoteStore(String noteStoreUrl) throws TTransportException {
         TBinaryProtocol tBinaryProtocol = buildTBinaryProtocol(noteStoreUrl);

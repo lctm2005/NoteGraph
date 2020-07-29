@@ -11,6 +11,11 @@ spring:
       database: note
       username: root
       password: BaruHezf9[Labc
+  redis:
+    host: 120.27.63.202
+    port: 6379
+    database: 0
+    password: Sequ4YalfCahr
 image:
   storage: /usr/local/static/images/
   system: linux

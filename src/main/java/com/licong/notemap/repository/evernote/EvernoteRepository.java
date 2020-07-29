@@ -4,8 +4,10 @@ import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.notestore.SyncState;
 import com.evernote.edam.type.Note;
+import com.evernote.edam.type.Notebook;
 import com.evernote.edam.type.User;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -22,4 +24,10 @@ public interface EvernoteRepository {
     String getNoteContent(UUID noteId, String noteStoreUrl, String accessToken);
 
     Note saveNote(Note note, String noteStoreUrl, String accessToken);
+
+    List<Notebook> findNotebooks(String noteStoreUrl, String accessToken);
+
+    Notebook createAppNotebook(String noteStoreUrl, String accessToken);
+
+    Notebook getNotebook(String noteStoreUrl, String accessToken, String guid);
 }

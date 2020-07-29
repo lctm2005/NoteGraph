@@ -1,5 +1,6 @@
 package com.licong.notemap.web.security;
 
+import com.evernote.edam.type.Notebook;
 import org.scribe.model.Token;
 
 public interface EvernoteLoginService {
@@ -9,4 +10,6 @@ public interface EvernoteLoginService {
     String getUserOAuth(Token requestToken);
 
     Token getAccessToken(Token requestToken, String oauthVerifier, String callbackUrl);
+
+    Notebook getAuthorizedNotebook(String noteStoreUrl, String accessToken);
 }

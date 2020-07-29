@@ -2,17 +2,21 @@ package com.licong.notemap.service.internal;
 
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.NoteAttributes;
+import com.evernote.edam.type.Notebook;
 import com.licong.notemap.repository.evernote.EvernoteRepository;
 import com.licong.notemap.service.EverNoteService;
+import com.licong.notemap.util.CollectionUtils;
 import com.licong.notemap.util.StringUtils;
 import com.licong.notemap.web.security.EvernoteAccessToken;
 import com.licong.notemap.web.security.EvernoteAuthentication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -30,6 +34,7 @@ public class EverNoteServiceImpl implements EverNoteService {
     @Autowired
     private EvernoteRepository evernoteRepository;
 
+    @Override
     public com.evernote.edam.type.Note save(String everNoteId, com.licong.notemap.service.domain.Note note, EvernoteAccessToken evernoteAccessToken) {
         // 判断是否存在EverNote，不存在创建，存在更新
         Note everNote;
@@ -43,6 +48,7 @@ public class EverNoteServiceImpl implements EverNoteService {
         }
         updateEverNoteContent(note, everNote);
         updateEverNoteAttribute(everNote);
+        updateEverNoteBook(everNote, evernoteAccessToken);
         return evernoteRepository.saveNote(everNote, evernoteAccessToken.getNoteStoreUrl(), evernoteAccessToken.getToken());
     }
 
@@ -80,5 +86,10 @@ public class EverNoteServiceImpl implements EverNoteService {
             log.error("", e);
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    private void updateEverNoteBook(Note everNote, EvernoteAccessToken evernoteAccessToken) {
+
+
     }
 }

@@ -11,4 +11,6 @@ public class EvernoteAuthenticationConstant {
     public static final Pattern EDAM_EXPIRES_REGEX = Pattern.compile("edam_expires=([^&]*)");
     public static final Pattern EDAM_NOTE_STORE_URL_REGEX = Pattern.compile("edam_noteStoreUrl=([^&]*)");
     public static final String USER_AGENT = "NoteGraph/1.0.0";
+    public static final String APP_NOTEBOOK_NAME = "NoteGraph";
+    public static final String OAUTH_PARAM_NOTEBOOK = "&preferRegistration=true&supportLinkedSandbox=true&suggestedNotebookName=" + APP_NOTEBOOK_NAME;
 }
