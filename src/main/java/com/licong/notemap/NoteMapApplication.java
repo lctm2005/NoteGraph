@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 /**
  * Created by lctm2005 on 2015/6/20.
  */
-@EnableRedisHttpSession
+//@EnableRedisHttpSession
 @EntityScan(basePackages = "com.licong.notemap.repository")
 @EnableMongoRepositories("com.licong.notemap.repository.mongo")
 @EnableNeo4jRepositories("com.licong.notemap.repository.neo4j")

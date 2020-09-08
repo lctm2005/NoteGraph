@@ -1,4 +1,4 @@
-package com.licong.notemap.web.security;
+package com.licong.notemap.web.security.evernote;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;

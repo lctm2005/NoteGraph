@@ -1,4 +1,4 @@
-package com.licong.notemap.web.security;
+package com.licong.notemap.web.security.evernote;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 

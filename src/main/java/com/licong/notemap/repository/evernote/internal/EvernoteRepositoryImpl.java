@@ -1,7 +1,6 @@
 package com.licong.notemap.repository.evernote.internal;
 
 import com.evernote.edam.error.EDAMNotFoundException;
-import com.evernote.edam.error.EDAMSystemException;
 import com.evernote.edam.error.EDAMUserException;
 import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
@@ -9,25 +8,21 @@ import com.evernote.edam.notestore.NoteStore;
 import com.evernote.edam.notestore.SyncState;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Notebook;
-import com.evernote.edam.type.User;
-import com.evernote.edam.userstore.UserStore;
-import com.evernote.thrift.TException;
 import com.evernote.thrift.protocol.TBinaryProtocol;
 import com.evernote.thrift.transport.THttpClient;
 import com.evernote.thrift.transport.TTransportException;
 import com.licong.notemap.repository.evernote.EvernoteRepository;
 import com.licong.notemap.util.StringUtils;
-import com.licong.notemap.web.security.EvernoteAuthenticationConstant;
+import com.licong.notemap.web.security.evernote.EvernoteAuthenticationConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static com.licong.notemap.web.security.EvernoteAuthenticationConstant.APP_NOTEBOOK_NAME;
+import static com.licong.notemap.web.security.evernote.EvernoteAuthenticationConstant.APP_NOTEBOOK_NAME;
 
 /**
  * Created by lctm2005 on 2017/4/20.

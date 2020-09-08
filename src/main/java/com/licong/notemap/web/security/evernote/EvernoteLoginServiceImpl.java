@@ -1,4 +1,4 @@
-package com.licong.notemap.web.security;
+package com.licong.notemap.web.security.evernote;
 
 import com.evernote.auth.EvernoteService;
 import com.evernote.clients.YinXiangApi;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.licong.notemap.web.security.EvernoteAuthenticationConstant.*;
+import static com.licong.notemap.web.security.evernote.EvernoteAuthenticationConstant.*;
 
 @Slf4j
 @Service(LOGIN_SERVICE_NAME)

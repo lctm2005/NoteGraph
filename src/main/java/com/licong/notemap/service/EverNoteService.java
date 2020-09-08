@@ -1,7 +1,7 @@
 package com.licong.notemap.service;
 
 import com.evernote.edam.type.Note;
-import com.licong.notemap.web.security.EvernoteAccessToken;
+import com.licong.notemap.web.security.evernote.EvernoteAccessToken;
 
 public interface EverNoteService {
     /**

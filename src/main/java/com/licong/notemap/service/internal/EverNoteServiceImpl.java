@@ -2,21 +2,16 @@ package com.licong.notemap.service.internal;
 
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.NoteAttributes;
-import com.evernote.edam.type.Notebook;
 import com.licong.notemap.repository.evernote.EvernoteRepository;
 import com.licong.notemap.service.EverNoteService;
-import com.licong.notemap.util.CollectionUtils;
 import com.licong.notemap.util.StringUtils;
-import com.licong.notemap.web.security.EvernoteAccessToken;
-import com.licong.notemap.web.security.EvernoteAuthentication;
+import com.licong.notemap.web.security.evernote.EvernoteAccessToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j

@@ -1,4 +1,4 @@
-package com.licong.notemap.web.security;
+package com.licong.notemap.web.security.evernote;
 
 import com.evernote.edam.type.Notebook;
 import com.licong.notemap.util.JsonUtils;
@@ -12,11 +12,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 
 @Slf4j
 @Setter
@@ -29,7 +27,10 @@ public class EvernoteAuthenticationFilter extends AbstractAuthenticationProcessi
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+//        EvernoteAccessToken evernoteAccessToken = EvernoteAccessToken.DEVELOP_TOKEN;
+//        try {
+
         HttpSession session = request.getSession();
         if (null == session) {
             log.debug(request.getRequestURL() + "session is null");
@@ -46,13 +47,15 @@ public class EvernoteAuthenticationFilter extends AbstractAuthenticationProcessi
         }
         Token accessToken = evernoteLoginService.getAccessToken(requestToken, oauthVerifier, request.getRequestURL().toString());
         EvernoteAccessToken evernoteAccessToken = new EvernoteAccessToken(accessToken);
+        log.debug(request.getRequestURL() + "提取认证信息成功, accessToken:" + JsonUtils.toJson(accessToken));
 
         // 获得授权的笔记本
         Notebook notebook = evernoteLoginService.getAuthorizedNotebook(evernoteAccessToken.getNoteStoreUrl(), evernoteAccessToken.getToken());
         evernoteAccessToken.setNotebook(notebook);
-
+//        } catch (Exception e) {
+//            log.error("认证异常，降级到开发者账号", e);
+//        }
         EvernoteAuthentication authentication = new EvernoteAuthentication(evernoteAccessToken);
-        log.debug(request.getRequestURL() + "提取认证信息成功, accessToken:" + JsonUtils.toJson(accessToken));
         return this.getAuthenticationManager().authenticate(authentication);
     }
 

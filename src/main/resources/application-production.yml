@@ -3,9 +3,9 @@ spring:
     neo4j:
       uri: bolt://120.27.63.202:7687
       username: neo4j
-      password: tiger
+      password: TaxhBoci7^Bebi
     mongodb:
-      host: 47.95.115.246
+      host: 120.27.63.202
       port: 27017
       authentication-database: admin
       database: note

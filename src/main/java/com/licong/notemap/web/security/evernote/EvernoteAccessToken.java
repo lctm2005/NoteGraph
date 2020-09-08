@@ -1,4 +1,4 @@
-package com.licong.notemap.web.security;
+package com.licong.notemap.web.security.evernote;
 
 import com.evernote.edam.type.Notebook;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.licong.notemap.web.security.EvernoteAuthenticationConstant.*;
+import static com.licong.notemap.web.security.evernote.EvernoteAuthenticationConstant.*;
 
 @Getter
 @Setter
@@ -23,13 +23,22 @@ public class EvernoteAccessToken extends Token {
     private String noteStoreUrl;
     private Notebook notebook;
 
+    public EvernoteAccessToken(String token, String secret, String shard, Long userId, Long expired, String noteStoreUrl) {
+        super(token, secret);
+        this.shard = shard;
+        this.userId = userId;
+        this.expired = expired;
+        this.noteStoreUrl = noteStoreUrl;
+    }
+
     public EvernoteAccessToken(Token token) {
         super(token.getToken(), token.getSecret(), token.getRawResponse());
         this.shard = extract(token.getRawResponse(), EDAM_SHARD_REGEX);
-        this.userId =  Long.valueOf(extract(token.getRawResponse(), EDAM_USER_ID_REGEX));
+        this.userId = Long.valueOf(extract(token.getRawResponse(), EDAM_USER_ID_REGEX));
         this.expired = Long.valueOf(extract(token.getRawResponse(), EDAM_EXPIRES_REGEX));
         this.noteStoreUrl = extract(token.getRawResponse(), EDAM_NOTE_STORE_URL_REGEX);
     }
+
 
     private String extract(String response, Pattern p) {
         Matcher matcher = p.matcher(response);
@@ -42,6 +51,7 @@ public class EvernoteAccessToken extends Token {
 
     /**
      * 提前1天失效
+     *
      * @return
      */
     public boolean expired() {
@@ -52,4 +62,12 @@ public class EvernoteAccessToken extends Token {
         Calendar now = Calendar.getInstance();
         return now.after(deadline);
     }
+
+    public static EvernoteAccessToken DEVELOP_TOKEN = new EvernoteAccessToken(
+            "S=s31:U=5a2e79:E=172dabeb71a:C=172b6b231d8:P=1cd:A=en-devtoken:V=2:H=8d10a1f653a40a619a74e89fb73b923c",
+            "",
+            "31",
+            0L,
+            1631005061L,
+            "https://app.yinxiang.com/shard/s31/notestore");
 }

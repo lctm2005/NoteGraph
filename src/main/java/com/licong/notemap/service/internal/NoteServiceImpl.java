@@ -12,12 +12,11 @@ import com.licong.notemap.service.domain.Note;
 import com.licong.notemap.util.CollectionUtils;
 import com.licong.notemap.util.NoteInnerLinkUtils;
 import com.licong.notemap.util.StringUtils;
-import com.licong.notemap.web.security.EvernoteAccessToken;
+import com.licong.notemap.web.security.evernote.EvernoteAccessToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,7 +90,8 @@ public class NoteServiceImpl implements NoteService {
         // 获取笔记本
 
         // 保存印象笔记
-        EvernoteAccessToken accessToken = (EvernoteAccessToken) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+//        EvernoteAccessToken accessToken = (EvernoteAccessToken) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        EvernoteAccessToken accessToken = EvernoteAccessToken.DEVELOP_TOKEN;
         com.evernote.edam.type.Note everNote = everNoteService.save(node.getEverNoteId(), note, accessToken);
 
         // 更新Note节点中的印象笔记ID
@@ -122,9 +122,6 @@ public class NoteServiceImpl implements NoteService {
 
         return note;
     }
-
-
-
 
 
     /**

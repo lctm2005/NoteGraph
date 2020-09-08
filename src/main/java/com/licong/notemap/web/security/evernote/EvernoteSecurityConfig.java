@@ -1,6 +1,5 @@
-package com.licong.notemap.web.security;
+package com.licong.notemap.web.security.evernote;
 
-import com.licong.notemap.repository.evernote.EvernoteRepository;
 import com.licong.notemap.util.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,9 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 
-import static com.licong.notemap.web.security.EvernoteAuthenticationConstant.LOGIN_SERVICE_NAME;
+import static com.licong.notemap.web.security.evernote.EvernoteAuthenticationConstant.LOGIN_SERVICE_NAME;
 
-@EnableWebSecurity
+//@EnableWebSecurity
 public class EvernoteSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired

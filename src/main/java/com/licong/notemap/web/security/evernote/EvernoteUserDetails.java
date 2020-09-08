@@ -1,4 +1,4 @@
-package com.licong.notemap.web.security;
+package com.licong.notemap.web.security.evernote;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
