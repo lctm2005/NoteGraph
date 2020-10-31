@@ -37,8 +37,8 @@ public class NoteServiceImpl implements NoteService {
     @Autowired
     private NoteContentRepository noteContentRepository;
 
-    @Autowired
-    private EverNoteService everNoteService;
+//    @Autowired
+//    private EverNoteService everNoteService;
 
 
     @Override
@@ -91,11 +91,11 @@ public class NoteServiceImpl implements NoteService {
 
         // 保存印象笔记
 //        EvernoteAccessToken accessToken = (EvernoteAccessToken) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-        EvernoteAccessToken accessToken = EvernoteAccessToken.DEVELOP_TOKEN;
-        com.evernote.edam.type.Note everNote = everNoteService.save(node.getEverNoteId(), note, accessToken);
+//        EvernoteAccessToken accessToken = EvernoteAccessToken.DEVELOP_TOKEN;
+//        com.evernote.edam.type.Note everNote = everNoteService.save(node.getEverNoteId(), note, accessToken);
 
         // 更新Note节点中的印象笔记ID
-        node.setEverNoteId(everNote.getGuid());
+//        node.setEverNoteId(everNote.getGuid());
         nodeRepository.save(node);
 
         Optional<NoteContent> noteContentOptional = noteContentRepository.findById(note.getId());

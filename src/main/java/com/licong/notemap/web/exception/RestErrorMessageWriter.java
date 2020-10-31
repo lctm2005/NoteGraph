@@ -1,6 +1,7 @@
 package com.licong.notemap.web.exception;
 
 import com.licong.notemap.util.JsonUtils;
+import org.owasp.encoder.Encode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -36,7 +37,7 @@ public class RestErrorMessageWriter {
             response.setStatus(entity.getStatusCode().value());
             response.setContentType(CONTENT_TYPE);
             PrintWriter writer = response.getWriter();
-            writer.print(JsonUtils.toJson(entity.getBody()));
+            writer.print(Encode.forHtml(JsonUtils.toJson(entity.getBody())));
             writer.flush();
             writer.close();
         } catch (IOException e) {

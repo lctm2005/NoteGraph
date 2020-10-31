@@ -3,9 +3,8 @@ package com.licong.notemap.web.controller;
 import com.licong.notemap.util.StringUtils;
 import com.licong.notemap.util.filemanager.FileManager;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpRequest;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -35,6 +33,7 @@ public class ImageController {
     private String hosts;
 
 
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings({"COMMAND_INJECTION", "PATH_TRAVERSAL_IN"})
     @RequestMapping("/imageUpload")
     @ResponseBody
     public Map<String, Object> saveImage(@RequestParam("editormd-image-file") MultipartFile file) {

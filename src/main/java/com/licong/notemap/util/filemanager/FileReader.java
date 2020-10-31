@@ -2,6 +2,7 @@ package com.licong.notemap.util.filemanager;
 
 
 import com.licong.notemap.util.StringUtils;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -24,6 +25,7 @@ public class FileReader {
      * @param endOfLine  行末结束符(可选)
      * @return
      */
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     public static String readByLine(String fileName, String endOfLine) {
         if ((StringUtils.isEmpty(fileName))) {
             throw new IllegalArgumentException("Param[fileName] couldn't be empty.");

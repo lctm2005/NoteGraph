@@ -1,18 +1,18 @@
 spring:
   data:
     neo4j:
-      uri: bolt://120.27.63.202:7687
+      uri: bolt://104.225.155.121:7687
       username: neo4j
       password: TaxhBoci7^Bebi
     mongodb:
-      host: 120.27.63.202
+      host: 104.225.155.121
       port: 27017
       authentication-database: admin
       database: note
       username: root
       password: BaruHezf9[Labc
 #  redis:
-#    host: 120.27.63.202
+#    host: 104.225.155.121
 #    port: 6379
 #    database: 0
 #    password: Sequ4YalfCahr

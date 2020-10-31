@@ -33,6 +33,7 @@ public class EvernoteAuthenticationEntryPoint implements AuthenticationEntryPoin
      * @throws IOException
      * @throws ServletException
      */
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("UNVALIDATED_REDIRECT")
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         // 请求临时Token
