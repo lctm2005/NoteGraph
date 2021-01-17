@@ -30,7 +30,7 @@ public class PageController {
     }
 
     @RequestMapping("/note/{note_id}")
-    public ModelAndView edit(@PathVariable(value = "note_id") Long noteId) {
+    public ModelAndView edit(@PathVariable(value = "note_id") UUID noteId) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("note");
         modelAndView.addObject("note_id", noteId);

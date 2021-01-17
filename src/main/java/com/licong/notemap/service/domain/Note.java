@@ -7,6 +7,7 @@ import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Data
@@ -16,8 +17,8 @@ public class Note {
     public static final String LABLE = "NOTE";
 
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(GeneratedValue.UUIDGenerator.class)
+    private UUID id;
 
     @Property
     private String title;
@@ -25,7 +26,7 @@ public class Note {
     @Property
     private String content;
 
-    @Relationship(type = "ACTED_IN", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "REF", direction = Relationship.Direction.OUTGOING)
     private List<Note> reference;
 
 }

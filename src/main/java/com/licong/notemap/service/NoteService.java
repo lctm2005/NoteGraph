@@ -6,17 +6,18 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 public interface NoteService {
 
-    Optional<Note> findById(Long noteId);
+    Optional<Note> findById(UUID noteId);
 
     Note save(Note note);
 
-    void delete(Long noteId);
+    void delete(UUID noteId);
 
     Page<Note> findByTitleContains(String title, Pageable pageable);
 
-    List<Note> neighbours(Long noteId);
+    List<Note> neighbours(UUID noteId);
 }

@@ -6,9 +6,11 @@ import com.licong.notemap.service.domain.Note;
 import com.licong.notemap.util.CollectionUtils;
 import com.licong.notemap.util.NoteInnerLinkUtils;
 import com.licong.notemap.util.StringUtils;
+import com.licong.notemap.web.vo.note.NoteResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,7 @@ public class NoteServiceImpl implements NoteService {
     private NoteRepository noteRepository;
 
     @Override
-    public Optional<Note> findById(Long noteId) {
+    public Optional<Note> findById(UUID noteId) {
         return noteRepository.findById(noteId);
     }
 
@@ -47,13 +49,13 @@ public class NoteServiceImpl implements NoteService {
         if (CollectionUtils.isEmpty(noteInnerLinks)) {
             return Collections.emptyList();
         }
-        List<Long> noteIds = noteInnerLinks.stream().map(noteInnerLink -> noteInnerLink.getNoteId()).collect(Collectors.toList());
+        List<UUID> noteIds = noteInnerLinks.stream().map(noteInnerLink -> noteInnerLink.getNoteId()).collect(Collectors.toList());
         return noteRepository.findByIdIn(noteIds);
     }
 
 
     @Override
-    public void delete(Long noteId) {
+    public void delete(UUID noteId) {
         noteRepository.deleteById(noteId);
     }
 
@@ -62,13 +64,19 @@ public class NoteServiceImpl implements NoteService {
         if (StringUtils.isEmpty(title)) {
             return noteRepository.findAll(pageable);
         } else {
-            return noteRepository.findByTitleLike("(?i).*" + title + ".*", pageable);
+            Page<Note> notes = noteRepository.findByTitleLike("(?i).*" + title + ".*", pageable);
+            List<UUID> noteIds = CollectionUtils.getPropertyList(notes.getContent(),"id");
+            List<Note> results = noteRepository.findByIdIn(noteIds);
+            Map<UUID, Note> resultMap = CollectionUtils.getPropertyMap(results, "id");
+            return notes.map(e -> resultMap.get(e.getId()));
         }
     }
 
     @Override
-    public List<Note> neighbours(Long noteId) {
-        return noteRepository.neighbours(noteId);
+    public List<Note> neighbours(UUID noteId) {
+        List<Note> notes = noteRepository.neighbours(noteId);
+        List<UUID> noteIds = CollectionUtils.getPropertyList(notes,"id");
+        return noteRepository.findByIdIn(noteIds);
     }
 
 

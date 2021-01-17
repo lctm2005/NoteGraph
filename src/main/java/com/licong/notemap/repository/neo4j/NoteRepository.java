@@ -8,18 +8,19 @@ import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Administrator
  */
 @Repository
-public interface NoteRepository extends Neo4jRepository<Note, Long> {
+public interface NoteRepository extends Neo4jRepository<Note, UUID> {
 
-    @Query(value = "MATCH (n:NOTE) WHERE n.title=~{title} RETURN n", countQuery = "MATCH (n:NOTE) WHERE n.title=~{title} RETURN count(n)")
+    @Query(value = "MATCH (n:NOTE) WHERE n.title=~$title RETURN n", countQuery = "MATCH (n:NOTE) WHERE n.title=~$title RETURN count(n)")
     Page<Note> findByTitleLike(String title, Pageable pageable);
 
-    @Query("match (n:NOTE)-[*]-(k:NOTE) where n.id={id} return k")
-    List<Note> neighbours(Long id);
+    @Query("match (n:NOTE)-[*]-(k:NOTE) where n.id=$id return k")
+    List<Note> neighbours(UUID id);
 
-    List<Note> findByIdIn(List<Long> ids);
+    List<Note> findByIdIn(List<UUID> ids);
 }

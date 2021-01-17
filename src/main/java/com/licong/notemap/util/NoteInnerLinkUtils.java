@@ -30,7 +30,7 @@ public abstract class NoteInnerLinkUtils {
 
             String title = extract.substring(START_INDEX, middleIndex);
             String uuid = extract.substring(middleIndex + MIDDLE_LABEL.length(), extract.length() - 1);
-            NoteInnerLink noteInnerLink = new NoteInnerLink(title, Long.valueOf(uuid));
+            NoteInnerLink noteInnerLink = new NoteInnerLink(title, UUID.fromString(uuid));
             System.out.println(noteInnerLink);
             result.add(noteInnerLink);
 
@@ -42,7 +42,7 @@ public abstract class NoteInnerLinkUtils {
     @AllArgsConstructor
     public static class NoteInnerLink {
         private String title;
-        private Long noteId;
+        private UUID noteId;
 
         @Override
         public String toString() {

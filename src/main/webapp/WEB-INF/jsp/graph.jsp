@@ -179,20 +179,19 @@
                     note.value = 10;
                     return note;
                 });
-                axios.post('/api/link/search/findByStartInOrEndIn', noteIds)
-                    .then(response => {
-                        // {source : '丽萨-乔布斯', target : '乔布斯', weight : 1, name: '女儿'}
-                        var links = response.data.map(function (data) {
-                            var link = data;
-                            link.source = data.start.noteId;
-                            link.target = data.end.noteId;
-                            link.name = data.title;
-                            return link;
-                        });
-                        loadGraph(notes, links);
-                        pagination(page.size, page.number + 1, page.totalPages, page.totalElements);
-                    })
-                    .catch(response => error(response));
+                var links =[];
+                noteResources.forEach(function (note) {
+                    var source = note.noteId
+                    note.refs.forEach(function(ref) {
+                        var link = ref;
+                        link.source = source;
+                        link.target = ref.noteId;
+                        link.name = ref.title;
+                        links.push(link);
+                    });
+                });
+                loadGraph(notes, links);
+                pagination(page.size, page.number + 1, page.totalPages, page.totalElements);
             })
             .catch(response => error(response));
     }
@@ -298,7 +297,7 @@
      * 选中节点
      */
     myChart.on('click', function (params) {
-        if (params.dataType == 'note') {
+        if (params.dataType == 'node') {
             selectEle(params);
         }
     });
@@ -365,13 +364,11 @@
 
     function toNodes(noteResources) {
         // {"noteId":"a51ca953-e22d-4a95-8e84-1686cf570347","name":"Neo4J","href":"/note/a51ca953-e22d-4a95-8e84-1686cf570347","value":10}
-        return noteResources.map(function (note) {
-            var note = note;
-            note.name = note.noteId;
+            var note = noteResources;
+            note.name = noteResources.noteId;
             note.symbolSize = [55, 55];
             note.value = 10;
             return note;
-        });
     }
 
     function toLinks(noteLinkResources) {
@@ -448,43 +445,48 @@
     $("#expand_button").bind('click', function () {
         axios.get('/api/note/' + selectNode.noteId + '/neighbours').then(response => {
             var noteResources = response.data;
-            var noteIds = noteResources.map(function (note) {
-                return note.noteId;
+            noteResources.forEach(function (noteResource) {
+                var note = toNodes(noteResource);
+                var exist = false;
+                graphNodes.forEach(function (existNode) {
+                    if (note.name == existNode.name) {
+                        exist = true;
+                    }
+                });
+                if (!exist) {
+                    graphNodes.push(note);
+                }
             });
-            noteIds.push(selectNode.noteId);
-            var notes = toNodes(noteResources);
-            axios.post('/api/link/search/findByStartInOrEndIn', noteIds)
-                .then(response => {
-                    notes.forEach(function (note) {
-                        var exist = false;
-                        graphNodes.forEach(function (existNode) {
-                            if (note.name == existNode.name) {
-                                exist = true;
-                            }
-                        });
-                        if (!exist) {
-                            graphNodes.push(note);
-                        }
-                    });
-                    var links = toLinks(response.data);
-                    links.forEach(function (link) {
-                        var exist = false;
-                        graphLinks.forEach(function (existLink) {
-                            if (link.id == existLink.id) {
-                                exist = true;
-                            }
-                        });
-                        if (!exist) {
-                            graphLinks.push(link);
-                        }
-                    });
 
-                    var options = myChart.getOption();
-                    options.series[0].data = graphNodes;
-                    options.series[0].links = graphLinks;
-                    myChart.setOption(options);
-                    selectNode = EMPTY_NODE;
-                }).catch(response => error(response));
+            var links =[];
+            noteResources.forEach(function (note) {
+                var source = note.noteId
+                note.refs.forEach(function(ref) {
+                    var link = ref;
+                    link.source = source;
+                    link.target = ref.noteId;
+                    link.name = ref.title;
+                    links.push(link);
+                });
+            });
+
+            links.forEach(function (link) {
+                var exist = false;
+                graphLinks.forEach(function (existLink) {
+                    if (link.id == existLink.id) {
+                        exist = true;
+                    }
+                });
+                if (!exist) {
+                    graphLinks.push(link);
+                }
+            });
+
+            var options = myChart.getOption();
+            options.series[0].data = graphNodes;
+            options.series[0].links = graphLinks;
+            myChart.setOption(options);
+            selectNode = EMPTY_NODE;
         }).catch(response => error(response));
     });
 

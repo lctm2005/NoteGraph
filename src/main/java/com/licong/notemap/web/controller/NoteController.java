@@ -30,7 +30,7 @@ public class NoteController {
     private NoteResourceAssembler noteResourceAssembler;
 
     @RequestMapping(value = "/api/note/{note_id}", method = RequestMethod.GET)
-    public NoteResource get(@PathVariable("note_id") Long noteId) {
+    public NoteResource get(@PathVariable("note_id") UUID noteId) {
         Optional<Note> noteOptional = noteService.findById(noteId);
         if (!noteOptional.isPresent()) {
             throw new ResourceNotFoundException("Not found note which's id is " + noteId);
@@ -44,14 +44,14 @@ public class NoteController {
     }
 
     @RequestMapping(value = "/api/note/{note_id}", method = RequestMethod.PUT)
-    public NoteResource update(@PathVariable("note_id") Long noteId, @RequestBody NoteParam noteParam) {
+    public NoteResource update(@PathVariable("note_id") UUID noteId, @RequestBody NoteParam noteParam) {
         Note note = noteParam.toNote();
         note.setId(noteId);
         return noteResourceAssembler.toResource(noteService.save(note));
     }
 
     @RequestMapping(value = "/api/note/{note_id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable("note_id") Long noteId) {
+    public void delete(@PathVariable("note_id") UUID noteId) {
         noteService.delete(noteId);
     }
 
@@ -69,7 +69,7 @@ public class NoteController {
     }
 
     @RequestMapping(value = "/api/note/{note_id}/neighbours", method = RequestMethod.GET)
-    public List<NoteResource> neighbours(@PathVariable("note_id") Long noteId) {
+    public List<NoteResource> neighbours(@PathVariable("note_id") UUID noteId) {
         List<Note> notes = noteService.neighbours(noteId);
         if (CollectionUtils.isEmpty(notes)) {
             return Collections.emptyList();
@@ -77,4 +77,12 @@ public class NoteController {
             return notes.stream().map(e -> noteResourceAssembler.toResource(e)).collect(Collectors.toList());
         }
     }
+
+    @RequestMapping(value = "/api/link/search/findByStartInOrEndIn", method = RequestMethod.POST)
+    public List<NoteResource> neighbours(@RequestBody List<UUID> noteIds) {
+       return Collections.emptyList();
+    }
+
+
+
 }
