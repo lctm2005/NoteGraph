@@ -29,4 +29,7 @@ public class Note {
     @Relationship(type = "REF", direction = Relationship.Direction.OUTGOING)
     private List<Note> reference;
 
+    @Property
+    private List<String> tag;
+
 }

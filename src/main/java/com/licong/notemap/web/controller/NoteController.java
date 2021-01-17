@@ -26,6 +26,8 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
 
+
+
     @Autowired
     private NoteResourceAssembler noteResourceAssembler;
 
@@ -57,6 +59,7 @@ public class NoteController {
 
     @RequestMapping(value = "/api/note/search/findByTitleContains", method = RequestMethod.GET)
     public PagedModel<NoteResource> findByTitleContains(@RequestParam(value = "title", required = false) String title,
+                                                        @RequestParam(value = "tag", required = false) String tag,
                                                         @PageableDefault Pageable pageable,
                                                         PagedResourcesAssembler assembler,
                                                         NoteResourceAssembler noteResourceAssembler) {
@@ -67,6 +70,9 @@ public class NoteController {
         Page<NoteResource> noteResourcePage = page.map(e -> noteResourceAssembler.toResource(e));
         return assembler.toModel(noteResourcePage);
     }
+
+
+
 
     @RequestMapping(value = "/api/note/{note_id}/neighbours", method = RequestMethod.GET)
     public List<NoteResource> neighbours(@PathVariable("note_id") UUID noteId) {

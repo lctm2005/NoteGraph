@@ -38,6 +38,7 @@ public abstract class NoteInnerLinkUtils {
         return result;
     }
 
+
     @Data
     @AllArgsConstructor
     public static class NoteInnerLink {

@@ -71,8 +71,19 @@
                     </div>
                 </div>
             </nav>
-            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-            <div id="graph"></div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <ul class="list-group">
+                        <li class="list-group-item">First item</li>
+                        <li class="list-group-item">Second item</li>
+                        <li class="list-group-item">Third item</li>
+                    </ul>
+                </div>
+                <div class="col-sm-8">
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="graph"></div>
+                </div>
+            </div>
         </div>
     </div>
 
