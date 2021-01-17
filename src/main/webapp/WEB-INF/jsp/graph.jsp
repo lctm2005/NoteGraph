@@ -32,7 +32,23 @@
 <div class="container-fluid">
     <a class="navbar-brand" href="#">NoteGraph</a>
     <div class="row">
-        <div class="col-10">
+        <div class="col-2">
+                <div class="form-inline my-2 my-lg-0" id="search_tag">
+                    <input class="form-control mr-sm-2 form-control-sm" type="search" id="search_tag_input" placeholder="Search"
+                           aria-label="Search">
+                    <button class="btn-small btn-success my-2 my-sm-0" id="search_tag_button" type="button">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div>
+                    <ul class="list-group">
+                        <li class="list-group-item">First item</li>
+                        <li class="list-group-item">Second item</li>
+                        <li class="list-group-item">Third item</li>
+                    </ul>
+                </div>
+        </div>
+        <div class="col-8">
             <nav class="navbar navbar-expand-lg ">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
@@ -71,24 +87,8 @@
                     </div>
                 </div>
             </nav>
-            <div class="row">
-                <div class="col-sm-2">
-                    <div class="form-inline my-2 my-lg-0" id="search_tag">
-                        <input class="form-control mr-sm-2" type="search" id="search_tag_input" placeholder="Search"
-                               aria-label="Search">
-                        <button class="btn btn-success my-2 my-sm-0" id="search_tag_button" type="button">搜索</button>
-                    </div>
-                    <ul class="list-group">
-                        <li class="list-group-item">First item</li>
-                        <li class="list-group-item">Second item</li>
-                        <li class="list-group-item">Third item</li>
-                    </ul>
-                </div>
-                <div class="col-sm-8">
-                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-                    <div id="graph"></div>
-                </div>
-            </div>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="graph"></div>
         </div>
     </div>
 
