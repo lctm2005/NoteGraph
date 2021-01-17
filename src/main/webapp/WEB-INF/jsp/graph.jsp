@@ -73,6 +73,11 @@
             </nav>
             <div class="row">
                 <div class="col-sm-2">
+                    <div class="form-inline my-2 my-lg-0" id="search_tag">
+                        <input class="form-control mr-sm-2" type="search" id="search_tag_input" placeholder="Search"
+                               aria-label="Search">
+                        <button class="btn btn-success my-2 my-sm-0" id="search_tag_button" type="button">搜索</button>
+                    </div>
                     <ul class="list-group">
                         <li class="list-group-item">First item</li>
                         <li class="list-group-item">Second item</li>
