@@ -371,16 +371,19 @@
             return note;
     }
 
-    function toLinks(noteLinkResources) {
-        // {source : '丽萨-乔布斯', target : '乔布斯', weight : 1, name: '女儿'}
-        return noteLinkResources.map(function (data) {
-            var link = data;
-            link.source = data.start.noteId;
-            link.target = data.end.noteId;
-            link.name = data.title;
-            link.id = data.linkId;
-            return link;
+    function toLinks(noteResources) {
+        var links =[];
+        noteResources.forEach(function (note) {
+            var source = note.noteId
+            note.refs.forEach(function(ref) {
+                var link = ref;
+                link.source = source;
+                link.target = ref.noteId;
+                link.name = ref.title;
+                links.push(link);
+            });
         });
+        return links;
     }
 
     /**
@@ -443,6 +446,7 @@
      * 展开笔记
      */
     $("#expand_button").bind('click', function () {
+        if(selectNode.noteId == null) return;
         axios.get('/api/note/' + selectNode.noteId + '/neighbours').then(response => {
             var noteResources = response.data;
             noteResources.forEach(function (noteResource) {
@@ -458,22 +462,12 @@
                 }
             });
 
-            var links =[];
-            noteResources.forEach(function (note) {
-                var source = note.noteId
-                note.refs.forEach(function(ref) {
-                    var link = ref;
-                    link.source = source;
-                    link.target = ref.noteId;
-                    link.name = ref.title;
-                    links.push(link);
-                });
-            });
+            var links = toLinks(noteResources);
 
             links.forEach(function (link) {
                 var exist = false;
                 graphLinks.forEach(function (existLink) {
-                    if (link.id == existLink.id) {
+                    if (link.source == existLink.source && link.target == existLink.target) {
                         exist = true;
                     }
                 });
