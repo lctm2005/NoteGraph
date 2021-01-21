@@ -32,65 +32,64 @@
 <div class="container-fluid">
     <a class="navbar-brand" href="#">NoteGraph</a>
     <div class="row">
-        <div class="col-10">
-            <nav class="navbar navbar-expand-lg ">
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom"
-                                    title="新建笔记"
-                                    id="new_button">
-                                <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn btn-primary" data-toggle="tooltip"
-                                    data-placement="bottom" title="编辑笔记"
-                                    id="edit_button">
-                                <i class="fa fa-pencil-alt" aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom"
-                                    title="删除笔记"
-                                    id="delete_button">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="bottom"
-                                    title="展开笔记"
-                                    id="expand_button">
-                                <i class="fa fa-expand" aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom"
-                                    title="财报分析"
-                                    id="financial_button">
-                                <i class="fa fa-dollar-sign" aria-hidden="true"></i>
-                            </button>
-                        </li>
-                    </ul>
-                    <div class="form-inline my-2 my-lg-0" id="search_area">
-                        <input class="form-control mr-sm-2" type="search" id="search_input" placeholder="Search"
-                               aria-label="Search">
-                        <button class="btn btn-success my-2 my-sm-0" id="search_button" type="button">搜索</button>
-                    </div>
-                </div>
-            </nav>
-            <div class="row">
-                <div class="col-sm-2">
-                    <div class="form-inline my-2 my-lg-0" id="search_tag">
-                        <input class="form-control mr-sm-2" type="search" id="search_tag_input" placeholder="Search"
-                               aria-label="Search">
-                        <button class="btn btn-success my-2 my-sm-0" id="search_tag_button" type="button">搜索</button>
-                    </div>
-                    <ul class="list-group">
-                        <li class="list-group-item">First item</li>
-                        <li class="list-group-item">Second item</li>
-                        <li class="list-group-item">Third item</li>
-                    </ul>
-                </div>
-                <div class="col-sm-8">
-                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-                    <div id="graph"></div>
-                </div>
+        <div class="btn-group-vertical">
+            <div class="btn-group" role="group" aria-label="1">
+                <button type="button" class="btn btn-success" style="margin:5px" data-toggle="tooltip"
+                        data-placement="bottom"
+                        title="搜索笔记"
+                        id="a_search_button">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="btn-group" role="group" aria-label="3">
+                <button type="button" class="btn btn-info" style="margin:5px" data-toggle="tooltip"
+                        data-placement="bottom"
+                        title="展开笔记"
+                        id="expand_button">
+                    <i class="fa fa-expand" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="btn-group" role="group" aria-label="4">
+                <button type="button" class="btn btn-success" style="margin:5px" data-toggle="tooltip"
+                        data-placement="bottom"
+                        title="新建笔记"
+                        id="new_button">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="btn-group" role="group" aria-label="2">
+                <button type="button" class="btn btn-primary" style="margin:5px" data-toggle="tooltip"
+                        data-placement="bottom"
+                        title="编辑笔记"
+                        id="edit_button">
+                    <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="btn-group" role="group" aria-label="2">
+                <button type="button" class="btn btn-danger" style="margin:5px" data-toggle="tooltip"
+                        data-placement="bottom"
+                        title="删除笔记"
+                        id="delete_button">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="btn-group" role="group" aria-label="5">
+                <button type="button" class="btn btn-warning" style="margin:5px" data-toggle="tooltip"
+                        data-placement="bottom"
+                        title="财报分析"
+                        id="financial_button">
+                    <i class="fa fa-dollar-sign" aria-hidden="true"></i>
+                </button>
             </div>
         </div>
+        <div class="col-sm-8">
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="graph"></div>
+        </div>
     </div>
+</div>
+</div>
+</div>
 
 
 </div>
@@ -123,7 +122,7 @@
      */
     function adjustGraphWithHeight() {
         $('#graph').height($(window).height() - 150);
-        $('#graph').width($(window).width() - 30);
+        $('#graph').width($(window).width() - 100);
     }
 
     /**
@@ -195,10 +194,10 @@
                     note.value = 10;
                     return note;
                 });
-                var links =[];
+                var links = [];
                 noteResources.forEach(function (note) {
                     var source = note.noteId
-                    note.refs.forEach(function(ref) {
+                    note.refs.forEach(function (ref) {
                         var link = ref;
                         link.source = source;
                         link.target = ref.noteId;
@@ -380,18 +379,18 @@
 
     function toNodes(noteResources) {
         // {"noteId":"a51ca953-e22d-4a95-8e84-1686cf570347","name":"Neo4J","href":"/note/a51ca953-e22d-4a95-8e84-1686cf570347","value":10}
-            var note = noteResources;
-            note.name = noteResources.noteId;
-            note.symbolSize = [55, 55];
-            note.value = 10;
-            return note;
+        var note = noteResources;
+        note.name = noteResources.noteId;
+        note.symbolSize = [55, 55];
+        note.value = 10;
+        return note;
     }
 
     function toLinks(noteResources) {
-        var links =[];
+        var links = [];
         noteResources.forEach(function (note) {
             var source = note.noteId
-            note.refs.forEach(function(ref) {
+            note.refs.forEach(function (ref) {
                 var link = ref;
                 link.source = source;
                 link.target = ref.noteId;
@@ -462,7 +461,7 @@
      * 展开笔记
      */
     $("#expand_button").bind('click', function () {
-        if(selectNode.noteId == null) return;
+        if (selectNode.noteId == null) return;
         axios.get('/api/note/' + selectNode.noteId + '/neighbours').then(response => {
             var noteResources = response.data;
             noteResources.forEach(function (noteResource) {
