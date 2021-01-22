@@ -30,15 +30,24 @@
 <body>
 
 <div class="container-fluid">
-    <a class="navbar-brand" href="#">NoteGraph</a>
+    <!-- 按钮区 -->
     <div class="row">
-        <div class="btn-group-vertical">
+        <div class="col-md-12">
+            <a class="navbar-brand" href="#">NoteGraph</a>
             <div class="btn-group" role="group" aria-label="1">
-                <button type="button" class="btn btn-success" style="margin:5px" data-toggle="tooltip"
+                <button type="button" class="btn btn-info" style="margin:5px" data-toggle="tooltip"
                         data-placement="bottom"
                         title="搜索笔记"
-                        id="a_search_button">
+                        id="expand_search_button">
                     <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="btn-group" role="group" aria-label="2">
+                <button type="button" class="btn btn-info" style="margin:5px" data-toggle="tooltip"
+                        data-placement="bottom"
+                        title="查看标签"
+                        id="label_button">
+                    <i class="fa fa-tag" aria-hidden="true"></i>
                 </button>
             </div>
             <div class="btn-group" role="group" aria-label="3">
@@ -73,25 +82,36 @@
                     <i class="fa fa-trash" aria-hidden="true"></i>
                 </button>
             </div>
-            <div class="btn-group" role="group" aria-label="5">
+            <div class="btn-group" role="group" aria-label="2">
                 <button type="button" class="btn btn-warning" style="margin:5px" data-toggle="tooltip"
                         data-placement="bottom"
                         title="财报分析"
                         id="financial_button">
-                    <i class="fa fa-dollar-sign" aria-hidden="true"></i>
+                    <i class="fa fa-wallet" aria-hidden="true"></i>
                 </button>
             </div>
         </div>
-        <div class="col-sm-8">
-            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-            <div id="graph"></div>
+    </div>
+    <!-- 搜索展开区 -->
+    <div class="row" style="display:none;" id="search_area">
+        <div class="col-md-12">
+            <!-- 搜索区 -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-inline">
+                        <input class="form-control mr-sm-2" type="search" id="search_input" placeholder="Search"
+                               aria-label="Search">
+                        <button class="btn btn-success my-2 my-sm-0" id="search_button" type="button">搜索</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</div>
-</div>
-
-
+    <!-- 图谱区 -->
+    <div class="row">
+        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="graph"></div>
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -429,6 +449,12 @@
         window.open(selectNode._links.edit.href);
     });
 
+    /**
+     * 展开搜索
+     */
+    $("#expand_search_button").bind('click', function () {
+        $("#search_area").fadeToggle("slow");
+    });
 
     /**
      * 删除笔记
@@ -513,6 +539,13 @@
      */
     $("#financial_button").bind('click', function () {
         window.open("/financial");
+    });
+
+    /**
+     * 财报分析
+     */
+    $("#label_button").bind('click', function () {
+        window.open("/label");
     });
 
 </script>
