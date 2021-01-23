@@ -104,6 +104,7 @@
                         <button class="btn btn-success my-2 my-sm-0" id="search_button" type="button">搜索</button>
                     </div>
                 </div>
+            </div>
         </div>
     </div>
     <!-- 图谱区 -->
