@@ -52,4 +52,10 @@ public class PageController {
         return modelAndView;
     }
 
+    @RequestMapping("/label")
+    public ModelAndView label() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("label");
+        return modelAndView;
+    }
 }
