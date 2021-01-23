@@ -2,6 +2,7 @@ package com.licong.notemap.web.vo.tag;
 
 import com.licong.notemap.service.domain.Tag;
 import com.licong.notemap.web.controller.NoteController;
+import com.licong.notemap.web.vo.note.NoteResourceAssembler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,9 +22,10 @@ public class TagResourceAssembler {
         try {
             TagResource tagResource = new TagResource(tag);
             Method findNotes = NoteController.class.getMethod("findByTitleContains", String.class,
+                    String.class,
                     Pageable.class,
                     PagedResourcesAssembler.class,
-                    TagResourceAssembler.class);
+                    NoteResourceAssembler.class);
             tagResource.add(linkTo(findNotes, tagResource.getTitle()).withRel("findNotes"));
             return tagResource;
         } catch (Exception e) {

@@ -17,7 +17,7 @@ public interface NoteService {
 
     void delete(UUID noteId);
 
-    Page<Note> findByTitleContains(String title, Pageable pageable);
+    Page<Note> findByTitleContains(String title, String tag, Pageable pageable);
 
     List<Note> neighbours(UUID noteId);
 }

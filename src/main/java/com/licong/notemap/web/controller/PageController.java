@@ -1,6 +1,7 @@
 package com.licong.notemap.web.controller;
 
 import com.licong.notemap.util.JsonUtils;
+import com.licong.notemap.util.StringUtils;
 import com.licong.notemap.web.vo.note.NoteResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.annotation.Secured;
@@ -22,9 +23,14 @@ public class PageController {
         return modelAndView;
     }
 
-    @RequestMapping("/graph")
-    public ModelAndView graph() {
+    @RequestMapping("/graph/{tag}")
+    public ModelAndView graph(@PathVariable(value = "tag") String tag) {
         ModelAndView modelAndView = new ModelAndView();
+        if (StringUtils.isNotEmpty(tag)) {
+            modelAndView.addObject("tag", tag);
+        } else {
+            modelAndView.addObject("tag", "");
+        }
         modelAndView.setViewName("graph");
         return modelAndView;
     }

@@ -30,6 +30,6 @@ public class Note {
     private List<Note> reference;
 
     @Property
-    private List<String> tag;
+    private List<Tag> tag;
 
 }

@@ -12,7 +12,8 @@
     <!-- Font awesome -->
     <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
     <!-- Toastr -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
 
@@ -31,31 +32,20 @@
 
 <div class="container-fluid">
     <!-- 搜索展开区 -->
-    <div class="row" style="display:none;" id="search_area">
+    <div class="row" id="search_area">
         <div class="col-md-12">
             <!-- 搜索区 -->
             <div class="row">
                 <div class="col-md-12">
-                    <div class="form-inline">
-                        <input class="form-control mr-sm-2" type="search" id="search_input" placeholder="Search"
-                               aria-label="Search">
-                        <button class="btn btn-success my-2 my-sm-0" id="search_button" type="button">搜索</button>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Search tags"  id="search_input"  aria-describedby="button-addon2">
+                        <button class="btn btn-outline-secondary" type="button" id="search_button">Search</button>
                     </div>
                 </div>
             </div>
             <!-- 标签区 -->
             <div class="row">
-                <div class="col-md-12">
-                    <span class="badge badge-primary" id="span_xxx" type="label" style="cursor:pointer">Label</span>
-                    <span class="badge badge-primary" id="span_222" type="label" style="cursor:pointer">Label</span>
-                    <span class="badge badge-primary" id="span_333" type="label" style="cursor:pointer">Label</span>
-                    <span class="badge badge-primary" id="span_444" type="label" style="cursor:pointer">Label</span>
-                    <span class="badge badge-primary" id="span_555" type="label" style="cursor:pointer">Label</span>
-                    <span class="badge badge-primary" id="span_x3x" type="label" style="cursor:pointer">Label</span>
-                    <span class="badge badge-primary" id="span_242" type="label" style="cursor:pointer">Label</span>
-                    <span class="badge badge-primary" id="span_313" type="label" style="cursor:pointer">Label</span>
-                    <span class="badge badge-primary" id="span_434" type="label" style="cursor:pointer">Label</span>
-                    <span class="badge badge-primary" id="span_545" type="label" style="cursor:pointer">Label</span>
+                <div class="col-md-12" id="tag_area">
                 </div>
             </div>
         </div>
@@ -115,50 +105,30 @@
      */
     function loadData(title, num) {
         num = num == null ? 0 : num;
-        axios.get('/api/note/search/findByTitleContains?title=' + title + '&page=' + num + "&size=100")
+        axios.get('/api/tags/search/findByTitleContains?title=' + title + '&page=' + num + "&size=100")
             .then(response => {
                 var page = response.data.page;
                 if (page.totalElements == 0) {
-                    loadGraph(null, null);
                     pagination(page.size, page.number + 1, page.totalPages, page.totalElements);
                     return;
                 }
-                var noteResources = response.data._embedded.noteResources;
-                var noteIds = noteResources.map(function (note) {
-                    return note.noteId;
+                var tagResources = response.data._embedded.tagResources;
+                tagResources.forEach(function (tag) {
+                    $("#tag_area").append('<span class="badge badge-primary" id="'+ tag.tagId +'" type="label" style="cursor:pointer">'+tag.title+'</span>');
                 });
-                // {"noteId":"a51ca953-e22d-4a95-8e84-1686cf570347","name":"Neo4J","href":"/note/a51ca953-e22d-4a95-8e84-1686cf570347","value":10}
-                var notes = noteResources.map(function (note) {
-                    var note = note;
-                    note.name = note.noteId;
-                    note.symbolSize = [55, 55];
-                    note.value = 10;
-                    return note;
+                /**
+                 * 点击标签
+                 */
+                $("span[type='label']").bind('click', function (label) {
+                    window.location.replace("/graph/"+label.currentTarget.id);
                 });
-                var links = [];
-                noteResources.forEach(function (note) {
-                    var source = note.noteId
-                    note.refs.forEach(function (ref) {
-                        var link = ref;
-                        link.source = source;
-                        link.target = ref.noteId;
-                        link.name = ref.title;
-                        links.push(link);
-                    });
-                });
-                loadGraph(notes, links);
-                pagination(page.size, page.number + 1, page.totalPages, page.totalElements);
             })
             .catch(response => error(response));
     }
 
-    var graphNodes;
-    var graphLinks;
-
-
 
     /**
-     * 初始化地图
+     * 初始化
      */
     loadData("", null);
 
@@ -170,14 +140,6 @@
             toastr.error(response.data.message);
         }
     }
-
-
-    /**
-     * 点击标签
-     */
-    $("span[type='label']").bind('click', function (label) {
-        console.log(label.currentTarget.id);
-    });
 
 
     /**

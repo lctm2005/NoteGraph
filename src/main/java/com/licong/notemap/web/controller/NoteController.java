@@ -63,7 +63,7 @@ public class NoteController {
                                                         @PageableDefault Pageable pageable,
                                                         PagedResourcesAssembler assembler,
                                                         NoteResourceAssembler noteResourceAssembler) {
-        Page<Note> page = noteService.findByTitleContains(title, pageable);
+        Page<Note> page = noteService.findByTitleContains(title,tag, pageable);
         if (page.isEmpty()) {
             return assembler.toModel(page);
         }

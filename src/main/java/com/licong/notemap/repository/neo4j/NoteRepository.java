@@ -16,11 +16,20 @@ import java.util.UUID;
 @Repository
 public interface NoteRepository extends Neo4jRepository<Note, UUID> {
 
-    @Query(value = "MATCH (n:NOTE) WHERE n.title=~$title RETURN n", countQuery = "MATCH (n:NOTE) WHERE n.title=~$title RETURN count(n)")
+    @Query(value = "MATCH (n:NOTE) WHERE n.title=~$title RETURN n",
+            countQuery = "MATCH (n:NOTE) WHERE n.title=~$title RETURN count(n)")
     Page<Note> findByTitleLike(String title, Pageable pageable);
 
-    @Query("match (n:NOTE)-[*]-(k:NOTE) where n.id=$id return k")
+    @Query(value = "MATCH (n:NOTE)-[:TAG]->(t:TAG) WHERE n.title=~$title AND t.id=$tag RETURN n",
+            countQuery = "MATCH (n:NOTE)-[:TAG]->(t:TAG) WHERE n.title=~$title AND t.id=$tag RETURN count(n)")
+    Page<Note> findByTitleLikeAndTagEquals(String title, String tag, Pageable pageable);
+
+    @Query("match (n:NOTE)-[:REF]-(k:NOTE) WHERE n.id=$id return k")
     List<Note> neighbours(UUID id);
 
     List<Note> findByIdIn(List<UUID> ids);
+
+    @Query(value = "MATCH (n:NOTE)-[:TAG]->(t:TAG) WHERE t.id=$tag RETURN n",
+            countQuery = "MATCH (n:NOTE)-[:TAG]->(t:TAG) WHERE t.id=$tag  RETURN count(n)")
+    Page<Note> findByTagEquals(String tag, Pageable pageable);
 }

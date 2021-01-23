@@ -8,19 +8,17 @@ import com.licong.notemap.service.domain.Tag;
 import com.licong.notemap.util.CollectionUtils;
 import com.licong.notemap.util.NoteInnerLinkUtils;
 import com.licong.notemap.util.NoteTagUtils;
-import com.licong.notemap.util.StringUtils;
-import com.licong.notemap.web.vo.note.NoteResource;
+
+import static com.licong.notemap.util.StringUtils.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -46,9 +44,9 @@ public class NoteServiceImpl implements NoteService {
         return noteRepository.save(note);
     }
 
-    private List<String> extractTags(Note note) {
+    private List<Tag> extractTags(Note note) {
         List<String> titles = NoteTagUtils.parseTags(note.getContent());
-        if (CollectionUtils.isEmpty(titles)) return titles;
+        if (CollectionUtils.isEmpty(titles)) return Collections.emptyList();
         List<Tag> tags = tagRepository.findByTitleIn(titles);
         Map<String, Tag> tagMap = CollectionUtils.getPropertyMap(tags, "title");
         List<Tag> newTags = new ArrayList<>();
@@ -59,8 +57,9 @@ public class NoteServiceImpl implements NoteService {
                 newTags.add(newTag);
             }
         }
-        tagRepository.saveAll(newTags);
-        return titles;
+        newTags = tagRepository.saveAll(newTags);
+        tags.addAll(newTags);
+        return tags;
     }
 
 
@@ -86,16 +85,31 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Page<Note> findByTitleContains(String title, Pageable pageable) {
-        if (StringUtils.isEmpty(title)) {
+    public Page<Note> findByTitleContains(String title, String tag, Pageable pageable) {
+        if (isEmpty(title) && isEmpty(tag)) {
             return noteRepository.findAll(pageable);
-        } else {
-            Page<Note> notes = noteRepository.findByTitleLike("(?i).*" + title + ".*", pageable);
-            List<UUID> noteIds = CollectionUtils.getPropertyList(notes.getContent(), "id");
-            List<Note> results = noteRepository.findByIdIn(noteIds);
-            Map<UUID, Note> resultMap = CollectionUtils.getPropertyMap(results, "id");
-            return notes.map(e -> resultMap.get(e.getId()));
         }
+        if (isNotEmpty(title) && isEmpty(tag)) {
+            Page<Note> notes = noteRepository.findByTitleLike("(?i).*" + title + ".*", pageable);
+            return research(notes);
+        }
+        if (isNotEmpty(title) && isNotEmpty(tag)) {
+            Page<Note> notes = noteRepository.findByTitleLikeAndTagEquals("(?i).*" + title + ".*", tag, pageable);
+            return research(notes);
+        }
+        return noteRepository.findByTagEquals(tag, pageable);
+    }
+
+    /**
+     * 重新查询确保关联对象可以查出来
+     * @param notes
+     * @return
+     */
+    private Page<Note> research(Page<Note> notes) {
+        List<UUID> noteIds = CollectionUtils.getPropertyList(notes.getContent(), "id");
+        List<Note> results = noteRepository.findByIdIn(noteIds);
+        Map<UUID, Note> resultMap = CollectionUtils.getPropertyMap(results, "id");
+        return notes.map(e -> resultMap.get(e.getId()));
     }
 
     @Override

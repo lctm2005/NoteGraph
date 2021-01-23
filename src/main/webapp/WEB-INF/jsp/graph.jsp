@@ -12,28 +12,34 @@
     <!-- Font awesome -->
     <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+<%--    <link rel="stylesheet" href="http://notegraph.cn/css/bootstrap.min.css">--%>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
     <!-- Toastr -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
+    <link href="http://notegraph.cn/css/toastr.min.css" rel="stylesheet"/>
 
     <!-- ECharts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.min.js"></script>
+    <script src="http://notegraph.cn/js/echarts.min.js"></script>
     <!-- JQuery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="http://notegraph.cn/js/jquery.min.js"></script>
     <!-- Jqpaginator -->
     <script src="http://notegraph.cn/js/jq-paginator.min.js"></script>
     <!-- Axios -->
-    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <script src="http://notegraph.cn/js/axios.min.js"></script>
     <!-- Toastr -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="http://notegraph.cn/js/toastr.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 </head>
 <body>
 
 <div class="container-fluid">
+    <div class="row">
+        <a class="navbar-brand" href="#">NoteGraph</a>
+    </div>
     <!-- 按钮区 -->
     <div class="row">
         <div class="col-md-12">
-            <a class="navbar-brand" href="#">NoteGraph</a>
             <div class="btn-group" role="group" aria-label="1">
                 <button type="button" class="btn btn-info" style="margin:5px" data-toggle="tooltip"
                         data-placement="bottom"
@@ -98,23 +104,26 @@
             <!-- 搜索区 -->
             <div class="row">
                 <div class="col-md-12">
-                    <div class="form-inline">
-                        <input class="form-control mr-sm-2" type="search" id="search_input" placeholder="Search"
-                               aria-label="Search">
-                        <button class="btn btn-success my-2 my-sm-0" id="search_button" type="button">搜索</button>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Search notes"  id="search_input"  aria-describedby="button-addon2">
+                        <button class="btn btn-outline-secondary" type="button" id="search_button">Search</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- 图谱区 -->
-    <div class="row">
+    <div class="row" id="graph">
         <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-        <div id="graph"></div>
+    </div>
+    <div class="row">
+        <ul class="pagination justify-content-end" id="pagination"></ul>
     </div>
 </div>
 
 <script type="text/javascript">
+
+    var tag = "${tag}";
 
     /**
      * 初始化提示框
@@ -141,8 +150,8 @@
      * 自适应宽高
      */
     function adjustGraphWithHeight() {
-        $('#graph').height($(window).height() - 150);
-        $('#graph').width($(window).width() - 100);
+        $('#graph').height($(window).height() - 200);
+        $('#graph').width($(window).width());
     }
 
     /**
@@ -176,8 +185,8 @@
             visiblePages: 10,
             currentPage: currentPage,
             pageSize: pageSize,
-            prev: '<li class="page-item"><a class="page-link" href="javascript:void(0);">Previous</a></li>',
-            next: '<li class="page-item"><a class="page-link" href="javascript:void(0);">Next</a></li>',
+            prev: '<a class="page-link" href="javascript:void(0);" aria-label="Previous"><span aria-hidden="true">&laquo;</span> </a>',
+            next: '<a class="page-link" href="javascript:void(0);" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>',
             page: '<li class="page-item"><a class="page-link" href="javascript:void(0);">{{page}}</a></li>',
             onPageChange: function (num, type) {
                 if (init) {
@@ -194,12 +203,12 @@
      */
     function loadData(title, num) {
         num = num == null ? 0 : num;
-        axios.get('/api/note/search/findByTitleContains?title=' + title + '&page=' + num + "&size=100")
+        axios.get('/api/note/search/findByTitleContains?title=' + title + '&tag=' + tag + '&page=' + num + "&size=100")
             .then(response => {
                 var page = response.data.page;
                 if (page.totalElements == 0) {
                     loadGraph(null, null);
-                    pagination(page.size, page.number + 1, page.totalPages, page.totalElements);
+                    // pagination(page.size, page.number + 1, page.totalPages, page.totalElements);
                     return;
                 }
                 var noteResources = response.data._embedded.noteResources;
@@ -245,12 +254,12 @@
             return;
         }
         var option = {
-            tooltip: {
-                trigger: 'item',
-                formatter: function (params, ticket, callback) {
-                    return params.data.name;
-                }
-            },
+            // tooltip: {
+            //     trigger: 'item',
+            //     formatter: function (params, ticket, callback) {
+            //         return params.data.name;
+            //     }
+            // },
             animationDuration: 1500,
             animationEasingUpdate: 'quinticInOut',
             backgroundColor: '#ffffff',
@@ -262,7 +271,7 @@
                     data: notes,
                     links: links,
                     roam: true,
-                    draggable: true,
+                    draggable: false,
                     backgroundColor: '#f5ff10',
                     force: {
                         initLayout: 'circular',
@@ -464,7 +473,12 @@
             toastr.warning('请选择节点');
             return;
         }
-        toastr["error"]("<div class=\"btn-group\" ><button id=\"confirm-delete-button\", type=\"button\" class=\"btn btn-primary\" onclick=\"deleteNote()\">Yes</button><button type=\"button\" class=\"btn btn-light\">No</button></div>", "确认是否删除");
+        toastr["warning"](
+            "<div class=\"btn-group\" >" +
+            "<button style=\"margin:5px\" id=\"confirm-delete-button\", type=\"button\" class=\"btn btn-secondary\" onclick=\"deleteNote()\">Yes</button>" +
+            "<button style=\"margin:5px\" type=\"button\" class=\"btn btn-light\">No</button>" +
+            "</div>",
+            "确认是否删除");
     });
 
     /**
@@ -542,10 +556,10 @@
     });
 
     /**
-     * 财报分析
+     * 展开标签
      */
     $("#label_button").bind('click', function () {
-        window.open("/label");
+        window.location.replace("/label");
     });
 
 </script>

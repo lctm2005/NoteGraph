@@ -1,12 +1,16 @@
 package com.licong.notemap.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NoteTagUtils {
     public static List<String> parseTags(String content) {
+        if (StringUtils.isEmpty(content)) {
+            return Collections.emptyList();
+        }
         Pattern pattern = Pattern.compile("@.+@");
         Matcher matcher = pattern.matcher(content);
         List<String> tags = new ArrayList<>();
