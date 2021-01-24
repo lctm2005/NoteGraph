@@ -23,6 +23,14 @@ public class PageController {
         return modelAndView;
     }
 
+    @RequestMapping("/login")
+    public ModelAndView login() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login");
+        return modelAndView;
+    }
+
+
     @RequestMapping("/graph/{tag}")
     public ModelAndView graph(@PathVariable(value = "tag") String tag) {
         ModelAndView modelAndView = new ModelAndView();
